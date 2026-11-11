@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Dokumen extends Model
 {
@@ -14,11 +14,13 @@ class Dokumen extends Model
     protected $fillable = [
         'kategori_id',
         'uploader_id',
+        'bidang',
         'nomor_dokumen',
         'judul',
         'deskripsi',
         'tanggal_dokumen',
         'tahun',
+        'tingkat_kerahasiaan',
         'nama_file',
         'path_file',
         'ukuran_kb',
@@ -28,6 +30,7 @@ class Dokumen extends Model
     protected $casts = [
         'tanggal_dokumen' => 'date',
         'tahun' => 'integer',
+        'ukuran_kb' => 'integer',
     ];
 
     public function kategori()

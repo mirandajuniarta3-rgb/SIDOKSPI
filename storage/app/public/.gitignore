@@ -1,2 +1,6 @@
 *
 !.gitignore
+!dokumen/
+!sk/
+!dokumen/.gitkeep
+!sk/.gitkeep

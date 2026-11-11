@@ -18,8 +18,11 @@ class User extends Authenticatable
         'email',
         'password_hash',
         'role',
+        'bidang',
         'status',
     ];
+
+    public const UPDATED_AT = null;
 
     protected $hidden = [
         'password_hash',

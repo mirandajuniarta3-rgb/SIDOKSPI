@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    // Menampilkan halaman login
-    public function showLogin()
+    public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
             return redirect()->route('dashboard');
@@ -17,41 +18,37 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Proses login
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+        $validated = $request->validate([
+            'identifier' => ['required', 'string', 'max:100'],
+            'password' => ['required', 'string'],
+            'remember' => ['sometimes', 'boolean'],
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $identifier = trim($validated['identifier']);
+        $identityColumn = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'nip';
+        $credentials = [
+            $identityColumn => $identifier,
+            'password' => $validated['password'],
+            'status' => 'aktif',
+        ];
 
-        if (Auth::attempt($credentials)) {
-
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            if ($user->status !== 'aktif') {
-                Auth::logout();
-
-                return back()->withErrors([
-                    'email' => 'Akun Anda tidak aktif.'
-                ]);
-            }
-
-            return redirect()->route('dashboard')
-                ->with('success', 'Selamat datang di SIDOKSPI.');
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()
+                ->withErrors([
+                    'identifier' => 'Email/NIK atau kata sandi tidak sesuai, atau akun tidak aktif.',
+                ])
+                ->onlyInput('identifier');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.'
-        ])->onlyInput('email');
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard'))
+            ->with('success', 'Selamat datang di SIDOKSPI.');
     }
 
-    // Proses logout
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
 
@@ -61,4 +58,4 @@ class AuthController extends Controller
         return redirect()->route('login')
             ->with('success', 'Anda berhasil logout.');
     }
-}   
+}
