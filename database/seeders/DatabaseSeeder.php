@@ -15,10 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'nama_lengkap' => 'Test User',
-            'email' => 'test@example.com',
-            'role' => 'admin',
-        ]);
+        if (! User::query()->where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'nama_lengkap' => 'Test User',
+                'email' => 'test@example.com',
+                'role' => 'admin',
+            ]);
+        }
+
+        $this->call(DemoDocumentSeeder::class);
+        $this->call(DemoSuratKeputusanSeeder::class);
     }
 }

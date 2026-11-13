@@ -1,0 +1,93 @@
+.app-layout { min-height: 100vh; }
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 5;
+    display: flex;
+    width: 260px;
+    flex-direction: column;
+    padding: 18px 10px 12px;
+    border-right: 1px solid #eef0f7;
+    background: #fff;
+}
+
+.brand { display: flex; align-items: center; gap: 7px; min-height: 42px; margin: 0 4px 18px; text-decoration: none; }
+.brand-mark { display: grid; width: 25px; height: 25px; flex: 0 0 auto; place-items: center; border-radius: 7px; background: #0755cf; color: #fff; }
+.brand-mark svg { width: 17px; height: 17px; }
+.brand-name { display: block; color: #0849a8; font-size: 14px; font-weight: 850; letter-spacing: -.025em; }
+.brand-caption { display: block; margin-top: 1px; color: #717d91; font-size: 11px; }
+.nav-label { margin: 9px 5px 7px; color: #929bb0; font-size: 11px; font-weight: 800; letter-spacing: .075em; }
+.nav-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.nav-link { display: flex; min-height: 30px; align-items: center; gap: 8px; padding: 6px 7px; border-radius: 6px; color: #4f5c72; font-size: 12px; font-weight: 650; text-decoration: none; }
+.nav-link svg { width: 13px; height: 13px; flex: 0 0 auto; }
+.nav-link.active { background: #edf2ff; color: #064eb6; }
+.nav-link:not(.active):not(.disabled):hover { background: #f6f7fb; color: #064eb6; }
+.nav-link.disabled { color: #68748a; cursor: default; }
+.nav-chevron { width: 10px !important; height: 10px !important; margin-left: auto; }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { cursor: pointer; list-style: none; }
+.nav-dropdown-toggle::-webkit-details-marker { display: none; }
+.nav-dropdown[open] .nav-chevron { transform: rotate(180deg); }
+.nav-sublist { display: grid; gap: 2px; margin: 0 0 3px; padding: 2px 3px 4px 14px; list-style: none; }
+.nav-sublink { display: flex; min-height: 28px; align-items: center; padding: 5px 8px; border-radius: 6px; color: #4f5c72; font-size: 12px; font-weight: 600; text-decoration: none; }
+.nav-sublink:not(.disabled):hover, .nav-sublink.active { background: #e2e8ff; color: #064eb6; }
+.nav-sublink.disabled { color: #8a94a7; cursor: not-allowed; }
+.sidebar-bottom { margin-top: auto; }
+.system-status { display: flex; align-items: flex-start; gap: 7px; padding: 9px 7px; border: 1px solid #e8ecfa; border-radius: 7px; background: #f3f5ff; color: #40516b; font-size: 11px; line-height: 1.45; }
+.system-status svg { width: 14px; height: 14px; flex: 0 0 auto; color: #15846d; }
+.system-status strong { display: block; font-size: 11px; }
+.version { display: block; color: #8a94a8; }
+
+.main-area { min-height: 100vh; margin-left: 260px; }
+.topbar { position: sticky; top: 0; z-index: 4; display: flex; min-height: 50px; align-items: center; gap: 12px; padding: 8px 18px; border-bottom: 1px solid #eceef6; background: rgb(255 255 255 / 94%); backdrop-filter: blur(12px); }
+.breadcrumb { flex: 0 0 auto; color: #4e5a70; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.breadcrumb span { margin: 0 5px; color: #a3adbf; }
+.breadcrumb strong { color: #0753c5; font-weight: 650; }
+.search-form { display: flex; width: min(250px, 30vw); min-width: 135px; height: 28px; align-items: center; gap: 6px; margin-left: 8px; padding: 0 8px; border: 1px solid #eef0f7; border-radius: 6px; background: #fbfbfe; }
+.search-form svg { width: 13px; height: 13px; flex: 0 0 auto; color: #8792a6; }
+.search-form input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #263650; font-size: 12px; }
+.search-form input::placeholder { color: #9aa4b6; }
+.topbar-spacer { flex: 1; }
+.icon-button { position: relative; display: grid; width: 25px; height: 25px; flex: 0 0 auto; place-items: center; border: 0; border-radius: 6px; background: transparent; color: #57647a; }
+.icon-button svg { width: 15px; height: 15px; }
+.notification-dot { position: absolute; top: 4px; right: 4px; width: 5px; height: 5px; border: 1px solid #fff; border-radius: 50%; background: #e44b58; }
+.notification-dot { position: absolute; top: 4px; right: 4px; width: 5px; height: 5px; border: 1px solid #fff; border-radius: 50%; background: #e44b58; }
+.role-badge { padding: 5px 8px; border-radius: 5px; background: #d7fbf2; color: #087c67; font-size: 11px; font-weight: 750; white-space: nowrap; }
+.account { display: flex; align-items: center; gap: 6px; min-width: 0; padding: 2px 0 2px 4px; }
+.avatar { display: grid; width: 24px; height: 24px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #0753c5; color: #fff; font-size: 12px; font-weight: 800; }
+.account-name { display: block; max-width: 120px; overflow: hidden; color: #263650; font-size: 11px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.account-role { display: block; margin-top: 1px; color: #7e899c; font-size: 11px; }
+.logout-form { display: inline-flex; margin-left: 1px; }
+.logout-button { border: 0; background: none; color: #768196; cursor: pointer; }
+.logout-button svg { width: 11px; height: 11px; }
+.page-content { width: min(1160px, 100%); margin: 0 auto; padding: 19px 14px 28px; }
+.notice { margin: 0 0 12px; padding: 8px 10px; border: 1px solid #bdebd9; border-radius: 7px; background: #effcf6; color: #08734e; font-size: 13px; }
+
+@media (max-width: 850px) {
+    .sidebar { width: 230px; }
+    .main-area { margin-left: 230px; }
+    .topbar { gap: 8px; padding-right: 12px; padding-left: 12px; }
+    .breadcrumb { display: none; }
+    .search-form { margin-left: 0; }
+}
+
+@media (max-width: 620px) {
+    body { min-width: 320px; }
+    .sidebar { position: static; width: 100%; padding: 9px 12px; border-right: 0; border-bottom: 1px solid #eceef6; }
+    .brand { min-height: 30px; margin: 0 0 7px; }
+    .nav-label, .sidebar-bottom { display: none; }
+    .nav-list { display: flex; flex-wrap: wrap; gap: 4px; overflow: visible; padding-bottom: 2px; }
+    .nav-link { min-height: 30px; flex: 0 0 auto; padding: 6px 8px; }
+    .nav-link.disabled { display: none; }
+    .nav-dropdown { flex: 0 0 auto; }
+    .nav-dropdown-toggle { width: 100%; }
+    .nav-sublist { min-width: 154px; margin-top: 2px; padding: 5px; border: 1px solid #eceef6; border-radius: 7px; background: #fff; }
+    .nav-sublink { min-height: 30px; }
+    .main-area { min-height: auto; margin-left: 0; }
+    .topbar { min-height: 44px; padding: 7px 12px; }
+    .search-form { width: 100%; min-width: 0; }
+    .role-badge { display: none; }
+    .account-name { max-width: 76px; }
+    .page-content { padding: 16px 12px 24px; }
+}

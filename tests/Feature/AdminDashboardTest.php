@@ -5,8 +5,12 @@ use App\Models\KategoriDokumen;
 use App\Models\SuratKeputusan;
 use App\Models\User;
 
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
+
 test('administrators can view the operational dashboard', function () {
-    $admin = User::factory()->create(['role' => 'admin']);
+    /** @var User $admin */
+    $admin = User::factory()->createOne(['role' => 'admin']);
     $kategori = KategoriDokumen::create([
         'kode_kategori' => 'LHA',
         'nama_kategori' => 'Laporan Hasil Audit',
@@ -33,10 +37,18 @@ test('administrators can view the operational dashboard', function () {
         'status' => 'final',
     ]);
 
-    $this->actingAs($admin)
+    actingAs($admin)
         ->get(route('dashboard'))
         ->assertOk()
         ->assertSee('Dashboard Utama SPI')
+        ->assertSee('Daftar Dokumen')
+        ->assertSee('Unggah Dokumen')
+        ->assertSee('Arsip')
+        ->assertSee('Surat Keputusan (SK)')
+        ->assertSee('Daftar SK')
+        ->assertSee('Tambah SK')
+        ->assertSee('Arsip SK')
+        ->assertSee('href="'.route('dokumen.index').'"', false)
         ->assertSee('DOK/SPI/001')
         ->assertSee('Laporan Hasil Audit')
         ->assertSee('SK/001')
@@ -45,15 +57,17 @@ test('administrators can view the operational dashboard', function () {
 });
 
 test('non-administrators cannot view the administration dashboard', function () {
-    $user = User::factory()->create(['role' => 'auditee']);
+    /** @var User $user */
+    $user = User::factory()->createOne(['role' => 'auditee']);
 
-    $this->actingAs($user)
+    actingAs($user)
         ->get(route('dashboard'))
         ->assertForbidden();
 });
 
 test('administrators can search recent documents and decisions', function () {
-    $admin = User::factory()->create(['role' => 'admin']);
+    /** @var User $admin */
+    $admin = User::factory()->createOne(['role' => 'admin']);
     $kategori = KategoriDokumen::create([
         'kode_kategori' => 'PKPT',
         'nama_kategori' => 'Program Kerja Pengawasan',
@@ -76,7 +90,7 @@ test('administrators can search recent documents and decisions', function () {
         'status' => 'final',
     ]);
 
-    $this->actingAs($admin)
+    actingAs($admin)
         ->get(route('dashboard', ['search' => 'SPI-TAHUNAN']))
         ->assertOk()
         ->assertSee('Hasil pencarian dokumen')
@@ -87,6 +101,6 @@ test('administrators can search recent documents and decisions', function () {
 });
 
 test('guests are redirected from the dashboard route to login', function () {
-    $this->get(route('dashboard'))
+    get(route('dashboard'))
         ->assertRedirect(route('login'));
 });

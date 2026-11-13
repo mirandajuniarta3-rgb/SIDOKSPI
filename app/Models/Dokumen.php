@@ -24,12 +24,16 @@ class Dokumen extends Model
         'nama_file',
         'path_file',
         'ukuran_kb',
+        'archived_at',
+        'retensi_tahun',
         'status',
     ];
 
     protected $casts = [
         'tanggal_dokumen' => 'date',
+        'archived_at' => 'datetime',
         'tahun' => 'integer',
+        'retensi_tahun' => 'integer',
         'ukuran_kb' => 'integer',
     ];
 
