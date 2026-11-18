@@ -8,15 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next): Response
     {
-        // Periksa apakah pengguna sudah login
-        if (!auth()->check()) {
+        // Pastikan pengguna sudah login
+        if (!$request->user()) {
             return redirect()->route('login');
         }
 
-        // Periksa hak akses pengguna
-        if (!in_array(auth()->user()->role, $roles)) {
+        // Pastikan pengguna memiliki role admin
+        if ($request->user()->role !== 'admin') {
             abort(403, 'Anda tidak memiliki hak akses.');
         }
 

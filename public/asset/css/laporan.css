@@ -1,0 +1,463 @@
+
+/* =========================================
+   SIDOKSPI - HALAMAN REKAP LAPORAN
+========================================= */
+
+.laporan-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: #17243b;
+}
+
+.laporan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.laporan-heading h2 {
+    margin: 0;
+    color: #17243b;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.laporan-heading p {
+    margin: 6px 0 0;
+    color: #78839a;
+    font-size: 13px;
+}
+
+.laporan-breadcrumb {
+    margin-bottom: 7px;
+    color: #0753c5;
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.btn-cetak {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid #d8e3f8;
+    border-radius: 8px;
+    background: #fff;
+    color: #0753c5;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-cetak:hover {
+    background: #edf3ff;
+}
+
+/* KARTU STATISTIK */
+
+.laporan-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 112px;
+    padding: 17px;
+    border: 1px solid #edf0f8;
+    border-radius: 11px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(35, 55, 90, .035);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.stat-label {
+    color: #78839a;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.stat-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.stat-number {
+    margin-top: 12px;
+    color: #17243b;
+    font-size: 27px;
+    font-weight: 850;
+    line-height: 1;
+}
+
+.stat-blue .stat-icon {
+    background: #eaf1ff;
+    color: #0753c5;
+}
+
+.stat-green .stat-icon {
+    background: #e6f8f0;
+    color: #15966b;
+}
+
+.stat-orange .stat-icon {
+    background: #fff3df;
+    color: #d88917;
+}
+
+.stat-gray .stat-icon {
+    background: #edf0f5;
+    color: #68758b;
+}
+
+/* PANEL */
+
+.laporan-panel {
+    overflow: hidden;
+    border: 1px solid #edf0f8;
+    border-radius: 11px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(35, 55, 90, .035);
+}
+
+.panel-heading {
+    padding: 16px 18px;
+    border-bottom: 1px solid #edf0f8;
+}
+
+.panel-heading h3 {
+    margin: 0;
+    color: #24334d;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.panel-heading p {
+    margin: 5px 0 0;
+    color: #8792a6;
+    font-size: 11px;
+}
+
+.panel-body {
+    padding: 17px 18px;
+}
+
+/* FILTER */
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) minmax(130px, 1fr)
+        minmax(130px, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+}
+
+.filter-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #4f5c72;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.filter-control {
+    width: 100%;
+    min-height: 39px;
+    padding: 8px 11px;
+    border: 1px solid #e2e7f0;
+    border-radius: 7px;
+    outline: none;
+    background: #fbfcff;
+    color: #263650;
+    font-size: 12px;
+}
+
+.filter-control:focus {
+    border-color: #0753c5;
+    box-shadow: 0 0 0 3px rgba(7, 83, 197, .09);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.btn-filter,
+.btn-reset {
+    display: inline-flex;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 13px;
+    border: 0;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 750;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-filter {
+    background: #0753c5;
+    color: #fff;
+}
+
+.btn-filter:hover {
+    background: #06449f;
+}
+
+.btn-reset {
+    border: 1px solid #e2e7f0;
+    background: #fff;
+    color: #647087;
+}
+
+.btn-reset:hover {
+    background: #f4f6fb;
+}
+
+/* TABEL */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.laporan-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    font-size: 11px;
+}
+
+.laporan-table thead th {
+    padding: 13px 12px;
+    border-bottom: 1px solid #e5ebf5;
+    background: #f3f6fd;
+    color: #596982;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: .035em;
+}
+
+.laporan-table tbody td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #f0f2f7;
+    color: #4c5a70;
+    vertical-align: middle;
+}
+
+.laporan-table tbody tr:hover {
+    background: #f8faff;
+}
+
+.laporan-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table-primary-text {
+    color: #243b60 !important;
+    font-weight: 750;
+}
+
+.table-muted {
+    color: #8b96a9 !important;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.status-final {
+    background: #e5f8ef;
+    color: #12845c;
+}
+
+.status-draft {
+    background: #fff3dc;
+    color: #ad7113;
+}
+
+.status-arsip {
+    background: #edf0f5;
+    color: #657187;
+}
+
+.status-lain {
+    background: #edf2ff;
+    color: #0753c5;
+}
+
+.empty-data {
+    padding: 35px 15px !important;
+    color: #8792a6 !important;
+    text-align: center;
+}
+
+/* INFORMASI TABEL */
+
+.table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-top: 1px solid #edf0f8;
+}
+
+.table-info {
+    color: #8792a6;
+    font-size: 11px;
+}
+
+/* PAGINATION */
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination a,
+.pagination span {
+    display: grid;
+    min-width: 29px;
+    height: 29px;
+    place-items: center;
+    padding: 0 8px;
+    border: 1px solid #e6eaf2;
+    border-radius: 6px;
+    background: #fff;
+    color: #596982;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+.pagination .active span,
+.pagination .active a {
+    border-color: #0753c5;
+    background: #0753c5;
+    color: #fff;
+}
+
+.pagination .disabled span {
+    color: #b5bdca;
+}
+
+/* CETAK */
+
+@media print {
+    .sidebar,
+    .topbar,
+    .laporan-header button,
+    .filter-panel,
+    .table-footer,
+    .notice {
+        display: none !important;
+    }
+
+    .main-area {
+        margin: 0 !important;
+    }
+
+    .page-content {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .laporan-panel,
+    .stat-card {
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    .laporan-table {
+        font-size: 9px;
+    }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 950px) {
+    .laporan-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .laporan-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .laporan-heading h2 {
+        font-size: 20px;
+    }
+
+    .laporan-stats {
+        gap: 9px;
+    }
+
+    .stat-card {
+        min-height: 100px;
+        padding: 12px;
+    }
+
+    .stat-number {
+        font-size: 23px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+    .filter-actions > * {
+        flex: 1;
+    }
+
+    .panel-body {
+        padding: 13px;
+    }
+
+    .table-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

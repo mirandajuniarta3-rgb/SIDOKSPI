@@ -8,16 +8,26 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('dokumen', function (Blueprint $table) {
-            $table->timestamp('archived_at')->nullable()->after('status');
-            $table->unsignedSmallInteger('retensi_tahun')->nullable()->after('archived_at');
-        });
+        // Tambahkan archived_at jika belum tersedia
+        if (!Schema::hasColumn('dokumen', 'archived_at')) {
+            Schema::table('dokumen', function (Blueprint $table) {
+                $table->timestamp('archived_at')
+                      ->nullable()
+                      ->after('status');
+            });
+        }
+
+        // retensi_tahun tidak ditambahkan lagi
+        // karena kolom tersebut sudah tersedia.
     }
 
     public function down(): void
     {
-        Schema::table('dokumen', function (Blueprint $table) {
-            $table->dropColumn(['archived_at', 'retensi_tahun']);
-        });
+        // Hanya hapus kolom yang dikelola migration ini.
+        if (Schema::hasColumn('dokumen', 'archived_at')) {
+            Schema::table('dokumen', function (Blueprint $table) {
+                $table->dropColumn('archived_at');
+            });
+        }
     }
 };

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class KategoriDokumen extends Model
 {
@@ -15,9 +16,10 @@ class KategoriDokumen extends Model
         'kode_kategori',
         'nama_kategori',
         'keterangan',
+        'status',
     ];
 
-    public function dokumen()
+    public function dokumen(): HasMany
     {
         return $this->hasMany(Dokumen::class, 'kategori_id');
     }
