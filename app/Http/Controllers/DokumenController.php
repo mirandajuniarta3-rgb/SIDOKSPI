@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dokumen;
 use App\Models\KategoriDokumen;
 use App\Models\LogAktivitas;
+use App\Exports\DokumenExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\RedirectResponse;
@@ -13,33 +14,169 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
+use ZipArchive;
 
 class DokumenController extends Controller
 {
+    /**
+     * Admin dan Staf SPI boleh mengakses pengelolaan dokumen.
+     */
+    private function authorizeDokumen(Request $request): void
+    {
+        abort_unless(
+            in_array($request->user()->role, ['admin', 'staf_spi'], true),
+            403
+        );
+    }
+
+    /**
+     * Query dokumen yang digunakan untuk daftar dan ekspor.
+     */
+    private function queryDokumen(array $filters): Builder
+    {
+        $search = trim($filters['search'] ?? '');
+
+        return Dokumen::query()
+            ->with(['kategori', 'uploader'])
+            ->when($search !== '', fn (Builder $query) => $query->where(
+                fn (Builder $query) => $query
+                    ->where('judul', 'like', "%{$search}%")
+                    ->orWhere('nomor_dokumen', 'like', "%{$search}%")
+                    ->orWhereHas('uploader', fn (Builder $uploader) => $uploader
+                        ->where('nama_lengkap', 'like', "%{$search}%"))
+            ))
+            ->when(
+                isset($filters['kategori']),
+                fn (Builder $query) => $query->where(
+                    'kategori_id',
+                    $filters['kategori']
+                )
+            )
+            ->when(
+                isset($filters['tahun']),
+                fn (Builder $query) => $query->where(
+                    'tahun',
+                    $filters['tahun']
+                )
+            )
+            ->when(
+                isset($filters['status']),
+                fn (Builder $query) => $query->where(
+                    'status',
+                    $filters['status']
+                )
+            )
+            ->latest('created_at');
+    }
+
+    /**
+     * Query khusus arsip dokumen.
+     */
+    private function queryArsipDokumen(array $filters): Builder
+    {
+        $search = trim($filters['search'] ?? '');
+
+        return Dokumen::query()
+            ->with(['kategori', 'uploader'])
+            ->where('status', 'arsip')
+            ->when($search !== '', fn (Builder $query) => $query->where(
+                fn (Builder $query) => $query
+                    ->where('judul', 'like', "%{$search}%")
+                    ->orWhere('nomor_dokumen', 'like', "%{$search}%")
+                    ->orWhereHas('uploader', fn (Builder $uploader) => $uploader
+                        ->where('nama_lengkap', 'like', "%{$search}%"))
+            ))
+            ->when(
+                isset($filters['kategori']),
+                fn (Builder $query) => $query->where(
+                    'kategori_id',
+                    $filters['kategori']
+                )
+            )
+            ->when(
+                isset($filters['tahun']),
+                fn (Builder $query) => $query->where(
+                    'tahun',
+                    $filters['tahun']
+                )
+            )
+            ->orderByDesc('archived_at')
+            ->orderByDesc('created_at');
+    }
+
+    /**
+     * Validasi filter halaman arsip.
+     */
+    private function validateArsipFilters(Request $request): array
+    {
+        return $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'kategori' => [
+                'nullable',
+                'integer',
+                'exists:kategori_dokumen,id',
+            ],
+            'tahun' => [
+                'nullable',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
+        ]);
+    }
+
+    /**
+     * Form unggah dokumen.
+     */
     public function create(Request $request): View
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeDokumen($request);
 
         return view('dokumen.daftar_dokumen.create', [
-            'kategori' => KategoriDokumen::query()->orderBy('nama_kategori')->get(),
+            'kategori' => KategoriDokumen::query()
+                ->orderBy('nama_kategori')
+                ->get(),
             'tahunAnggaran' => range(now()->year + 1, now()->year - 10),
         ]);
     }
 
+    /**
+     * Simpan dokumen baru.
+     */
     public function store(Request $request): RedirectResponse
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeDokumen($request);
 
         $validated = $request->validate([
-            'nomor_dokumen' => ['required', 'string', 'max:100', 'unique:dokumen,nomor_dokumen'],
+            'nomor_dokumen' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:dokumen,nomor_dokumen',
+            ],
             'judul' => ['required', 'string', 'max:255'],
-            'kategori_id' => ['required', 'integer', 'exists:kategori_dokumen,id'],
-            'tahun' => ['required', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'kategori_id' => [
+                'required',
+                'integer',
+                'exists:kategori_dokumen,id',
+            ],
+            'tahun' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
             'tanggal_dokumen' => ['required', 'date'],
             'deskripsi' => ['nullable', 'string', 'max:10000'],
-            'file' => ['required', 'file', 'mimes:pdf,docx,xlsx', 'max:20480'],
+            'file' => [
+                'required',
+                'file',
+                'mimes:pdf,docx,xlsx',
+                'max:20480',
+            ],
         ], [
             'file.required' => 'Pilih berkas yang akan diunggah.',
             'file.mimes' => 'Format berkas harus PDF, DOCX, atau XLSX.',
@@ -47,12 +184,18 @@ class DokumenController extends Controller
         ]);
 
         $file = $validated['file'];
-        $path = $file->store('dokumen/'.$validated['tahun'], 'local');
+
+        $path = $file->store(
+            'dokumen/'.$validated['tahun'],
+            'local'
+        );
 
         if (! $path) {
             return back()
                 ->withInput()
-                ->withErrors(['file' => 'Berkas gagal disimpan. Silakan coba kembali.']);
+                ->withErrors([
+                    'file' => 'Berkas gagal disimpan. Silakan coba kembali.',
+                ]);
         }
 
         $originalName = preg_replace(
@@ -60,10 +203,21 @@ class DokumenController extends Controller
             '',
             basename(str_replace('\\', '/', $file->getClientOriginalName()))
         );
-        $originalName = Str::limit($originalName ?: 'dokumen.'.$file->extension(), 255, '');
+
+        $originalName = Str::limit(
+            $originalName ?: 'dokumen.'.$file->extension(),
+            255,
+            ''
+        );
 
         try {
-            DB::transaction(function () use ($validated, $request, $file, $path, $originalName): void {
+            DB::transaction(function () use (
+                $validated,
+                $request,
+                $file,
+                $path,
+                $originalName
+            ): void {
                 $dokumen = Dokumen::create([
                     'kategori_id' => $validated['kategori_id'],
                     'uploader_id' => $request->user()->id,
@@ -89,7 +243,9 @@ class DokumenController extends Controller
             });
         } catch (Throwable $exception) {
             if (! Storage::disk('local')->delete($path)) {
-                report(new \RuntimeException('Gagal menghapus berkas setelah penyimpanan metadata gagal: '.$path));
+                report(new \RuntimeException(
+                    'Gagal menghapus berkas setelah penyimpanan metadata gagal: '.$path
+                ));
             }
 
             throw $exception;
@@ -100,38 +256,45 @@ class DokumenController extends Controller
             ->with('success', 'Dokumen berhasil diunggah dan disimpan sebagai draft.');
     }
 
+    /**
+     * Daftar seluruh dokumen.
+     */
     public function index(Request $request): View
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeDokumen($request);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'kategori' => ['nullable', 'integer', 'exists:kategori_dokumen,id'],
-            'tahun' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'kategori' => [
+                'nullable',
+                'integer',
+                'exists:kategori_dokumen,id',
+            ],
+            'tahun' => [
+                'nullable',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
             'status' => ['nullable', 'in:draft,final,arsip'],
         ]);
+
         $search = trim($filters['search'] ?? '');
 
-        $dokumen = Dokumen::query()
-            ->with(['kategori', 'uploader'])
-            ->when($search !== '', fn (Builder $query) => $query->where(
-                fn (Builder $query) => $query
-                    ->where('judul', 'like', "%{$search}%")
-                    ->orWhere('nomor_dokumen', 'like', "%{$search}%")
-                    ->orWhereHas('uploader', fn (Builder $uploader) => $uploader
-                        ->where('nama_lengkap', 'like', "%{$search}%"))
-            ))
-            ->when(isset($filters['kategori']), fn (Builder $query) => $query->where('kategori_id', $filters['kategori']))
-            ->when(isset($filters['tahun']), fn (Builder $query) => $query->where('tahun', $filters['tahun']))
-            ->when(isset($filters['status']), fn (Builder $query) => $query->where('status', $filters['status']))
-            ->latest('created_at')
+        $dokumen = $this->queryDokumen($filters)
             ->paginate(10)
             ->withQueryString();
 
         return view('dokumen.daftar_dokumen.index', [
             'dokumen' => $dokumen,
-            'kategori' => KategoriDokumen::query()->orderBy('nama_kategori')->get(),
-            'tahun' => Dokumen::query()->whereNotNull('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun'),
+            'kategori' => KategoriDokumen::query()
+                ->orderBy('nama_kategori')
+                ->get(),
+            'tahun' => Dokumen::query()
+                ->whereNotNull('tahun')
+                ->distinct()
+                ->orderByDesc('tahun')
+                ->pluck('tahun'),
             'totalDokumen' => Dokumen::count(),
             'dokumenAktif' => Dokumen::where('status', '!=', 'arsip')->count(),
             'dokumenDiarsipkan' => Dokumen::where('status', 'arsip')->count(),
@@ -142,38 +305,88 @@ class DokumenController extends Controller
         ]);
     }
 
-    public function arsip(Request $request): View
+    /**
+     * Menampilkan detail dokumen.
+     */
+    public function show(Request $request, Dokumen $dokumen): View
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeDokumen($request);
+
+        $dokumen->load(['kategori', 'uploader']);
+
+        $dokumen->setAttribute(
+            'file_available',
+            filled($dokumen->path_file)
+                && Storage::disk('local')->exists($dokumen->path_file)
+        );
+
+        LogAktivitas::create([
+            'user_id' => $request->user()->id,
+            'dokumen_id' => $dokumen->id,
+            'aksi' => 'lihat_detail_dokumen',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return view(
+            'dokumen.daftar_dokumen.detail',
+            compact('dokumen')
+        );
+    }
+
+    /**
+     * Ekspor seluruh data dokumen sesuai filter ke Excel.
+     */
+    public function export(Request $request)
+    {
+        $this->authorizeDokumen($request);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'kategori' => ['nullable', 'integer', 'exists:kategori_dokumen,id'],
-            'tahun' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'kategori' => [
+                'nullable',
+                'integer',
+                'exists:kategori_dokumen,id',
+            ],
+            'tahun' => [
+                'nullable',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
+            'status' => ['nullable', 'in:draft,final,arsip'],
         ]);
+
+        $query = $this->queryDokumen($filters);
+
+        $namaFile = 'daftar-dokumen-'.now()->format('Y-m-d-His').'.xlsx';
+
+        return Excel::download(
+            new DokumenExport($query),
+            $namaFile
+        );
+    }
+
+    /**
+     * Daftar arsip dokumen.
+     */
+    public function arsip(Request $request): View
+    {
+        $this->authorizeDokumen($request);
+
+        $filters = $this->validateArsipFilters($request);
         $search = trim($filters['search'] ?? '');
 
-        $arsipQuery = Dokumen::query()->where('status', 'arsip');
+        $arsipQuery = $this->queryArsipDokumen($filters);
+
         $dokumen = (clone $arsipQuery)
-            ->with(['kategori', 'uploader'])
-            ->when($search !== '', fn (Builder $query) => $query->where(
-                fn (Builder $query) => $query
-                    ->where('judul', 'like', "%{$search}%")
-                    ->orWhere('nomor_dokumen', 'like', "%{$search}%")
-                    ->orWhereHas('uploader', fn (Builder $uploader) => $uploader
-                        ->where('nama_lengkap', 'like', "%{$search}%"))
-            ))
-            ->when(isset($filters['kategori']), fn (Builder $query) => $query->where('kategori_id', $filters['kategori']))
-            ->when(isset($filters['tahun']), fn (Builder $query) => $query->where('tahun', $filters['tahun']))
-            ->orderByDesc('archived_at')
-            ->orderByDesc('created_at')
             ->paginate(8)
             ->withQueryString();
 
         $dokumen->getCollection()->each(function (Dokumen $item): void {
             $item->setAttribute(
                 'file_available',
-                filled($item->path_file) && Storage::disk('local')->exists($item->path_file)
+                filled($item->path_file)
+                    && Storage::disk('local')->exists($item->path_file)
             );
         });
 
@@ -183,9 +396,16 @@ class DokumenController extends Controller
                 ->whereHas('dokumen', fn (Builder $query) => $query->where('status', 'arsip'))
                 ->orderBy('nama_kategori')
                 ->get(),
-            'tahun' => (clone $arsipQuery)->whereNotNull('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun'),
+            'tahun' => Dokumen::query()
+                ->where('status', 'arsip')
+                ->whereNotNull('tahun')
+                ->distinct()
+                ->orderByDesc('tahun')
+                ->pluck('tahun'),
             'totalArsip' => (clone $arsipQuery)->count(),
-            'retensiRataRata' => (clone $arsipQuery)->whereNotNull('retensi_tahun')->avg('retensi_tahun'),
+            'retensiRataRata' => (clone $arsipQuery)
+                ->whereNotNull('retensi_tahun')
+                ->avg('retensi_tahun'),
             'kapasitasArsipKb' => (int) (clone $arsipQuery)->sum('ukuran_kb'),
             'search' => $search,
             'selectedKategori' => $filters['kategori'] ?? '',
@@ -193,6 +413,89 @@ class DokumenController extends Controller
         ]);
     }
 
+    /**
+     * Ekspor daftar arsip dokumen sesuai filter ke Excel.
+     */
+    public function exportArsip(Request $request)
+    {
+        $this->authorizeDokumen($request);
+
+        $filters = $this->validateArsipFilters($request);
+        $query = $this->queryArsipDokumen($filters);
+
+        $namaFile = 'arsip-dokumen-'.now()->format('Y-m-d-His').'.xlsx';
+
+        return Excel::download(
+            new DokumenExport($query),
+            $namaFile
+        );
+    }
+
+    /**
+     * Unduh semua file dokumen arsip dalam satu ZIP.
+     */
+    public function downloadBundle(Request $request)
+    {
+        $this->authorizeDokumen($request);
+
+        $filters = $this->validateArsipFilters($request);
+        $dokumen = $this->queryArsipDokumen($filters)->get();
+
+        $zipPath = tempnam(sys_get_temp_dir(), 'sidokspi_dokumen_');
+
+        if ($zipPath === false) {
+            return back()->with('error', 'File ZIP sementara gagal dibuat.');
+        }
+
+        $zip = new ZipArchive();
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            @unlink($zipPath);
+
+            return back()->with('error', 'File ZIP gagal dibuat.');
+        }
+
+        $jumlahFile = 0;
+        $disk = Storage::disk('local');
+
+        foreach ($dokumen as $item) {
+            if (
+                ! filled($item->path_file)
+                || ! $disk->exists($item->path_file)
+            ) {
+                continue;
+            }
+
+            $namaAsli = $item->nama_file ?: basename($item->path_file);
+            $namaAman = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($namaAsli));
+            $namaDalamZip = $item->id.'_'.$namaAman;
+
+            if ($zip->addFile($disk->path($item->path_file), $namaDalamZip)) {
+                $jumlahFile++;
+            }
+        }
+
+        $zip->close();
+
+        if ($jumlahFile === 0) {
+            @unlink($zipPath);
+
+            return back()->with(
+                'warning',
+                'Tidak ada file arsip yang tersedia untuk dimasukkan ke ZIP.'
+            );
+        }
+
+        $namaZip = 'bundel-arsip-dokumen-'.now()->format('Y-m-d-His').'.zip';
+
+        return response()
+            ->download($zipPath, $namaZip)
+            ->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Pemulihan arsip hanya untuk Admin.
+     */
     public function restore(Request $request, Dokumen $dokumen): RedirectResponse
     {
         abort_unless($request->user()->role === 'admin', 403);
@@ -223,11 +526,22 @@ class DokumenController extends Controller
             ->with('success', 'Dokumen berhasil diaktifkan kembali.');
     }
 
-    public function download(Request $request, Dokumen $dokumen): StreamedResponse
-    {
-        abort_unless($request->user()->role === 'admin', 403);
+    /**
+     * Unduh dokumen arsip untuk Admin dan Staf SPI.
+     */
+    public function download(
+        Request $request,
+        Dokumen $dokumen
+    ): StreamedResponse {
+        $this->authorizeDokumen($request);
+
         abort_unless($dokumen->status === 'arsip', 404);
-        abort_unless($dokumen->path_file && Storage::disk('local')->exists($dokumen->path_file), 404);
+
+        abort_unless(
+            $dokumen->path_file
+            && Storage::disk('local')->exists($dokumen->path_file),
+            404
+        );
 
         LogAktivitas::create([
             'user_id' => $request->user()->id,

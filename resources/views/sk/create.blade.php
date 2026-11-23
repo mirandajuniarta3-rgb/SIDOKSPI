@@ -2,6 +2,8 @@
 @extends('layouts.app')
 
 @section('title', 'Tambah SK - SIDOKSPI')
+@section('active-menu', 'sk-list')
+@section('breadcrumb', 'Surat Keputusan (SK) / Tambah SK')
 
 @section('content')
 
@@ -11,10 +13,13 @@
         font-size: 13px;
     }
 
-    .sk-header {
+    .sk-header, .sk-card, .sk-footer {
         background: #fff;
         border: 1px solid #e8ebf3;
         border-radius: 12px;
+    }
+
+    .sk-header {
         padding: 22px;
         margin-bottom: 20px;
     }
@@ -39,9 +44,6 @@
     }
 
     .sk-card {
-        background: #fff;
-        border: 1px solid #e8ebf3;
-        border-radius: 12px;
         box-shadow: 0 3px 12px rgba(30, 55, 100, .04);
         height: 100%;
     }
@@ -84,9 +86,7 @@
         color: #e05260;
     }
 
-    .sk-input,
-    .sk-select,
-    .sk-textarea {
+    .sk-input, .sk-select, .sk-textarea {
         width: 100%;
         border: 1px solid #e0e5ef;
         border-radius: 8px;
@@ -97,9 +97,7 @@
         transition: .2s;
     }
 
-    .sk-input:focus,
-    .sk-select:focus,
-    .sk-textarea:focus {
+    .sk-input:focus, .sk-select:focus, .sk-textarea:focus {
         outline: none;
         border-color: #2864d7;
         box-shadow: 0 0 0 3px rgba(40, 100, 215, .09);
@@ -114,18 +112,18 @@
         margin-bottom: 18px;
     }
 
-    .sk-help {
+    .sk-help, .sk-validation {
         display: block;
-        color: #929caf;
         font-size: 10px;
         margin-top: 6px;
     }
 
+    .sk-help {
+        color: #929caf;
+    }
+
     .sk-validation {
-        display: block;
         color: #d45d6a;
-        font-size: 10px;
-        margin-top: 5px;
     }
 
     .sk-info {
@@ -162,8 +160,7 @@
         transition: .2s;
     }
 
-    .sk-upload:hover,
-    .sk-upload.dragover {
+    .sk-upload:hover, .sk-upload.dragover {
         border-color: #2864d7;
         background: #eef3ff;
     }
@@ -228,9 +225,6 @@
     }
 
     .sk-footer {
-        background: #fff;
-        border: 1px solid #e8ebf3;
-        border-radius: 12px;
         padding: 15px 18px;
         margin-top: 20px;
         display: flex;
@@ -251,6 +245,7 @@
         align-items: center;
         justify-content: center;
         gap: 7px;
+        cursor: pointer;
     }
 
     .sk-btn-primary {
@@ -300,9 +295,7 @@
 
 <div class="container-fluid py-4 sk-page">
 
-    {{-- HEADER --}}
     <div class="sk-header">
-
         <div class="sk-breadcrumb">
             SIDOKSPI &nbsp;›&nbsp;
             Surat Keputusan (SK) &nbsp;›&nbsp;
@@ -310,11 +303,8 @@
         </div>
 
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-
             <div>
-                <h3 class="sk-title">
-                    Registrasi Surat Keputusan (SK) Baru
-                </h3>
+                <h3 class="sk-title">Registrasi Surat Keputusan (SK) Baru</h3>
 
                 <div class="sk-subtitle">
                     Formulir pencatatan dan pengarsipan naskah penetapan
@@ -324,9 +314,7 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2">
-
-                <a href="{{ route('sk.index') }}"
-                   class="sk-btn sk-btn-secondary">
+                <a href="{{ route('sk.index') }}" class="sk-btn sk-btn-secondary">
                     <i class="bi bi-arrow-left"></i>
                     Kembali ke Daftar SK
                 </a>
@@ -340,12 +328,10 @@
                     <i class="bi bi-shield-check me-1"></i>
                     Registrasi SK
                 </span>
-
             </div>
         </div>
     </div>
 
-    {{-- ERROR VALIDATION --}}
     @if ($errors->any())
         <div class="alert alert-danger border-0 shadow-sm">
             <strong>
@@ -367,7 +353,6 @@
         </div>
     @endif
 
-    {{-- FORM --}}
     <form action="{{ route('sk.store') }}"
           method="POST"
           enctype="multipart/form-data"
@@ -377,13 +362,10 @@
 
         <div class="row g-3">
 
-            {{-- KOLOM KIRI --}}
             <div class="col-lg-7">
-
                 <div class="sk-card">
 
                     <div class="sk-card-header">
-
                         <div>
                             <h6 class="sk-card-title">
                                 <i class="bi bi-file-earmark-text text-primary me-2"></i>
@@ -395,17 +377,12 @@
                             </div>
                         </div>
 
-                        <span class="sk-badge sk-badge-blue">
-                            LEGAL-SEC-01
-                        </span>
-
+                        <span class="sk-badge sk-badge-blue">LEGAL-SEC-01</span>
                     </div>
 
                     <div class="sk-card-body">
 
-                        {{-- NOMOR SK --}}
                         <div class="sk-form-group">
-
                             <label class="sk-label">
                                 Nomor SK <span class="required">*</span>
                             </label>
@@ -422,12 +399,9 @@
                                 <i class="bi bi-info-circle"></i>
                                 Nomor SK wajib sesuai format tata naskah dinas hukum PDAM.
                             </small>
-
                         </div>
 
-                        {{-- JUDUL --}}
                         <div class="sk-form-group">
-
                             <label class="sk-label">
                                 Judul SK <span class="required">*</span>
                             </label>
@@ -438,18 +412,16 @@
                                    placeholder="Masukkan judul Surat Keputusan"
                                    value="{{ old('judul') }}"
                                    maxlength="255"
+                                   minlength="10"
                                    required>
 
                             <small class="sk-validation">
                                 <i class="bi bi-info-circle"></i>
                                 Judul SK wajib diisi dengan minimal 10 karakter.
                             </small>
-
                         </div>
 
-                        {{-- TENTANG --}}
                         <div class="sk-form-group">
-
                             <div class="d-flex justify-content-between">
                                 <label class="sk-label">
                                     Tentang (Substansi Penetapan)
@@ -464,6 +436,7 @@
                             <textarea name="tentang"
                                       id="tentang"
                                       class="sk-textarea"
+                                      minlength="20"
                                       maxlength="500"
                                       placeholder="Jelaskan substansi atau isi pokok Surat Keputusan..."
                                       required>{{ old('tentang') }}</textarea>
@@ -471,19 +444,14 @@
                             <small class="sk-help">
                                 Tuliskan substansi penetapan secara ringkas dan jelas.
                             </small>
-
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- TANGGAL DAN TAHUN --}}
                         <div class="row g-3">
-
                             <div class="col-md-6">
-
                                 <label class="sk-label">
-                                    Tanggal Penetapan
-                                    <span class="required">*</span>
+                                    Tanggal Penetapan <span class="required">*</span>
                                 </label>
 
                                 <input type="date"
@@ -496,15 +464,10 @@
                                 <small class="sk-validation">
                                     Tanggal penetapan wajib diisi.
                                 </small>
-
                             </div>
 
                             <div class="col-md-6">
-
-                                <label class="sk-label">
-                                    Tahun SK
-                                    <span class="required">*</span>
-                                </label>
+                                <label class="sk-label">Tahun SK</label>
 
                                 <input type="text"
                                        id="tahun_sk"
@@ -516,54 +479,41 @@
                                 <small class="sk-help">
                                     Tahun terisi otomatis berdasarkan tanggal penetapan.
                                 </small>
-
                             </div>
-
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- STATUS --}}
                         <div class="sk-form-group mb-0">
-
                             <label class="sk-label">
-                                Status Keberlakuan Hukum
-                                <span class="required">*</span>
+                                Status Keberlakuan Hukum <span class="required">*</span>
                             </label>
 
-                            <select name="status"
-                                    class="sk-select"
-                                    required>
-
+                            <select name="status" class="sk-select" required>
                                 <option value="final"
-                                    {{ old('status', 'final') == 'final' ? 'selected' : '' }}>
+                                    {{ old('status', 'final') === 'final' ? 'selected' : '' }}>
                                     Berlaku (Ketetapan Aktif & Mengikat Operasional)
                                 </option>
 
                                 <option value="draft"
-                                    {{ old('status') == 'draft' ? 'selected' : '' }}>
+                                    {{ old('status') === 'draft' ? 'selected' : '' }}>
                                     Draft (Belum Berlaku)
                                 </option>
-
                             </select>
 
                             <small class="sk-validation">
                                 Pilih status keberlakuan hukum SK.
                             </small>
-
                         </div>
 
                     </div>
                 </div>
             </div>
 
-            {{-- KOLOM KANAN --}}
             <div class="col-lg-5">
-
                 <div class="sk-card mb-3">
 
                     <div class="sk-card-header">
-
                         <div>
                             <h6 class="sk-card-title">
                                 <i class="bi bi-cloud-arrow-up text-primary me-2"></i>
@@ -575,22 +525,16 @@
                             </div>
                         </div>
 
-                        <span class="badge bg-danger-subtle text-danger">
-                            PDF ONLY
-                        </span>
-
+                        <span class="badge bg-danger-subtle text-danger">PDF ONLY</span>
                     </div>
 
                     <div class="sk-card-body">
-
                         <label class="sk-label">
                             Unggah Berkas Naskah SK Asli
                             <span class="required">*</span>
                         </label>
 
-                        {{-- AREA UPLOAD --}}
                         <div class="sk-upload" id="dropArea">
-
                             <input type="file"
                                    name="file"
                                    id="fileSK"
@@ -624,26 +568,17 @@
                                 <i class="bi bi-folder2-open"></i>
                                 Pilih File PDF dari Komputer
                             </button>
-
                         </div>
 
-                        {{-- PREVIEW FILE --}}
                         <div class="sk-file-preview" id="filePreview">
-
                             <div class="d-flex align-items-center gap-3">
-
                                 <div class="sk-file-icon">
                                     <i class="bi bi-file-earmark-pdf"></i>
                                 </div>
 
                                 <div class="flex-grow-1">
-                                    <div class="sk-file-name" id="fileName">
-                                        Nama file
-                                    </div>
-
-                                    <div class="sk-file-size" id="fileSize">
-                                        Ukuran file
-                                    </div>
+                                    <div class="sk-file-name" id="fileName"></div>
+                                    <div class="sk-file-size" id="fileSize"></div>
                                 </div>
 
                                 <button type="button"
@@ -652,7 +587,6 @@
                                         title="Hapus file">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
-
                             </div>
 
                             <div class="mt-2">
@@ -661,7 +595,6 @@
                                     File siap diunggah
                                 </span>
                             </div>
-
                         </div>
 
                         <div class="sk-info mt-3">
@@ -671,18 +604,14 @@
                             </strong>
 
                             <p class="mb-0 mt-2">
-                                Naskah Surat Keputusan wajib dalam format PDF
-                                memuat tanda tangan elektronik (TTE) apabila
-                                berlaku atau dokumen yang telah ditandatangani
-                                secara resmi. Pastikan file yang diunggah
-                                merupakan dokumen yang benar.
+                                Naskah Surat Keputusan wajib dalam format PDF.
+                                Pastikan file yang diunggah merupakan dokumen
+                                yang benar dan telah ditandatangani secara resmi.
                             </p>
                         </div>
-
                     </div>
                 </div>
 
-                {{-- INFORMASI REGISTRASI --}}
                 <div class="sk-info">
                     <strong>
                         <i class="bi bi-info-circle me-1"></i>
@@ -695,47 +624,31 @@
                         halaman Daftar SK.
                     </p>
                 </div>
-
             </div>
         </div>
 
-        {{-- FOOTER --}}
         <div class="sk-footer">
-
             <div class="text-muted" style="font-size: 10px;">
                 <i class="bi bi-info-circle me-1"></i>
-                Tanda bintang menandakan kolom wajib diisi sesuai
-                prosedur pengelolaan SPI.
+                Tanda bintang menandakan kolom wajib diisi sesuai prosedur pengelolaan SPI.
             </div>
 
             <div class="d-flex gap-2">
-
-                <a href="{{ route('sk.index') }}"
-                   class="sk-btn sk-btn-secondary">
+                <a href="{{ route('sk.index') }}" class="sk-btn sk-btn-secondary">
                     Batal
                 </a>
 
-                <button type="submit"
-                        class="sk-btn sk-btn-primary"
-                        id="btnSimpan">
-
+                <button type="submit" class="sk-btn sk-btn-primary" id="btnSimpan">
                     <i class="bi bi-floppy"></i>
                     Simpan SK
-
                 </button>
-
             </div>
-
         </div>
-
     </form>
-
 </div>
 
-{{-- JAVASCRIPT --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     const fileInput = document.getElementById('fileSK');
     const dropArea = document.getElementById('dropArea');
     const pilihFile = document.getElementById('pilihFile');
@@ -750,18 +663,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const tentang = document.getElementById('tentang');
     const jumlahKarakter = document.getElementById('jumlahKarakter');
 
-    // TAHUN OTOMATIS
     function updateTahun() {
-        if (tanggal.value) {
-            tahun.value = tanggal.value.substring(0, 4);
-        } else {
-            tahun.value = '';
-        }
+        tahun.value = tanggal.value ? tanggal.value.substring(0, 4) : '';
     }
 
     tanggal.addEventListener('change', updateTahun);
+    updateTahun();
 
-    // JUMLAH KARAKTER
     function hitungKarakter() {
         jumlahKarakter.textContent = tentang.value.length;
     }
@@ -769,19 +677,17 @@ document.addEventListener('DOMContentLoaded', function () {
     tentang.addEventListener('input', hitungKarakter);
     hitungKarakter();
 
-    // FORMAT UKURAN FILE
     function formatUkuran(bytes) {
         return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     }
 
-    // TAMPILKAN FILE
     function tampilkanFile(file) {
-
         if (!file) return;
 
-        const nama = file.name.toLowerCase();
+        const namaValid = file.name.toLowerCase().endsWith('.pdf');
+        const tipeValid = file.type === 'application/pdf' || file.type === '';
 
-        if (!nama.endsWith('.pdf') || file.type !== 'application/pdf') {
+        if (!namaValid || !tipeValid) {
             alert('File harus berformat PDF.');
             fileInput.value = '';
             filePreview.style.display = 'none';
@@ -797,11 +703,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fileName.textContent = file.name;
         fileSize.textContent = formatUkuran(file.size);
-
         filePreview.style.display = 'block';
     }
 
-    // PILIH FILE
     pilihFile.addEventListener('click', function (event) {
         event.stopPropagation();
         fileInput.click();
@@ -816,7 +720,6 @@ document.addEventListener('DOMContentLoaded', function () {
         tampilkanFile(this.files[0]);
     });
 
-    // DRAG AND DROP
     dropArea.addEventListener('dragover', function (event) {
         event.preventDefault();
         dropArea.classList.add('dragover');
@@ -838,12 +741,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // HAPUS FILE
     hapusFile.addEventListener('click', function () {
         fileInput.value = '';
         filePreview.style.display = 'none';
     });
-
 });
 </script>
 

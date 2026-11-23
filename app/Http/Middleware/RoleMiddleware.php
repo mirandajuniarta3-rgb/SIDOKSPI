@@ -8,18 +8,32 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
-    {
+    public function handle(
+        Request $request,
+        Closure $next,
+        ...$roles
+    ): Response {
+
         // Pastikan pengguna sudah login
         if (!$request->user()) {
             return redirect()->route('login');
         }
 
-        // Pastikan pengguna memiliki role admin
-        if ($request->user()->role !== 'admin') {
-            abort(403, 'Anda tidak memiliki hak akses.');
+        // Ambil role pengguna
+        $userRole = strtolower(trim($request->user()->role));
+
+        // Samakan format role yang diizinkan
+        $allowedRoles = array_map(
+            fn ($role) => strtolower(trim($role)),
+            $roles
+        );
+
+        // Periksa hak akses
+        if (!in_array($userRole, $allowedRoles, true)) {
+            abort(403, 'Anda tidak memiliki hak akses ke halaman ini.');
         }
 
+        // Lanjutkan ke halaman tujuan
         return $next($request);
     }
 }

@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Foundation\Application;
@@ -13,12 +14,24 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-        // ALIAS MIDDLEWARE ROLE ADMIN
+        /*
+        |--------------------------------------------------------------------------
+        | Alias Middleware Role
+        |--------------------------------------------------------------------------
+        | Mengatur hak akses berdasarkan role pengguna.
+        | Role yang tersedia:
+        | admin
+        | staf_spi
+        | auditee
+        */
+
         $middleware->alias([
-            'admin' => RoleMiddleware::class,
+            'role' => RoleMiddleware::class,
         ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+
         //
+        
     })->create();

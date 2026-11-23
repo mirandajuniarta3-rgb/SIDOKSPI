@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Edit Kategori - SIDOKSPI')
@@ -7,6 +6,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('asset/css/laporan.css') }}">
+
 <style>
     .kategori-form {
         max-width: 760px;
@@ -14,6 +14,7 @@
 
     .kategori-input {
         width: 100%;
+        box-sizing: border-box;
         padding: 11px 13px;
         border: 1px solid #e1e6f0;
         border-radius: 8px;
@@ -70,9 +71,27 @@
         color: #fff;
     }
 
+    .kategori-btn-simpan:hover {
+        background: #0645a5;
+    }
+
     .kategori-btn-kembali {
         background: #edf0f7;
         color: #4f5c72;
+    }
+
+    .kategori-btn-kembali:hover {
+        background: #e1e6f0;
+    }
+
+    .kategori-alert {
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border: 1px solid #f2c6ca;
+        border-radius: 8px;
+        background: #fff1f2;
+        color: #b42332;
+        font-size: 13px;
     }
 </style>
 @endpush
@@ -97,18 +116,34 @@
 
         <div class="panel-body">
 
-            <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
+            @if ($errors->any())
+                <div class="kategori-alert">
+                    <strong>Data belum berhasil disimpan.</strong>
+                    <ul style="margin: 7px 0 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('kategori.update', $kategori->id) }}"
+                  method="POST">
+
                 @csrf
                 @method('PUT')
 
+                {{-- KODE KATEGORI --}}
                 <div class="kategori-field">
                     <label for="kode_kategori">Kode Kategori</label>
+
                     <input
                         type="text"
                         id="kode_kategori"
                         name="kode_kategori"
                         class="kategori-input"
                         value="{{ old('kode_kategori', $kategori->kode_kategori) }}"
+                        maxlength="10"
                         required
                     >
 
@@ -117,14 +152,17 @@
                     @enderror
                 </div>
 
+                {{-- NAMA KATEGORI --}}
                 <div class="kategori-field">
                     <label for="nama_kategori">Nama Kategori</label>
+
                     <input
                         type="text"
                         id="nama_kategori"
                         name="nama_kategori"
                         class="kategori-input"
                         value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
+                        maxlength="100"
                         required
                     >
 
@@ -133,8 +171,10 @@
                     @enderror
                 </div>
 
+                {{-- KETERANGAN --}}
                 <div class="kategori-field">
                     <label for="keterangan">Keterangan</label>
+
                     <textarea
                         id="keterangan"
                         name="keterangan"
@@ -147,8 +187,37 @@
                     @enderror
                 </div>
 
+                {{-- STATUS --}}
+                <div class="kategori-field">
+                    <label for="status">Status Kategori</label>
+
+                    <select
+                        id="status"
+                        name="status"
+                        class="kategori-input"
+                        required
+                    >
+                        <option value="aktif"
+                            {{ old('status', $kategori->status) == 'aktif' ? 'selected' : '' }}>
+                            Aktif
+                        </option>
+
+                        <option value="nonaktif"
+                            {{ old('status', $kategori->status) == 'nonaktif' ? 'selected' : '' }}>
+                            Nonaktif
+                        </option>
+                    </select>
+
+                    @error('status')
+                        <div class="kategori-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- TOMBOL --}}
                 <div class="kategori-form-actions">
-                    <button type="submit" class="kategori-btn kategori-btn-simpan">
+
+                    <button type="submit"
+                            class="kategori-btn kategori-btn-simpan">
                         Simpan Perubahan
                     </button>
 
@@ -156,6 +225,7 @@
                        class="kategori-btn kategori-btn-kembali">
                         Kembali
                     </a>
+
                 </div>
 
             </form>

@@ -8,19 +8,34 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-
 class LaporanController extends Controller
 {
+    /**
+     * Admin dan Staf SPI dapat mengakses laporan.
+     */
+    private function authorizeLaporan(Request $request): void
+    {
+        abort_unless(
+            in_array($request->user()->role, ['admin', 'staf_spi'], true),
+            403
+        );
+    }
+
     // ==========================================
     // REKAP DOKUMEN
     // ==========================================
     public function dokumen(Request $request): View
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeLaporan($request);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'tahun' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'tahun' => [
+                'nullable',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
             'status' => ['nullable', 'in:draft,final,arsip'],
         ]);
 
@@ -34,7 +49,11 @@ class LaporanController extends Controller
                         ->orWhere('judul', 'like', "%{$search}%")
                         ->orWhere('bidang', 'like', "%{$search}%")
                         ->orWhereHas('uploader', function (Builder $uploader) use ($search) {
-                            $uploader->where('nama_lengkap', 'like', "%{$search}%");
+                            $uploader->where(
+                                'nama_lengkap',
+                                'like',
+                                "%{$search}%"
+                            );
                         });
                 });
             })
@@ -75,11 +94,16 @@ class LaporanController extends Controller
     // ==========================================
     public function sk(Request $request): View
     {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeLaporan($request);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'tahun' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'tahun' => [
+                'nullable',
+                'integer',
+                'min:1900',
+                'max:'.(now()->year + 1),
+            ],
             'status' => ['nullable', 'in:draft,final,arsip'],
         ]);
 
@@ -93,7 +117,11 @@ class LaporanController extends Controller
                         ->orWhere('judul', 'like', "%{$search}%")
                         ->orWhere('tentang', 'like', "%{$search}%")
                         ->orWhereHas('uploader', function (Builder $uploader) use ($search) {
-                            $uploader->where('nama_lengkap', 'like', "%{$search}%");
+                            $uploader->where(
+                                'nama_lengkap',
+                                'like',
+                                "%{$search}%"
+                            );
                         });
                 });
             })

@@ -8,81 +8,99 @@
 <style>
     .arsip-page {
         color: #263653;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .arsip-header,
     .arsip-card,
+    .arsip-filter,
     .arsip-table-card {
         background: #fff;
         border: 1px solid #e8ebf3;
-        border-radius: 12px;
+        border-radius: 10px;
     }
 
+    /* HEADER */
     .arsip-header {
-        padding: 22px;
-        margin-bottom: 18px;
+        padding: 20px 16px;
+        margin-bottom: 14px;
     }
 
     .arsip-title {
-        font-size: 23px;
+        font-size: 19px;
         font-weight: 750;
         color: #172b4d;
+        margin-bottom: 8px;
     }
 
     .arsip-subtitle {
         color: #8792a7;
-        font-size: 12px;
+        font-size: 11px;
     }
 
+    /* STATISTIK */
     .arsip-card {
-        padding: 17px;
-        height: 100%;
-        box-shadow: 0 3px 12px rgba(30,55,100,.04);
+        padding: 14px 15px;
+        min-height: 105px;
+        box-shadow: 0 2px 8px rgba(30,55,100,.035);
     }
 
     .arsip-card-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: #7d8ba3;
+        font-size: 9px;
+        font-weight: 750;
+        color: #8290a8;
         text-transform: uppercase;
+        letter-spacing: .3px;
     }
 
     .arsip-card-number {
-        font-size: 28px;
+        font-size: 25px;
         font-weight: 800;
         color: #263653;
-        margin-top: 7px;
+        margin: 4px 0;
+    }
+
+    .arsip-card small {
+        color: #8995a9;
+        font-size: 10px;
     }
 
     .arsip-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 9px;
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #eef1fa;
-        color: #53678d;
-        font-size: 19px;
+        font-size: 16px;
+        background: #edf3ff;
+        color: #2864d7;
     }
 
+    .arsip-icon.green {
+        background: #e5fbf3;
+        color: #18a77c;
+    }
+
+    .arsip-icon.blue {
+        background: #eaf4ff;
+        color: #2877bb;
+    }
+
+    /* FILTER */
     .arsip-filter {
-        background: white;
-        border: 1px solid #e8ebf3;
-        padding: 13px;
-        border-radius: 10px;
-        margin: 18px 0;
+        padding: 11px;
+        margin: 15px 0;
     }
 
     .arsip-input,
     .arsip-select {
         width: 100%;
         border: 1px solid #e1e6f0;
-        background: #f8f9fd;
-        padding: 10px 12px;
-        border-radius: 7px;
-        font-size: 11px;
+        background: #f9faff;
+        padding: 9px 11px;
+        border-radius: 6px;
+        font-size: 10px;
         color: #344563;
     }
 
@@ -90,20 +108,22 @@
     .arsip-select:focus {
         outline: none;
         border-color: #2864d7;
+        box-shadow: 0 0 0 2px rgba(40,100,215,.08);
     }
 
     .arsip-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
+        gap: 5px;
         border: none;
-        padding: 10px 15px;
-        border-radius: 7px;
-        font-size: 11px;
+        padding: 9px 13px;
+        border-radius: 6px;
+        font-size: 10px;
         font-weight: 650;
         text-decoration: none;
         cursor: pointer;
+        white-space: nowrap;
     }
 
     .arsip-btn-primary {
@@ -121,12 +141,18 @@
         color: #53627a;
     }
 
+    .arsip-btn-light:hover {
+        background: #e5e9f3;
+        color: #263653;
+    }
+
+    /* TABEL */
     .arsip-table-card {
         overflow: hidden;
     }
 
     .arsip-table-header {
-        padding: 16px 18px;
+        padding: 13px 15px;
         border-bottom: 1px solid #edf0f6;
     }
 
@@ -136,20 +162,21 @@
     }
 
     .arsip-table th {
-        padding: 13px 12px;
+        padding: 11px 10px;
         background: #f8f9fd;
         color: #65738c;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 750;
         text-transform: uppercase;
         white-space: nowrap;
     }
 
     .arsip-table td {
-        padding: 13px 12px;
+        padding: 11px 10px;
         border-top: 1px solid #edf0f6;
-        font-size: 11px;
+        font-size: 10px;
         vertical-align: middle;
+        color: #475875;
     }
 
     .arsip-table tbody tr:hover {
@@ -159,42 +186,71 @@
     .arsip-number {
         color: #1758cb;
         font-weight: 700;
+        white-space: nowrap;
     }
 
     .arsip-status {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 4px 9px;
         background: #edf0f7;
         color: #64718a;
         border-radius: 20px;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
+        white-space: nowrap;
     }
 
     .arsip-footer {
-        padding: 14px 17px;
+        padding: 12px 15px;
         border-top: 1px solid #edf0f6;
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .arsip-info {
-        padding: 14px;
+        padding: 12px 14px;
         background: #f2f4ff;
         border: 1px solid #e7eaff;
-        border-radius: 9px;
-        margin-top: 15px;
+        border-radius: 8px;
+        margin-top: 13px;
         color: #65749a;
-        font-size: 11px;
+        font-size: 10px;
     }
 
+    /* PAGINATION */
+    .arsip-footer nav p {
+        display: none;
+    }
+
+    .arsip-footer nav a,
+    .arsip-footer nav span {
+        font-size: 10px !important;
+    }
+
+    /* RESPONSIVE */
     @media(max-width: 768px) {
         .arsip-table-wrapper {
             overflow-x: auto;
         }
+
+        .arsip-table {
+            min-width: 950px;
+        }
+
+        .arsip-header {
+            padding: 15px;
+        }
+
+        .arsip-title {
+            font-size: 17px;
+        }
+
+        .arsip-filter .arsip-btn {
+            flex-grow: 1;
+        }
     }
 </style>
 
-<div class="container-fluid py-4 arsip-page">
+<div class="container-fluid py-3 arsip-page">
 
     {{-- HEADER --}}
     <div class="arsip-header">
@@ -213,32 +269,26 @@
                 </h3>
 
                 <p class="arsip-subtitle mb-0">
-                    Kelola dan telusuri Surat Keputusan yang telah
-                    berstatus arsip dalam repositori resmi SPI.
+                    Kelola dan telusuri Surat Keputusan yang telah berstatus arsip dalam repositori resmi SPI.
                 </p>
             </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-
-                <a href="{{ route('sk.index') }}"
-                   class="arsip-btn arsip-btn-light">
-                    <i class="bi bi-arrow-left"></i>
-                    Daftar SK
-                </a>
-
-            </div>
+            <a href="{{ route('sk.index') }}"
+               class="arsip-btn arsip-btn-light">
+                <i class="bi bi-arrow-left"></i>
+                Daftar SK
+            </a>
 
         </div>
     </div>
 
     {{-- STATISTIK --}}
-    <div class="row g-3">
+    <div class="row g-2">
 
         <div class="col-md-4">
-
             <div class="arsip-card">
 
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
 
                     <div>
                         <div class="arsip-card-label">
@@ -249,9 +299,7 @@
                             {{ $totalArsip }}
                         </div>
 
-                        <small class="text-muted">
-                            Surat Keputusan berstatus arsip
-                        </small>
+                        <small>Surat Keputusan berstatus arsip</small>
                     </div>
 
                     <div class="arsip-icon">
@@ -263,10 +311,9 @@
         </div>
 
         <div class="col-md-4">
-
             <div class="arsip-card">
 
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
 
                     <div>
                         <div class="arsip-card-label">
@@ -277,12 +324,10 @@
                             {{ $tahun->count() }}
                         </div>
 
-                        <small class="text-muted">
-                            Tahun penetapan yang tercatat
-                        </small>
+                        <small>Tahun penetapan yang tercatat</small>
                     </div>
 
-                    <div class="arsip-icon">
+                    <div class="arsip-icon green">
                         <i class="bi bi-calendar3"></i>
                     </div>
 
@@ -291,10 +336,9 @@
         </div>
 
         <div class="col-md-4">
-
             <div class="arsip-card">
 
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
 
                     <div>
                         <div class="arsip-card-label">
@@ -305,12 +349,10 @@
                             {{ $suratKeputusan->count() }}
                         </div>
 
-                        <small class="text-muted">
-                            Data pada halaman ini
-                        </small>
+                        <small>Data pada halaman ini</small>
                     </div>
 
-                    <div class="arsip-icon">
+                    <div class="arsip-icon blue">
                         <i class="bi bi-file-earmark-check"></i>
                     </div>
 
@@ -323,28 +365,22 @@
     {{-- FILTER --}}
     <div class="arsip-filter">
 
-        <form action="{{ route('sk.arsip') }}"
-              method="GET">
+        <form action="{{ route('sk.arsip') }}" method="GET">
 
             <div class="row g-2 align-items-center">
 
                 <div class="col-lg-6">
-
                     <input type="text"
                            name="search"
                            class="arsip-input"
                            placeholder="Cari nomor SK, judul keputusan, tentang..."
                            value="{{ $search }}">
-
                 </div>
 
                 <div class="col-lg-3">
-
                     <select name="tahun" class="arsip-select">
 
-                        <option value="">
-                            Semua Tahun
-                        </option>
+                        <option value="">Semua Tahun</option>
 
                         @foreach($tahun as $item)
                             <option value="{{ $item }}"
@@ -354,30 +390,26 @@
                         @endforeach
 
                     </select>
-
                 </div>
 
                 <div class="col-lg-3 d-flex gap-2">
 
                     <button type="submit"
                             class="arsip-btn arsip-btn-primary flex-grow-1">
-
-                        <i class="bi bi-search"></i>
+                        <i class="bi bi-funnel"></i>
                         Terapkan
-
                     </button>
 
                     <a href="{{ route('sk.arsip') }}"
                        class="arsip-btn arsip-btn-light">
-
                         <i class="bi bi-arrow-counterclockwise"></i>
                         Reset
-
                     </a>
 
                 </div>
 
             </div>
+
         </form>
     </div>
 
@@ -442,9 +474,7 @@
                             </td>
 
                             <td>
-                                <strong>
-                                    {{ $sk->judul }}
-                                </strong>
+                                <strong>{{ $sk->judul }}</strong>
                             </td>
 
                             <td>
@@ -457,9 +487,7 @@
                                     : '-' }}
                             </td>
 
-                            <td>
-                                {{ $sk->tahun ?? '-' }}
-                            </td>
+                            <td>{{ $sk->tahun ?? '-' }}</td>
 
                             <td>
                                 {{ $sk->uploader->nama_lengkap ?? '-' }}
@@ -487,8 +515,7 @@
                                 </h6>
 
                                 <p class="text-muted mb-0">
-                                    Belum terdapat Surat Keputusan
-                                    yang berstatus arsip.
+                                    Belum terdapat Surat Keputusan yang berstatus arsip.
                                 </p>
 
                             </td>

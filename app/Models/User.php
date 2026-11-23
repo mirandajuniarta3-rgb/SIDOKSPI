@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -28,22 +29,34 @@ class User extends Authenticatable
         'password_hash',
     ];
 
-    public function getAuthPassword()
+    /**
+     * Menggunakan password_hash sebagai password autentikasi.
+     */
+    public function getAuthPassword(): string
     {
         return $this->password_hash;
     }
 
-    public function dokumen()
+    /**
+     * Relasi dokumen yang diunggah pengguna.
+     */
+    public function dokumen(): HasMany
     {
         return $this->hasMany(Dokumen::class, 'uploader_id');
     }
 
-    public function suratKeputusan()
+    /**
+     * Relasi surat keputusan yang diunggah pengguna.
+     */
+    public function suratKeputusan(): HasMany
     {
         return $this->hasMany(SuratKeputusan::class, 'uploader_id');
     }
 
-    public function logAktivitas()
+    /**
+     * Relasi log aktivitas pengguna.
+     */
+    public function logAktivitas(): HasMany
     {
         return $this->hasMany(LogAktivitas::class, 'user_id');
     }
