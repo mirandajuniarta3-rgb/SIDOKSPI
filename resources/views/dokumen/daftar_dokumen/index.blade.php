@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Daftar Dokumen - SIDOKSPI')
@@ -30,7 +31,6 @@
 
     <div class="heading-actions">
 
-        {{-- TOMBOL EKSPOR DATA EXCEL --}}
         <a
             href="{{ route('dokumen.export', request()->only(['search', 'kategori', 'tahun', 'status'])) }}"
             class="button export-button"
@@ -42,7 +42,6 @@
             Ekspor Data
         </a>
 
-        {{-- TOMBOL UNGGAH DOKUMEN --}}
         <a class="button primary" href="{{ route('dokumen.create') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/>
@@ -60,9 +59,11 @@
     <article class="stat-card">
         <div>
             <div class="stat-label">Total Dokumen Terdaftar</div>
+
             <div class="stat-value">
                 {{ number_format($totalDokumen, 0, ',', '.') }}
             </div>
+
             <span class="stat-note">Dokumen SPI</span>
         </div>
 
@@ -77,9 +78,11 @@
     <article class="stat-card">
         <div>
             <div class="stat-label">Dokumen Aktif & Terbuka</div>
+
             <div class="stat-value" style="color:#087c68">
                 {{ number_format($dokumenAktif, 0, ',', '.') }}
             </div>
+
             <span class="stat-note">Dokumen tidak diarsipkan</span>
         </div>
 
@@ -94,9 +97,11 @@
     <article class="stat-card">
         <div>
             <div class="stat-label">Dokumen Diarsipkan</div>
+
             <div class="stat-value" style="color:#78839a">
                 {{ number_format($dokumenDiarsipkan, 0, ',', '.') }}
             </div>
+
             <span class="stat-note">Status arsip</span>
         </div>
 
@@ -120,11 +125,13 @@
                 <path d="m12 3 8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3Z"/>
                 <path d="m9 12 2 2 4-4"/>
             </svg>
+
             Audit Ledger Kearsipan Digital SPI — Terenkripsi Server Mandiri Tirta Pinang
         </span>
 
         <span class="audit-updated">
-            Terakhir diperbarui: {{ now()->locale('id')->translatedFormat('d M Y H:i') }} WIB
+            Terakhir diperbarui:
+            {{ now()->locale('id')->translatedFormat('d M Y H:i') }} WIB
         </span>
 
     </div>
@@ -199,6 +206,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 5h16M7 12h10m-7 7h4"/>
             </svg>
+
             Terapkan
         </button>
 
@@ -288,11 +296,13 @@
 
                         <td>
                             <span class="uploader">
+
                                 <span class="uploader-avatar">
                                     {{ mb_strtoupper($uploaderInitials ?: 'U') }}
                                 </span>
 
                                 {{ $uploaderName }}
+
                             </span>
                         </td>
 
@@ -306,7 +316,7 @@
                         <td>
                             <span class="actions">
 
-                                {{-- LIHAT DETAIL --}}
+                                {{-- DETAIL --}}
                                 <a
                                     href="{{ route('dokumen.show', $item->id) }}"
                                     class="action-button"
@@ -319,7 +329,7 @@
                                     </svg>
                                 </a>
 
-                                {{-- UNDUH DOKUMEN --}}
+                                {{-- UNDUH --}}
                                 <a
                                     href="{{ route('dokumen.download', $item->id) }}"
                                     class="action-button"
@@ -331,32 +341,70 @@
                                     </svg>
                                 </a>
 
-                                {{-- ARSIPKAN DOKUMEN --}}
+                                {{-- ARSIP --}}
                                 @if ($item->status !== 'arsip')
 
                                     <form
                                         action="{{ route('dokumen.archive', $item->id) }}"
                                         method="POST"
-                                        style="display:inline"
                                         onsubmit="return confirm('Apakah Anda yakin ingin mengarsipkan dokumen ini?');"
                                     >
                                         @csrf
 
                                         <button
-                                            class="action-button"
+                                            class="action-button archive-button"
                                             type="submit"
                                             aria-label="Arsipkan dokumen"
                                             title="Arsipkan dokumen"
                                         >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                                <path d="M4 7h16M7 4h10M6 7l1 14h10l1-14"/>
-                                                <path d="M10 11v6m4-6v6"/>
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                                <path d="M3 5h18v4H3z"/>
+                                                <path d="M5 9v11h14V9"/>
+                                                <path d="M9 13h6"/>
+                                                <path d="M9 16h6"/>
                                             </svg>
                                         </button>
-
                                     </form>
 
                                 @endif
+
+                                {{-- HAPUS --}}
+                                <form
+                                    action="{{ route('dokumen.destroy', $item->id) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini? Data dan file dokumen akan dihapus secara permanen.');"
+                                >
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        class="action-button delete-button"
+                                        type="submit"
+                                        aria-label="Hapus dokumen"
+                                        title="Hapus dokumen"
+                                    >
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M3 6h18"/>
+                                            <path d="M8 6V4h8v2"/>
+                                            <path d="m19 6-1 14H6L5 6"/>
+                                            <path d="M10 11v5m4-5v5"/>
+                                        </svg>
+                                    </button>
+                                </form>
 
                             </span>
                         </td>
@@ -437,6 +485,7 @@
             <circle cx="12" cy="12" r="9"/>
             <path d="m8 12 2.5 2.5L16 9"/>
         </svg>
+
         Validasi Integritas Dokumen
     </span>
 

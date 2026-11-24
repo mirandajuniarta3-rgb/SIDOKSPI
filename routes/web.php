@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\AuthController;
@@ -141,6 +142,10 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/dokumen/{dokumen}/restore', [DokumenController::class, 'restore'])
             ->name('dokumen.restore');
+
+        // ROUTE HAPUS DOKUMEN
+        Route::delete('/dokumen/{dokumen}', [DokumenController::class, 'destroy'])
+            ->name('dokumen.destroy');
 
         Route::get('/dokumen/{dokumen}', [DokumenController::class, 'show'])
             ->name('dokumen.show');

@@ -8,7 +8,7 @@
     <title>@yield('title', 'SIDOKSPI')</title>
 
     <link rel="stylesheet" href="{{ asset('asset/css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('asset/css/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/css/layout.css') }}?v=10">
 
     @stack('styles')
 </head>

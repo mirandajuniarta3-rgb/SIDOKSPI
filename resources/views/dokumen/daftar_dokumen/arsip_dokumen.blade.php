@@ -378,24 +378,26 @@
                             </td>
 
 
+                            {{-- AKSI DOKUMEN --}}
                             <td>
 
                                 <div class="archive-actions">
 
-                                    <button
+                                    {{-- TOMBOL LIHAT DETAIL --}}
+                                    <a
                                         class="archive-action-button"
-                                        type="button"
-                                        disabled
-                                        aria-label="Pratinjau dokumen belum tersedia"
-                                        title="Pratinjau belum tersedia"
+                                        href="{{ route('dokumen.show', $item->id) }}"
+                                        aria-label="Lihat detail {{ $item->judul }}"
+                                        title="Lihat detail dokumen"
                                     >
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                             <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/>
                                             <circle cx="12" cy="12" r="3"/>
                                         </svg>
-                                    </button>
+                                    </a>
 
 
+                                    {{-- TOMBOL UNDUH --}}
                                     @if ($item->file_available)
 
                                         <a
@@ -426,6 +428,7 @@
                                     @endif
 
 
+                                    {{-- TOMBOL AKTIFKAN KEMBALI --}}
                                     <form
                                         method="POST"
                                         action="{{ route('dokumen.restore', $item) }}"

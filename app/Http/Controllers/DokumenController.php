@@ -33,7 +33,7 @@ class DokumenController extends Controller
     }
 
     /**
-     * Query dokumen yang digunakan untuk daftar dan ekspor.
+     * Query dokumen untuk daftar dan ekspor.
      */
     private function queryDokumen(array $filters): Builder
     {
@@ -494,10 +494,46 @@ class DokumenController extends Controller
     }
 
     /**
+     * Arsipkan dokumen.
+     */
+    public function archive(
+        Request $request,
+        Dokumen $dokumen
+    ): RedirectResponse {
+        $this->authorizeDokumen($request);
+
+        DB::transaction(function () use ($dokumen, $request): void {
+            $lockedDocument = Dokumen::query()
+                ->lockForUpdate()
+                ->findOrFail($dokumen->id);
+
+            abort_unless($lockedDocument->status !== 'arsip', 404);
+
+            $lockedDocument->update([
+                'status' => 'arsip',
+                'archived_at' => now(),
+            ]);
+
+            LogAktivitas::create([
+                'user_id' => $request->user()->id,
+                'dokumen_id' => $lockedDocument->id,
+                'aksi' => 'arsip_dokumen',
+                'ip_address' => $request->ip(),
+            ]);
+        });
+
+        return redirect()
+            ->route('dokumen.index')
+            ->with('success', 'Dokumen berhasil diarsipkan.');
+    }
+
+    /**
      * Pemulihan arsip hanya untuk Admin.
      */
-    public function restore(Request $request, Dokumen $dokumen): RedirectResponse
-    {
+    public function restore(
+        Request $request,
+        Dokumen $dokumen
+    ): RedirectResponse {
         abort_unless($request->user()->role === 'admin', 403);
 
         DB::transaction(function () use ($dokumen, $request): void {
@@ -524,6 +560,66 @@ class DokumenController extends Controller
         return redirect()
             ->route('dokumen.arsip')
             ->with('success', 'Dokumen berhasil diaktifkan kembali.');
+    }
+
+    /**
+     * Hapus dokumen beserta file fisiknya.
+     * Riwayat log aktivitas lama tetap dipertahankan.
+     */
+    public function destroy(
+        Request $request,
+        Dokumen $dokumen
+    ): RedirectResponse {
+        $this->authorizeDokumen($request);
+
+        $pathFile = $dokumen->path_file;
+
+        DB::transaction(function () use ($dokumen, $request): void {
+            $lockedDocument = Dokumen::query()
+                ->lockForUpdate()
+                ->findOrFail($dokumen->id);
+
+            // Lepaskan hubungan log lama dengan dokumen.
+            LogAktivitas::where('dokumen_id', $lockedDocument->id)
+                ->update([
+                    'dokumen_id' => null,
+                ]);
+
+            // Simpan catatan penghapusan.
+            LogAktivitas::create([
+                'user_id' => $request->user()->id,
+                'dokumen_id' => null,
+                'aksi' => 'hapus_dokumen',
+                'ip_address' => $request->ip(),
+            ]);
+
+            // Hapus data dokumen.
+            $lockedDocument->delete();
+        });
+
+        // Hapus file fisik setelah transaksi database berhasil.
+        if (filled($pathFile)) {
+            $disk = Storage::disk('local');
+
+            if ($disk->exists($pathFile)) {
+                if (! $disk->delete($pathFile)) {
+                    report(new \RuntimeException(
+                        'File dokumen gagal dihapus: '.$pathFile
+                    ));
+
+                    return redirect()
+                        ->route('dokumen.index')
+                        ->with(
+                            'warning',
+                            'Data dokumen terhapus, tetapi file fisiknya gagal dihapus.'
+                        );
+                }
+            }
+        }
+
+        return redirect()
+            ->route('dokumen.index')
+            ->with('success', 'Dokumen berhasil dihapus.');
     }
 
     /**
