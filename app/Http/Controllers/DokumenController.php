@@ -314,11 +314,32 @@ class DokumenController extends Controller
 
         $dokumen->load(['kategori', 'uploader']);
 
+        $disk = Storage::disk('local');
+        $fileAvailable = filled($dokumen->path_file)
+            && $disk->exists($dokumen->path_file);
+        $fileChecksum = null;
+
+        if ($fileAvailable) {
+            $fileChecksum = hash_file('sha256', $disk->path($dokumen->path_file));
+
+            if ($fileChecksum === false) {
+                report(new \RuntimeException(
+                    'Gagal menghitung checksum dokumen '.$dokumen->getKey()
+                ));
+                $fileChecksum = null;
+            }
+        }
+
         $dokumen->setAttribute(
             'file_available',
-            filled($dokumen->path_file)
-                && Storage::disk('local')->exists($dokumen->path_file)
+            $fileAvailable
         );
+
+        $lastDownload = $dokumen->logAktivitas()
+            ->with('user')
+            ->where('aksi', 'unduh_dokumen')
+            ->latest('created_at')
+            ->first();
 
         LogAktivitas::create([
             'user_id' => $request->user()->id,
@@ -327,9 +348,44 @@ class DokumenController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return view(
-            'dokumen.daftar_dokumen.detail',
-            compact('dokumen')
+        return view('dokumen.daftar_dokumen.detail', compact(
+            'dokumen',
+            'fileChecksum',
+            'lastDownload'
+        ));
+    }
+
+    /**
+     * Pratinjau PDF dokumen dari penyimpanan privat.
+     */
+    public function preview(
+        Request $request,
+        Dokumen $dokumen
+    ): StreamedResponse {
+        $this->authorizeDokumen($request);
+
+        abort_unless(
+            $dokumen->path_file
+            && Storage::disk('local')->exists($dokumen->path_file),
+            404
+        );
+
+        abort_unless(
+            strtolower(pathinfo($dokumen->path_file, PATHINFO_EXTENSION)) === 'pdf',
+            415
+        );
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('local');
+
+        return $disk->response(
+            $dokumen->path_file,
+            $dokumen->nama_file ?: basename($dokumen->path_file),
+            [
+                'Content-Type' => 'application/pdf',
+                'X-Content-Type-Options' => 'nosniff',
+            ],
+            'inline'
         );
     }
 
@@ -623,15 +679,13 @@ class DokumenController extends Controller
     }
 
     /**
-     * Unduh dokumen arsip untuk Admin dan Staf SPI.
+     * Unduh dokumen untuk Admin dan Staf SPI.
      */
     public function download(
         Request $request,
         Dokumen $dokumen
     ): StreamedResponse {
         $this->authorizeDokumen($request);
-
-        abort_unless($dokumen->status === 'arsip', 404);
 
         abort_unless(
             $dokumen->path_file

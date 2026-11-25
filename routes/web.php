@@ -134,6 +134,9 @@ Route::middleware('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
+        Route::get('/dokumen/{dokumen}/preview', [DokumenController::class, 'preview'])
+            ->name('dokumen.preview');
+
         Route::get('/dokumen/{dokumen}/download', [DokumenController::class, 'download'])
             ->name('dokumen.download');
 
