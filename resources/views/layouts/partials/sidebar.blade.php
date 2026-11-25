@@ -22,10 +22,15 @@
 
 <aside class="sidebar" aria-label="Navigasi utama">
 
-    {{-- LOGO (selalu terlihat di pojok kiri atas) --}}
+    {{-- Identitas SIDOKSPI --}}
     <a class="brand" href="{{ route($dashboardRoute) }}">
         <span class="brand-mark">
-            <img src="{{ asset('asset/img/logo-pdam.png') }}" alt="Logo PDAM Tirta Pinang">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.2C9.1 7.3 5.2 11.1 5.2 15.1a6.8 6.8 0 0 0 13.6 0C18.8 11.1 14.9 7.3 12 3.2Z"
+                      stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.8 15.2a3.3 3.3 0 0 0 3.3 3.2"
+                      stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
         </span>
 
         <span class="brand-text">
@@ -34,7 +39,7 @@
         </span>
     </a>
 
-    {{-- MENU NAVIGASI (muncul saat tombol tiga garis di topbar diklik) --}}
+    {{-- Menu utama (dapat dilipat di layar kecil) --}}
     <div class="sidebar-navigation" id="sidebarNavigation">
 
         <p class="nav-label">MENU NAVIGASI</p>

@@ -30,7 +30,7 @@
 
 <header class="topbar">
 
-    {{-- TOMBOL TIGA GARIS (di samping logo, pojok kiri atas) --}}
+    {{-- Tombol menu untuk membuka navigasi pada layar kecil --}}
     <button
         type="button"
         class="sidebar-hamburger"

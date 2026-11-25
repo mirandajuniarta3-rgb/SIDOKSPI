@@ -4,44 +4,34 @@
 ========================================= */
 
 .app-layout {
+    display: flex;
     min-height: 100vh;
 }
 
 
 /* =========================================
    SIDEBAR
-   Tertutup: lebar 0, tidak memakan ruang.
-   Terbuka: melayang di bawah baris logo.
+   Sidebar desktop selalu mengambil ruang sendiri agar tidak menutupi konten.
 ========================================= */
 
 .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    z-index: 20;
+    z-index: 10;
 
     display: flex;
-    width: 0;
+    width: 280px;
     flex-direction: column;
 
-    padding: 0;
-    border-right: 0;
+    padding: 20px 12px 14px;
+    border-right: 1px solid #eef0f7;
 
     background: #fff;
 
     overflow-x: hidden;
     overflow-y: auto;
 
-    transition: width .25s ease;
-}
-
-body.sidebar-open .sidebar {
-    top: 58px;
-    width: 250px;
-
-    padding: 12px 10px 12px;
-
-    border-right: 1px solid #eef0f7;
-    box-shadow: 8px 0 30px rgba(30, 45, 75, .12);
+    transition: width .25s ease, transform .25s ease;
 }
 
 
@@ -50,41 +40,57 @@ body.sidebar-open .sidebar {
 ========================================= */
 
 .brand {
-    position: fixed;
-    top: 11px;
-    left: 14px;
-    z-index: 31;
-
     display: flex;
     align-items: center;
     gap: 10px;
 
-    margin: 0;
+    min-height: 50px;
+    margin: 0 10px 24px;
     text-decoration: none;
 }
 
 .brand-mark {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    flex: 0 0 42px;
+    flex: 0 0 50px;
+    border-radius: 12px;
+    background: #0b5fe0;
+    color: #fff;
 }
 
-.brand-mark img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-    display: block;
+.brand-mark svg {
+    width: 27px;
+    height: 27px;
 }
 
 .brand-text {
-    display: none;
+    display: block;
+    min-width: 0;
+}
+
+.brand-name,
+.brand-caption {
+    display: block;
+}
+
+.brand-name {
+    color: #0849a8;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -.025em;
+}
+
+.brand-caption {
+    margin-top: 2px;
+    color: #4f586b;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 
@@ -93,12 +99,7 @@ body.sidebar-open .sidebar {
 ========================================= */
 
 .sidebar-hamburger {
-    position: fixed;
-    top: 11px;
-    left: 76px;
-    z-index: 31;
-
-    display: inline-flex;
+    display: none;
     width: 36px;
     height: 36px;
 
@@ -140,15 +141,13 @@ body.sidebar-open .sidebar {
 ========================================= */
 
 .sidebar-navigation {
-    display: none;
-    min-width: 228px;
+    display: flex;
+    min-width: 0;
+    flex: 1 0 auto;
+    flex-direction: column;
 }
 
 body.sidebar-open .sidebar-navigation {
-    display: flex;
-    flex: 1 0 auto;
-    flex-direction: column;
-
     animation: sidebarMenuAppear .25s ease;
 }
 
@@ -172,7 +171,7 @@ body.sidebar-open .sidebar-navigation {
 
     color: #929bb0;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: .08em;
 }
@@ -195,27 +194,27 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-link {
     display: flex;
-    min-height: 34px;
+    min-height: 44px;
 
     align-items: center;
-    gap: 9px;
+    gap: 10px;
 
-    padding: 7px 9px;
+    padding: 9px 10px;
 
     border-radius: 7px;
 
     color: #4f5c72;
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 650;
 
     text-decoration: none;
 }
 
 .nav-link svg {
-    width: 15px;
-    height: 15px;
-    flex: 0 0 15px;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
 }
 
 .nav-link.active {
@@ -273,7 +272,7 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-sublink {
     display: flex;
-    min-height: 30px;
+    min-height: 34px;
 
     align-items: center;
 
@@ -283,7 +282,7 @@ body.sidebar-open .sidebar-navigation {
 
     color: #56637a;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
 
     text-decoration: none;
@@ -350,7 +349,8 @@ body.sidebar-open .sidebar-navigation {
 
 .main-area {
     min-height: 100vh;
-    margin-left: 0;
+    width: calc(100% - 280px);
+    margin-left: 280px;
 }
 
 
@@ -369,7 +369,7 @@ body.sidebar-open .sidebar-navigation {
     align-items: center;
     gap: 14px;
 
-    padding: 8px 22px 8px 124px;
+    padding: 8px 22px;
 
     border-bottom: 1px solid #eceef6;
 
@@ -787,12 +787,17 @@ body.sidebar-open .sidebar-navigation {
 
 @media (max-width: 1000px) {
 
-    body.sidebar-open .sidebar {
-        width: 225px;
+    .sidebar {
+        width: 240px;
     }
 
     .sidebar-navigation {
-        min-width: 203px;
+        min-width: 0;
+    }
+
+    .main-area {
+        width: calc(100% - 240px);
+        margin-left: 240px;
     }
 
     .topbar {
@@ -809,6 +814,12 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
+@media (max-width: 1200px) {
+    .breadcrumb {
+        display: none;
+    }
+}
+
 
 /* =========================================
    MOBILE
@@ -820,32 +831,42 @@ body.sidebar-open .sidebar-navigation {
         min-width: 320px;
     }
 
-    body.sidebar-open .sidebar {
-        top: 52px;
-        width: 240px;
-    }
-
     .sidebar-navigation {
-        min-width: 222px;
+        display: none;
     }
 
     .brand {
-        left: 10px;
-    }
-
-    .brand-mark {
-        width: 44px;
-        height: 42px;
-        min-width: 44px;
-        flex-basis: 44px;
+        margin: 0 4px 12px;
     }
 
     .sidebar-hamburger {
-        left: 64px;
+        display: inline-flex;
+        position: static;
+        flex: 0 0 36px;
+    }
+
+    body.sidebar-open .sidebar-navigation {
+        display: flex;
+    }
+
+    .app-layout {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        padding: 12px 16px;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid #eef0f7;
     }
 
     .main-area {
         min-height: auto;
+        width: 100%;
+        margin-left: 0;
     }
 
     .topbar {
@@ -853,7 +874,7 @@ body.sidebar-open .sidebar-navigation {
 
         gap: 6px;
 
-        padding: 7px 9px 7px 110px;
+        padding: 7px 12px;
     }
 
     .topbar .top-search {
