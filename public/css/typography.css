@@ -1,0 +1,469 @@
+:root {
+    --sid-font-family: "Montserrat", sans-serif;
+
+    --sid-font-xs: 10px;
+    --sid-font-sm: 11px;
+    --sid-font-base: 12px;
+    --sid-font-md: 13px;
+    --sid-font-lg: 15px;
+    --sid-font-xl: 17px;
+    --sid-font-title: 23px;
+    --sid-font-stat: 26px;
+    --sid-font-icon: 15px;
+
+    --sid-weight-regular: 400;
+    --sid-weight-medium: 500;
+    --sid-weight-semibold: 600;
+    --sid-weight-bold: 700;
+
+    --sid-line-tight: 1.25;
+    --sid-line-heading: 1.4;
+    --sid-line-normal: 1.5;
+    --sid-line-relaxed: 1.7;
+}
+
+body {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-dashboard,
+.kategori-page,
+.kategori-modal,
+.log-page,
+.pengguna-page,
+.laporan-page,
+.arsip-page,
+.sk-page {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-heading h1,
+.kategori-page .laporan-heading h2,
+.log-page .laporan-heading h2,
+.pengguna-header h2,
+.laporan-heading h2 {
+    font-size: var(--sid-font-title);
+    font-weight: var(--sid-weight-bold);
+    line-height: var(--sid-line-heading);
+    letter-spacing: -0.025em;
+}
+
+.admin-eyebrow,
+.laporan-breadcrumb,
+.kategori-page .laporan-breadcrumb,
+.log-page .laporan-breadcrumb,
+.pengguna-eyebrow {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+    letter-spacing: 0.04em;
+}
+
+.admin-description,
+.laporan-heading p,
+.kategori-page .laporan-heading p,
+.log-page .laporan-heading p,
+.pengguna-header p {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-relaxed);
+}
+
+.admin-panel-heading h2,
+.admin-panel-heading h3,
+.panel-heading h3,
+.kategori-page .panel-heading h3,
+.log-page .log-panel-heading h3,
+.log-page .log-table-head h3,
+.log-page .log-table-title,
+.pengguna-panel-heading h3 {
+    font-size: var(--sid-font-lg);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-heading);
+    letter-spacing: -0.015em;
+}
+
+.admin-panel-heading p,
+.panel-heading p,
+.kategori-page .panel-heading p,
+.log-page .log-panel-heading p,
+.log-page .log-table-head p,
+.pengguna-panel-heading p {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-relaxed);
+}
+
+.admin-stat-label,
+.log-page .log-stat-label {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-stat-value,
+.log-page .log-stat-value,
+.admin-donut-center strong {
+    font-size: var(--sid-font-stat);
+    font-weight: var(--sid-weight-bold);
+    line-height: var(--sid-line-tight);
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-stat-foot,
+.log-page .log-stat-note {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-stat-foot strong,
+.admin-panel-footer strong {
+    font-weight: var(--sid-weight-semibold);
+}
+
+.admin-period,
+.log-page .log-date {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-button,
+.kategori-page .kategori-btn,
+.kategori-modal .kategori-btn,
+.log-page .log-btn,
+.pengguna-page .pengguna-btn,
+.laporan-btn {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-panel-tag,
+.kategori-page .kategori-status,
+.kategori-page .kategori-inline.kategori-inline-status,
+.log-page .log-action,
+.pengguna-page .pengguna-role,
+.pengguna-page .pengguna-status {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-heading);
+}
+
+.admin-donut-row,
+.admin-donut-name {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-donut-row strong {
+    font-weight: var(--sid-weight-semibold);
+}
+
+.admin-donut-percent,
+.admin-donut-center span,
+.admin-donut-tooltip,
+.admin-chart-summary span,
+.admin-panel-footer {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-donut-reset,
+.admin-chart-summary strong {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+}
+
+.admin-chart-text {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+}
+
+.admin-chart-number {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-semibold);
+}
+
+.admin-dashboard svg text {
+    font-family: var(--sid-font-family);
+}
+
+.kategori-page .laporan-table,
+.log-page .log-table,
+.pengguna-page .pengguna-table,
+.laporan-table {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-page .laporan-table thead th,
+.log-page .log-table thead th,
+.pengguna-page .pengguna-table thead th,
+.laporan-table thead th {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+    letter-spacing: 0.025em;
+}
+
+.kategori-page .laporan-table tbody td,
+.log-page .log-table tbody td,
+.pengguna-page .pengguna-table tbody td,
+.laporan-table tbody td {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-sort,
+.log-sort-link,
+.pengguna-sort {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+.kategori-sort-icon,
+.pengguna-sort span {
+    font-size: var(--sid-font-icon);
+    line-height: 1;
+}
+
+.kategori-page .table-primary-text,
+.kategori-page .kategori-code,
+.kategori-page .kategori-inline.kategori-inline-code,
+.log-page .log-user-name,
+.pengguna-table .pengguna-name,
+.table-primary-text {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-date-main {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-medium);
+}
+
+.log-page .log-number,
+.log-page .log-reference {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+}
+
+.log-page .log-date-time,
+.log-page .log-user-email,
+.log-page .log-ip {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-ip,
+.log-page .log-number,
+.log-page .log-date-time {
+    font-variant-numeric: tabular-nums;
+}
+
+.log-page .log-avatar {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+}
+
+.admin-dashboard :is(input, select, textarea, button),
+.kategori-page :is(input, select, textarea, button),
+.kategori-modal :is(input, select, textarea, button),
+.log-page :is(input, select, textarea, button),
+.pengguna-page :is(input, select, textarea, button),
+.laporan-page :is(input, select, textarea, button) {
+    font-family: var(--sid-font-family);
+}
+
+.kategori-page :is(input, select, textarea),
+.kategori-modal :is(input, select, textarea),
+.log-page :is(input, select, textarea),
+.pengguna-page :is(input, select, textarea),
+.laporan-page :is(input, select, textarea) {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-page .kategori-inline {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-page input::placeholder,
+.kategori-modal input::placeholder,
+.log-page input::placeholder,
+.pengguna-page input::placeholder,
+.laporan-page input::placeholder {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+}
+
+.kategori-field label,
+.kategori-form-group label,
+.log-page .log-field label,
+.pengguna-field label,
+.laporan-field label,
+.form-group label {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-filter-title {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-semibold);
+}
+
+.kategori-page .kategori-action,
+.pengguna-page .pengguna-action {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-page .kategori-total,
+.kategori-page .table-info,
+.kategori-page #kategoriSearchStatus,
+.kategori-page #kategoriSaveStatus,
+.log-page .log-table-count,
+.log-page .log-pagination-info,
+.pengguna-toolbar,
+.pengguna-footer,
+.pengguna-page #pengguna-message,
+.table-info {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-page .pagination a,
+.kategori-page .pagination span,
+.log-page .log-pagination-links .pagination a,
+.log-page .log-pagination-links .pagination span,
+.pengguna-pagination nav,
+.pengguna-pagination nav a,
+.pengguna-pagination nav span {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.kategori-modal .kategori-modal-header h3 {
+    font-size: var(--sid-font-xl);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-heading);
+}
+
+.kategori-modal .kategori-modal-close {
+    font-size: var(--sid-font-title);
+    font-weight: var(--sid-weight-regular);
+    line-height: 1;
+}
+
+.kategori-alert,
+.pengguna-alert {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-relaxed);
+}
+
+.kategori-error,
+.pengguna-error,
+.pengguna-field small {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.admin-empty,
+.kategori-empty,
+.log-empty,
+.pengguna-empty {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-empty-content strong {
+    font-size: var(--sid-font-md);
+    font-weight: var(--sid-weight-semibold);
+}
+
+.log-page .log-empty-content > span {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-regular);
+}
+
+.log-page .log-loading-content {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-medium);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-audit-title {
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+}
+
+.log-page .log-audit-text {
+    font-size: var(--sid-font-sm);
+    font-weight: var(--sid-weight-regular);
+    line-height: var(--sid-line-relaxed);
+}
+
+@media (max-width: 760px) {
+    :root {
+        --sid-font-title: 21px;
+        --sid-font-stat: 24px;
+    }
+}
+
+@media (max-width: 520px) {
+    :root {
+        --sid-font-title: 19px;
+        --sid-font-stat: 22px;
+        --sid-font-lg: 14px;
+        --sid-font-xl: 16px;
+    }
+
+    .admin-stat-label,
+    .log-page .log-stat-label,
+    .admin-stat-foot,
+    .log-page .log-stat-note {
+        font-size: var(--sid-font-xs);
+    }
+}
+
+.pengguna-page .pengguna-table tbody td.pengguna-name,
+.pengguna-page .pengguna-table tbody td .pengguna-name,
+.pengguna-page .pengguna-table tbody td .pengguna-name a {
+    font-family: var(--sid-font-family);
+    font-size: var(--sid-font-base);
+    font-weight: var(--sid-weight-semibold);
+    line-height: var(--sid-line-normal);
+}

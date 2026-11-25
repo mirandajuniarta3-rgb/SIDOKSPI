@@ -1,13 +1,32 @@
-
 /* =========================================
    APP LAYOUT
 ========================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+    font-family: "Montserrat", sans-serif;
+    --blue: #2168d6;
+}
+
+html,
+body {
+    font-family: "Montserrat", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
 
 .app-layout {
     display: flex;
     min-height: 100vh;
 }
-
 
 /* =========================================
    SIDEBAR
@@ -31,9 +50,10 @@
     overflow-x: hidden;
     overflow-y: auto;
 
-    transition: width .25s ease, transform .25s ease;
+    transition:
+        width 0.25s ease,
+        transform 0.25s ease;
 }
-
 
 /* =========================================
    LOGO PDAM TIRTA PINANG
@@ -83,7 +103,7 @@
     color: #0849a8;
     font-size: 16px;
     font-weight: 800;
-    letter-spacing: -.025em;
+    letter-spacing: -0.025em;
 }
 
 .brand-caption {
@@ -92,7 +112,6 @@
     font-size: 12px;
     font-weight: 600;
 }
-
 
 /* =========================================
    TOMBOL TIGA GARIS
@@ -116,7 +135,9 @@
 
     cursor: pointer;
 
-    transition: background .2s ease, border-color .2s ease;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .sidebar-hamburger:hover {
@@ -135,7 +156,6 @@
     height: 20px;
 }
 
-
 /* =========================================
    AREA NAVIGASI
 ========================================= */
@@ -148,7 +168,7 @@
 }
 
 body.sidebar-open .sidebar-navigation {
-    animation: sidebarMenuAppear .25s ease;
+    animation: sidebarMenuAppear 0.25s ease;
 }
 
 @keyframes sidebarMenuAppear {
@@ -163,7 +183,6 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-
 /* LABEL MENU */
 
 .nav-label {
@@ -173,9 +192,8 @@ body.sidebar-open .sidebar-navigation {
 
     font-size: 12px;
     font-weight: 800;
-    letter-spacing: .08em;
+    letter-spacing: 0.08em;
 }
-
 
 /* DAFTAR MENU */
 
@@ -188,7 +206,6 @@ body.sidebar-open .sidebar-navigation {
 
     list-style: none;
 }
-
 
 /* LINK MENU */
 
@@ -228,7 +245,6 @@ body.sidebar-open .sidebar-navigation {
     color: #064eb6;
 }
 
-
 /* DROPDOWN MENU */
 
 .nav-dropdown {
@@ -250,13 +266,12 @@ body.sidebar-open .sidebar-navigation {
 
     margin-left: auto;
 
-    transition: transform .2s ease;
+    transition: transform 0.2s ease;
 }
 
 .nav-dropdown[open] .nav-chevron {
     transform: rotate(180deg);
 }
-
 
 /* SUBMENU */
 
@@ -292,7 +307,6 @@ body.sidebar-open .sidebar-navigation {
     background: #edf2ff;
     color: #064eb6;
 }
-
 
 /* =========================================
    BAGIAN BAWAH SIDEBAR
@@ -342,7 +356,6 @@ body.sidebar-open .sidebar-navigation {
     color: #8a94a8;
 }
 
-
 /* =========================================
    AREA UTAMA
 ========================================= */
@@ -352,7 +365,6 @@ body.sidebar-open .sidebar-navigation {
     width: calc(100% - 280px);
     margin-left: 280px;
 }
-
 
 /* =========================================
    TOPBAR
@@ -373,10 +385,9 @@ body.sidebar-open .sidebar-navigation {
 
     border-bottom: 1px solid #eceef6;
 
-    background: rgba(255, 255, 255, .97);
+    background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(12px);
 }
-
 
 /* BREADCRUMB */
 
@@ -400,7 +411,6 @@ body.sidebar-open .sidebar-navigation {
     color: #0753c5;
     font-weight: 700;
 }
-
 
 /* =========================================
    SEARCH
@@ -454,7 +464,6 @@ body.sidebar-open .sidebar-navigation {
     flex: 1 1 auto;
 }
 
-
 /* =========================================
    ICON BUTTON
 ========================================= */
@@ -502,7 +511,6 @@ body.sidebar-open .sidebar-navigation {
     background: #e44b58;
 }
 
-
 /* =========================================
    ROLE BADGE
 ========================================= */
@@ -520,7 +528,6 @@ body.sidebar-open .sidebar-navigation {
 
     white-space: nowrap;
 }
-
 
 /* =========================================
    ACCOUNT DROPDOWN
@@ -560,7 +567,6 @@ body.sidebar-open .sidebar-navigation {
     background: #f8faff;
 }
 
-
 /* ACCOUNT */
 
 .account {
@@ -571,7 +577,6 @@ body.sidebar-open .sidebar-navigation {
     align-items: center;
     gap: 8px;
 }
-
 
 /* AVATAR */
 
@@ -592,7 +597,6 @@ body.sidebar-open .sidebar-navigation {
     font-size: 10px;
     font-weight: 800;
 }
-
 
 /* ACCOUNT TEXT */
 
@@ -628,7 +632,6 @@ body.sidebar-open .sidebar-navigation {
     font-size: 10px;
 }
 
-
 /* ACCOUNT CHEVRON */
 
 .account-switch-chevron {
@@ -638,13 +641,12 @@ body.sidebar-open .sidebar-navigation {
     height: 13px;
     flex: 0 0 13px;
 
-    transition: transform .2s ease;
+    transition: transform 0.2s ease;
 }
 
 .account-switcher[open] .account-switch-chevron {
     transform: rotate(180deg);
 }
-
 
 /* =========================================
    ISI DROPDOWN
@@ -665,9 +667,8 @@ body.sidebar-open .sidebar-navigation {
 
     background: #fff;
 
-    box-shadow: 0 12px 30px rgba(30, 45, 75, .14);
+    box-shadow: 0 12px 30px rgba(30, 45, 75, 0.14);
 }
-
 
 /* DROPDOWN USER INFO */
 
@@ -697,7 +698,6 @@ body.sidebar-open .sidebar-navigation {
     font-size: 10px;
 }
 
-
 /* DROPDOWN AVATAR */
 
 .dropdown-avatar {
@@ -705,7 +705,6 @@ body.sidebar-open .sidebar-navigation {
     height: 36px;
     flex-basis: 36px;
 }
-
 
 /* DROPDOWN DIVIDER */
 
@@ -716,7 +715,6 @@ body.sidebar-open .sidebar-navigation {
 
     background: #edf0f6;
 }
-
 
 /* ACCOUNT MENU LINK */
 
@@ -759,7 +757,6 @@ body.sidebar-open .sidebar-navigation {
     margin: 0;
 }
 
-
 /* LOGOUT */
 
 .logout-menu-link {
@@ -771,7 +768,6 @@ body.sidebar-open .sidebar-navigation {
     color: #c32e2e;
 }
 
-
 /* =========================================
    KONTEN
 ========================================= */
@@ -780,13 +776,11 @@ body.sidebar-open .sidebar-navigation {
     padding: 22px 26px 30px;
 }
 
-
 /* =========================================
    TABLET
 ========================================= */
 
 @media (max-width: 1000px) {
-
     .sidebar {
         width: 240px;
     }
@@ -820,13 +814,11 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-
 /* =========================================
    MOBILE
 ========================================= */
 
 @media (max-width: 620px) {
-
     body {
         min-width: 320px;
     }
@@ -918,11 +910,69 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-
 /* =========================================
    MENGHILANGKAN IKON PANAH PAGINATION
 ========================================= */
 
 nav[role="navigation"] svg {
     display: none !important;
+}
+
+body .admin-dashboard {
+    font-family: "Montserrat", sans-serif;
+}
+
+body .admin-dashboard .admin-eyebrow {
+    color: #2168d6;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.075em;
+}
+
+body .admin-dashboard .admin-eyebrow::before {
+    background: #2168d6;
+}
+
+body .admin-dashboard .admin-stat-foot strong {
+    color: #2168d6;
+    font-weight: 600;
+}
+
+body .admin-dashboard .admin-stat-label {
+    color: #78839a;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+body .admin-dashboard .admin-stat-value {
+    color: #17243b;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
+body .admin-dashboard .admin-stat-foot {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+body .admin-dashboard h1 {
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
+body .admin-dashboard h2 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+body .admin-dashboard .admin-panel-heading p {
+    font-weight: 400;
+}
+
+body .admin-dashboard .admin-donut-center-total {
+    font-weight: 800;
+}
+
+body .admin-dashboard .admin-donut-name {
+    font-weight: 500;
 }

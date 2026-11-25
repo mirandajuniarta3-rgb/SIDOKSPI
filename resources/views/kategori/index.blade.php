@@ -5,257 +5,14 @@
 @section('breadcrumb', 'Master Data / Kategori Dokumen')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('asset/css/laporan.css') }}">
-
-<style>
-    .kategori-page {
-        padding-bottom: 30px;
-    }
-
-    .kategori-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-bottom: 22px;
-    }
-
-    .kategori-btn {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        gap: 7px;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .kategori-btn-primary {
-        background: #0753c5;
-        color: white;
-    }
-
-    .kategori-btn-primary:hover {
-        background: #0644a1;
-        color: white;
-    }
-
-    .kategori-search {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .kategori-search input {
-        width: 260px;
-        max-width: 100%;
-        padding: 10px 13px;
-        border: 1px solid #dce3ef;
-        border-radius: 8px;
-        outline: none;
-    }
-
-    .kategori-search input:focus,
-    .kategori-form input:focus,
-    .kategori-form textarea:focus,
-    .kategori-form select:focus {
-        border-color: #0753c5;
-        box-shadow: 0 0 0 3px rgba(7, 83, 197, .1);
-    }
-
-    .kategori-code {
-        display: inline-block;
-        padding: 5px 9px;
-        border-radius: 6px;
-        background: #edf2ff;
-        color: #0753c5;
-        font-size: 11px;
-        font-weight: 750;
-    }
-
-    .kategori-status {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .status-aktif {
-        color: #16834a;
-        background: #e7f8ee;
-    }
-
-    .status-nonaktif {
-        color: #c03945;
-        background: #fff0f0;
-    }
-
-    .kategori-actions {
-        display: flex;
-        gap: 7px;
-        align-items: center;
-    }
-
-    .kategori-action {
-        padding: 7px 11px;
-        border: none;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 11px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .action-edit {
-        background: #edf2ff;
-        color: #0753c5;
-    }
-
-    .action-delete {
-        background: #fff0f0;
-        color: #d43d4b;
-    }
-
-    .kategori-alert {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-        font-size: 13px;
-    }
-
-    .kategori-alert-success {
-        background: #e7f8ee;
-        color: #16834a;
-    }
-
-    .kategori-alert-error {
-        background: #fff0f0;
-        color: #c03945;
-    }
-
-    /* MODAL */
-    .kategori-modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: rgba(15, 30, 55, .5);
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .kategori-modal.show {
-        display: flex;
-    }
-
-    .kategori-modal-content {
-        width: 100%;
-        max-width: 550px;
-        max-height: 90vh;
-        overflow-y: auto;
-        background: white;
-        border-radius: 13px;
-        box-shadow: 0 15px 45px rgba(0,0,0,.15);
-    }
-
-    .kategori-modal-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid #edf0f5;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .kategori-modal-header h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 750;
-        color: #18345b;
-    }
-
-    .kategori-modal-close {
-        border: none;
-        background: transparent;
-        font-size: 25px;
-        cursor: pointer;
-        color: #718096;
-    }
-
-    .kategori-modal-body {
-        padding: 22px 24px;
-    }
-
-    .kategori-form-group {
-        margin-bottom: 17px;
-    }
-
-    .kategori-form-group label {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #34445d;
-    }
-
-    .kategori-form input,
-    .kategori-form textarea,
-    .kategori-form select {
-        width: 100%;
-        padding: 11px 13px;
-        border: 1px solid #dce3ef;
-        border-radius: 8px;
-        font-size: 13px;
-        outline: none;
-    }
-
-    .kategori-form textarea {
-        min-height: 90px;
-        resize: vertical;
-    }
-
-    .kategori-form-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 9px;
-        padding-top: 10px;
-    }
-
-    .kategori-btn-cancel {
-        background: #edf0f5;
-        color: #44546a;
-    }
-
-    .kategori-empty {
-        text-align: center;
-        padding: 30px;
-        color: #8792a3;
-    }
-
-    @media(max-width: 650px) {
-        .kategori-search,
-        .kategori-search input {
-            width: 100%;
-        }
-
-        .kategori-toolbar {
-            align-items: stretch;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/kategori.css') }}">
+@include('partials.sidokspi-feedback')
 @endpush
 
 @section('content')
 
-<div class="laporan-page kategori-page">
+<div class="kategori-page">
 
-    {{-- HEADER --}}
     <div class="laporan-header">
         <div class="laporan-heading">
             <div class="laporan-breadcrumb">
@@ -276,73 +33,37 @@
         </button>
     </div>
 
-    {{-- NOTIFIKASI --}}
-    @if(session('success'))
-        <div class="kategori-alert kategori-alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="kategori-alert kategori-alert-error">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="kategori-alert kategori-alert-error">
-            <strong>Periksa kembali data yang dimasukkan:</strong>
-            <ul style="margin:7px 0 0 18px;">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- PANEL TABEL --}}
     <div class="laporan-panel">
 
         <div class="panel-heading">
             <h3>Daftar Kategori Dokumen</h3>
             <p>
-                Daftar kategori dokumen yang tersedia dalam sistem.
+                Klik kolom untuk mengubah data. Enter atau klik di luar untuk menyimpan, Esc untuk membatalkan.
             </p>
         </div>
 
-        {{-- PENCARIAN --}}
-        <div class="kategori-toolbar" style="padding: 0 20px;">
+        <div class="kategori-toolbar">
 
             <form action="{{ route('kategori.index') }}"
                   method="GET"
-                  class="kategori-search">
+                  class="kategori-search" id="kategoriSearchForm">
 
                 <input type="text"
-                       name="search"
+                       name="search" id="kategoriSearchInput" aria-label="Cari kategori" autocomplete="off"
                        placeholder="Cari kode atau nama kategori..."
                        value="{{ $search ?? '' }}">
 
-                <button type="submit"
-                        class="kategori-btn kategori-btn-primary">
-                    Cari
-                </button>
-
-                @if(!empty($search))
-                    <a href="{{ route('kategori.index') }}"
-                       class="kategori-btn kategori-btn-cancel">
-                        Reset
-                    </a>
-                @endif
-
             </form>
 
-            <div style="font-size:12px;color:#718096;">
+            <span id="kategoriSearchStatus" role="status" aria-live="polite"></span>
+            <div class="kategori-total" id="kategoriTotal">
                 Total {{ $kategori->total() }} kategori
             </div>
 
         </div>
 
-        {{-- TABEL --}}
+        <div id="kategoriSaveStatus" role="status" aria-live="polite"></div>
+        <div id="kategoriResults" aria-busy="false">
         <div class="table-wrapper">
 
             <table class="laporan-table">
@@ -350,11 +71,36 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Kode Kategori</th>
-                        <th>Nama Kategori</th>
-                        <th>Keterangan & Lingkup Naskah</th>
-                        <th>Jumlah Berkas</th>
-                        <th>Status</th>
+                        <th aria-sort="{{ ($sort ?? 'created_at') === 'kode_kategori' ? (($direction ?? 'desc') === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                            <a class="kategori-sort" href="{{ route('kategori.index', array_merge(request()->except('page'), ['sort' => 'kode_kategori', 'direction' => ($sort ?? 'created_at') === 'kode_kategori' && ($direction ?? 'desc') === 'asc' ? 'desc' : 'asc'])) }}">
+                                <span>Kode Kategori</span>
+                                <span class="kategori-sort-icon" aria-hidden="true">{{ ($sort ?? 'created_at') === 'kode_kategori' ? (($direction ?? 'desc') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                            </a>
+                        </th>
+                        <th aria-sort="{{ ($sort ?? 'created_at') === 'nama_kategori' ? (($direction ?? 'desc') === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                            <a class="kategori-sort" href="{{ route('kategori.index', array_merge(request()->except('page'), ['sort' => 'nama_kategori', 'direction' => ($sort ?? 'created_at') === 'nama_kategori' && ($direction ?? 'desc') === 'asc' ? 'desc' : 'asc'])) }}">
+                                <span>Nama Kategori</span>
+                                <span class="kategori-sort-icon" aria-hidden="true">{{ ($sort ?? 'created_at') === 'nama_kategori' ? (($direction ?? 'desc') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                            </a>
+                        </th>
+                        <th aria-sort="{{ ($sort ?? 'created_at') === 'keterangan' ? (($direction ?? 'desc') === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                            <a class="kategori-sort" href="{{ route('kategori.index', array_merge(request()->except('page'), ['sort' => 'keterangan', 'direction' => ($sort ?? 'created_at') === 'keterangan' && ($direction ?? 'desc') === 'asc' ? 'desc' : 'asc'])) }}">
+                                <span>Keterangan &amp; Lingkup Naskah</span>
+                                <span class="kategori-sort-icon" aria-hidden="true">{{ ($sort ?? 'created_at') === 'keterangan' ? (($direction ?? 'desc') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                            </a>
+                        </th>
+                        <th aria-sort="{{ ($sort ?? 'created_at') === 'dokumen_count' ? (($direction ?? 'desc') === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                            <a class="kategori-sort" href="{{ route('kategori.index', array_merge(request()->except('page'), ['sort' => 'dokumen_count', 'direction' => ($sort ?? 'created_at') === 'dokumen_count' && ($direction ?? 'desc') === 'asc' ? 'desc' : 'asc'])) }}">
+                                <span>Jumlah Berkas</span>
+                                <span class="kategori-sort-icon" aria-hidden="true">{{ ($sort ?? 'created_at') === 'dokumen_count' ? (($direction ?? 'desc') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                            </a>
+                        </th>
+                        <th aria-sort="{{ ($sort ?? 'created_at') === 'status' ? (($direction ?? 'desc') === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                            <a class="kategori-sort" href="{{ route('kategori.index', array_merge(request()->except('page'), ['sort' => 'status', 'direction' => ($sort ?? 'created_at') === 'status' && ($direction ?? 'desc') === 'asc' ? 'desc' : 'asc'])) }}">
+                                <span>Status</span>
+                                <span class="kategori-sort-icon" aria-hidden="true">{{ ($sort ?? 'created_at') === 'status' ? (($direction ?? 'desc') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                            </a>
+                        </th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -363,74 +109,34 @@
 
                     @forelse($kategori as $index => $item)
 
-                        <tr>
-
+                        <tr data-update-url="{{ route('kategori.update', $item->id) }}">
+                            <td>{{ $kategori->firstItem() + $index }}</td>
+                            <td><input class="kategori-inline kategori-inline-code" name="kode_kategori" value="{{ $item->kode_kategori }}" maxlength="10" required aria-label="Kode kategori"></td>
+                            <td><input class="kategori-inline" name="nama_kategori" value="{{ $item->nama_kategori }}" maxlength="100" required aria-label="Nama kategori"></td>
+                            <td><input class="kategori-inline" name="keterangan" value="{{ $item->keterangan }}" maxlength="255" placeholder="-" aria-label="Keterangan"></td>
+                            <td>{{ $item->dokumen_count }} berkas</td>
                             <td>
-                                {{ $kategori->firstItem() + $index }}
+                                <select class="kategori-inline kategori-inline-status" data-status="{{ $item->status }}" name="status" aria-label="Status kategori">
+                                    <option value="aktif" @selected($item->status === 'aktif')>Aktif</option>
+                                    <option value="nonaktif" @selected($item->status === 'nonaktif')>Nonaktif</option>
+                                </select>
                             </td>
-
                             <td>
-                                <span class="kategori-code">
-                                    {{ $item->kode_kategori }}
-                                </span>
+                                <form action="{{ route('kategori.destroy', $item->id) }}" method="POST" data-confirm-delete>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="kategori-action action-delete" title="Hapus kategori" aria-label="Hapus kategori {{ $item->nama_kategori }}">
+                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 10v6M14 10v6"/></svg>
+                                    </button>
+                                </form>
                             </td>
-
-                            <td class="table-primary-text">
-                                {{ $item->nama_kategori }}
-                            </td>
-
-                            <td>
-                                {{ $item->keterangan ?: '-' }}
-                            </td>
-
-                            <td>
-                                {{ $item->dokumen_count }} berkas
-                            </td>
-
-                            <td>
-                                @if($item->status === 'aktif')
-                                    <span class="kategori-status status-aktif">
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span class="kategori-status status-nonaktif">
-                                        Nonaktif
-                                    </span>
-                                @endif
-                            </td>
-
-                            <td>
-                                <div class="kategori-actions">
-
-                                    <a href="{{ route('kategori.edit', $item->id) }}"
-                                       class="kategori-action action-edit">
-                                        Edit
-                                    </a>
-
-                                    <form action="{{ route('kategori.destroy', $item->id) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit"
-                                                class="kategori-action action-delete">
-                                            Hapus
-                                        </button>
-
-                                    </form>
-
-                                </div>
-                            </td>
-
                         </tr>
 
                     @empty
 
                         <tr>
                             <td colspan="7" class="kategori-empty">
-                                Belum ada kategori dokumen.
+                                {{ filled($search) ? "Kategori tidak ditemukan." : "Belum ada kategori dokumen." }}
                             </td>
                         </tr>
 
@@ -442,7 +148,6 @@
 
         </div>
 
-        {{-- FOOTER TABEL --}}
         <div class="table-footer">
 
             <div class="table-info">
@@ -452,26 +157,26 @@
             </div>
 
             <div>
-                {{ $kategori->links() }}
+                {{ $kategori->withQueryString()->links() }}
             </div>
 
         </div>
 
+        </div>
     </div>
 
 </div>
 
-{{-- MODAL TAMBAH KATEGORI --}}
-<div class="kategori-modal" id="modalKategori">
+<div class="kategori-modal" id="modalKategori" role="dialog" aria-modal="true" aria-labelledby="kategori-modal-title">
 
     <div class="kategori-modal-content">
 
         <div class="kategori-modal-header">
 
-            <h3>Tambah Kategori Baru</h3>
+            <h3 id="kategori-modal-title">Tambah Kategori Baru</h3>
 
             <button type="button"
-                    class="kategori-modal-close"
+                    class="kategori-modal-close" aria-label="Tutup modal"
                     onclick="tutupModalKategori()">
                 &times;
             </button>
@@ -488,45 +193,54 @@
 
                 <div class="kategori-form-group">
 
-                    <label>Kode Kategori</label>
+                    <label for="modal_kode_kategori">Kode Kategori</label>
 
                     <input type="text"
-                           name="kode_kategori"
+                           id="modal_kode_kategori" name="kode_kategori"
                            maxlength="10"
                            placeholder="Contoh: KAT001"
                            value="{{ old('kode_kategori') }}"
                            required>
 
+                @error('kode_kategori')
+                        <div class="kategori-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="kategori-form-group">
 
-                    <label>Nama Kategori</label>
+                    <label for="modal_nama_kategori">Nama Kategori</label>
 
                     <input type="text"
-                           name="nama_kategori"
+                           id="modal_nama_kategori" name="nama_kategori"
                            maxlength="100"
                            placeholder="Masukkan nama kategori"
                            value="{{ old('nama_kategori') }}"
                            required>
 
+                @error('nama_kategori')
+                        <div class="kategori-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="kategori-form-group">
 
-                    <label>Keterangan & Lingkup Naskah</label>
+                    <label for="modal_keterangan">Keterangan & Lingkup Naskah</label>
 
-                    <textarea name="keterangan"
+                    <textarea id="modal_keterangan" name="keterangan"
                               maxlength="255"
                               placeholder="Masukkan keterangan kategori">{{ old('keterangan') }}</textarea>
 
+                @error('keterangan')
+                        <div class="kategori-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="kategori-form-group">
 
-                    <label>Status Keterbukaan Taksonomi</label>
+                    <label for="modal_status">Status Kategori</label>
 
-                    <select name="status" required>
+                    <select id="modal_status" name="status" required>
 
                         <option value="aktif"
                             {{ old('status', 'aktif') === 'aktif' ? 'selected' : '' }}>
@@ -540,6 +254,9 @@
 
                     </select>
 
+                @error('status')
+                        <div class="kategori-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="kategori-form-footer">
@@ -571,6 +288,7 @@
 <script>
     function bukaModalKategori() {
         document.getElementById('modalKategori').classList.add('show');
+        document.getElementById('modalKategori').querySelector('input[name=kode_kategori]').focus();
     }
 
     function tutupModalKategori() {
@@ -595,4 +313,5 @@
         bukaModalKategori();
     @endif
 </script>
+<script src="{{ asset('js/kategori.js') }}?v=4" defer></script>
 @endpush

@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Log Aktivitas - SIDOKSPI')
@@ -6,697 +5,441 @@
 @section('breadcrumb', 'Pengawasan & Keamanan / Log Aktivitas')
 
 @push('styles')
-<style>
-    .log-page {
-        color: #263650;
-    }
+    <link rel="stylesheet"
+          href="{{ asset('css/laporan.css') }}">
 
-    .log-heading {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .log-heading h2 {
-        margin: 0 0 6px;
-        color: #17243b;
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    .log-heading p {
-        margin: 0;
-        color: #78839a;
-        font-size: 12px;
-    }
-
-    .log-heading .log-date {
-        color: #78839a;
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    .log-stats {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .log-stat {
-        position: relative;
-        min-height: 112px;
-        padding: 15px;
-        overflow: hidden;
-        border: 1px solid #edf0f8;
-        border-radius: 10px;
-        background: #fff;
-        box-shadow: 0 3px 12px rgba(35, 53, 90, .035);
-    }
-
-    .log-stat-label {
-        color: #78839a;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .log-stat-value {
-        margin-top: 9px;
-        color: #17243b;
-        font-size: 27px;
-        font-weight: 850;
-        line-height: 1.1;
-    }
-
-    .log-stat-note {
-        margin-top: 7px;
-        color: #8993a6;
-        font-size: 10px;
-    }
-
-    .log-stat-icon {
-        position: absolute;
-        top: 13px;
-        right: 14px;
-        display: grid;
-        width: 30px;
-        height: 30px;
-        place-items: center;
-        border-radius: 8px;
-        background: #edf3ff;
-        color: #0753c5;
-        font-size: 15px;
-        font-weight: 800;
-    }
-
-    .log-stat:nth-child(2) .log-stat-icon {
-        background: #eaf5ff;
-        color: #1683c5;
-    }
-
-    .log-stat:nth-child(3) .log-stat-icon {
-        background: #e8faf5;
-        color: #159879;
-    }
-
-    .log-stat:nth-child(4) .log-stat-icon {
-        background: #f2efff;
-        color: #7555c7;
-    }
-
-    .log-panel {
-        margin-bottom: 16px;
-        border: 1px solid #edf0f8;
-        border-radius: 10px;
-        background: #fff;
-        box-shadow: 0 3px 12px rgba(35, 53, 90, .035);
-    }
-
-    .log-filter {
-        padding: 15px;
-    }
-
-    .log-filter-title {
-        margin-bottom: 12px;
-        color: #66738b;
-        font-size: 11px;
-        font-weight: 750;
-    }
-
-    .log-filter-grid {
-        display: grid;
-        grid-template-columns: 1.1fr .9fr 1.2fr 1.2fr 1.5fr auto;
-        gap: 9px;
-        align-items: end;
-    }
-
-    .log-field label {
-        display: block;
-        margin-bottom: 5px;
-        color: #68758c;
-        font-size: 10px;
-        font-weight: 700;
-    }
-
-    .log-field input,
-    .log-field select {
-        width: 100%;
-        height: 34px;
-        padding: 0 9px;
-        border: 1px solid #e7eaf2;
-        border-radius: 6px;
-        outline: none;
-        background: #fff;
-        color: #40516b;
-        font-size: 11px;
-    }
-
-    .log-field input:focus,
-    .log-field select:focus {
-        border-color: #0753c5;
-        box-shadow: 0 0 0 2px rgba(7, 83, 197, .08);
-    }
-
-    .log-filter-actions {
-        display: flex;
-        gap: 6px;
-    }
-
-    .log-btn {
-        display: inline-flex;
-        height: 34px;
-        align-items: center;
-        justify-content: center;
-        padding: 0 12px;
-        border: 0;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 700;
-        text-decoration: none;
-        white-space: nowrap;
-        cursor: pointer;
-    }
-
-    .log-btn-primary {
-        background: #0753c5;
-        color: #fff;
-    }
-
-    .log-btn-light {
-        border: 1px solid #e7eaf2;
-        background: #fff;
-        color: #64718a;
-    }
-
-    .log-table-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        padding: 15px;
-        border-bottom: 1px solid #edf0f8;
-    }
-
-    .log-table-title {
-        margin: 0;
-        color: #263650;
-        font-size: 13px;
-        font-weight: 800;
-    }
-
-    .log-table-count {
-        padding: 4px 8px;
-        border-radius: 5px;
-        background: #edf3ff;
-        color: #0753c5;
-        font-size: 10px;
-        font-weight: 750;
-    }
-
-    .log-table-wrap {
-        width: 100%;
-        overflow-x: auto;
-    }
-
-    .log-table {
-        width: 100%;
-        min-width: 850px;
-        border-collapse: collapse;
-    }
-
-    .log-table th {
-        padding: 11px 12px;
-        border-bottom: 1px solid #edf0f8;
-        background: #fafbfe;
-        color: #78839a;
-        font-size: 10px;
-        font-weight: 800;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .log-table td {
-        padding: 12px;
-        border-bottom: 1px solid #f0f2f7;
-        color: #40516b;
-        font-size: 11px;
-        vertical-align: middle;
-    }
-
-    .log-table tbody tr:hover {
-        background: #fafbff;
-    }
-
-    .log-number {
-        color: #8993a6;
-        font-weight: 700;
-    }
-
-    .log-user {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        min-width: 150px;
-    }
-
-    .log-avatar {
-        display: grid;
-        width: 27px;
-        height: 27px;
-        flex: 0 0 auto;
-        place-items: center;
-        border-radius: 50%;
-        background: #e9f0ff;
-        color: #0753c5;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-    }
-
-    .log-user-name {
-        color: #263650;
-        font-size: 11px;
-        font-weight: 750;
-    }
-
-    .log-user-email {
-        margin-top: 3px;
-        color: #929bad;
-        font-size: 9px;
-    }
-
-    .log-date-main {
-        color: #40516b;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .log-date-time {
-        margin-top: 3px;
-        color: #929bad;
-        font-size: 9px;
-        white-space: nowrap;
-    }
-
-    .log-action {
-        display: inline-block;
-        padding: 4px 7px;
-        border-radius: 5px;
-        background: #edf3ff;
-        color: #0753c5;
-        font-size: 10px;
-        font-weight: 750;
-        white-space: nowrap;
-    }
-
-    .log-reference {
-        color: #40516b;
-        font-weight: 650;
-    }
-
-    .log-ip {
-        color: #68758c;
-        font-family: monospace;
-        font-size: 10px;
-        white-space: nowrap;
-    }
-
-    .log-empty {
-        padding: 35px 15px !important;
-        color: #929bad !important;
-        text-align: center;
-    }
-
-    .log-pagination {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 13px 15px;
-    }
-
-    .log-pagination-info {
-        color: #8993a6;
-        font-size: 10px;
-    }
-
-    .log-pagination nav {
-        font-size: 11px;
-    }
-
-    .log-audit-footer {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 15px;
-        border: 1px solid #e5eaf8;
-        border-radius: 9px;
-        background: #f4f6ff;
-    }
-
-    .log-audit-icon {
-        display: grid;
-        width: 34px;
-        height: 34px;
-        flex: 0 0 auto;
-        place-items: center;
-        border-radius: 8px;
-        background: #e4ebff;
-        color: #0753c5;
-        font-size: 17px;
-    }
-
-    .log-audit-title {
-        margin-bottom: 4px;
-        color: #263650;
-        font-size: 11px;
-        font-weight: 800;
-    }
-
-    .log-audit-text {
-        margin: 0;
-        color: #78839a;
-        font-size: 10px;
-        line-height: 1.6;
-    }
-
-    @media (max-width: 1050px) {
-        .log-stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .log-filter-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 620px) {
-        .log-heading {
-            flex-direction: column;
-        }
-
-        .log-stats {
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .log-stat {
-            padding: 12px;
-        }
-
-        .log-stat-value {
-            font-size: 22px;
-        }
-
-        .log-filter-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .log-filter-actions {
-            grid-column: 1 / -1;
-        }
-
-        .log-pagination {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-    }
-</style>
+    <link rel="stylesheet"
+          href="{{ asset('css/log-aktivitas.css') }}?v=1">
 @endpush
 
 @section('content')
-<div class="log-page">
 
-    {{-- JUDUL HALAMAN --}}
-    <div class="log-heading">
-        <div>
+<div class="laporan-page log-page">
+
+    <div class="laporan-header">
+
+        <div class="laporan-heading">
+
+            <div class="laporan-breadcrumb">
+                PENGAWASAN & KEAMANAN / LOG AKTIVITAS
+            </div>
+
             <h2>Log Aktivitas & Audit Trail</h2>
+
             <p>
                 Pantau riwayat aktivitas pengguna, perubahan data,
                 dan akses dokumen dalam sistem SIDOKSPI.
             </p>
+
         </div>
 
         <div class="log-date">
-            {{ now()->translatedFormat('l, d F Y') }}
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+
+                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                <path d="M16 3v4M8 3v4M3 10h18"/>
+
+            </svg>
+
+            {{ now()->locale('id')->translatedFormat('l, d F Y') }}
+
         </div>
+
     </div>
 
-    {{-- KARTU STATISTIK --}}
     <div class="log-stats">
 
         <div class="log-stat">
-            <div class="log-stat-label">Total Aktivitas Tercatat</div>
-            <div class="log-stat-icon">▤</div>
+
+            <div class="log-stat-top">
+
+                <span class="log-stat-label">
+                    Total Aktivitas Tercatat
+                </span>
+
+                <div class="log-stat-icon icon-blue">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <rect x="5" y="4" width="14" height="17" rx="2"/>
+                        <path d="M9 4V2h6v2M9 10h6M9 14h6M9 18h4"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
             <div class="log-stat-value">
                 {{ number_format($totalLog, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Seluruh riwayat aktivitas tersimpan</div>
+
+            <div class="log-stat-note">
+                Seluruh riwayat aktivitas tersimpan
+            </div>
+
         </div>
 
         <div class="log-stat">
-            <div class="log-stat-label">Aktivitas Hari Ini</div>
-            <div class="log-stat-icon">◷</div>
+
+            <div class="log-stat-top">
+
+                <span class="log-stat-label">
+                    Aktivitas Hari Ini
+                </span>
+
+                <div class="log-stat-icon icon-blue">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 7v5l3 2"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
             <div class="log-stat-value">
                 {{ number_format($aktivitasHariIni, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Aktivitas pada tanggal hari ini</div>
+
+            <div class="log-stat-note">
+                Aktivitas pada tanggal hari ini
+            </div>
+
         </div>
 
         <div class="log-stat">
-            <div class="log-stat-label">Pengguna Aktif</div>
-            <div class="log-stat-icon">♙</div>
+
+            <div class="log-stat-top">
+
+                <span class="log-stat-label">
+                    Pengguna Aktif
+                </span>
+
+                <div class="log-stat-icon icon-green">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <circle cx="9" cy="8" r="3"/>
+                        <path d="M3 20v-2a6 6 0 0 1 12 0v2"/>
+                        <path d="M16 5a3 3 0 0 1 0 6M21 20v-2a6 6 0 0 0-4-5"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
             <div class="log-stat-value">
                 {{ number_format($penggunaAktif, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Pengguna yang tercatat beraktivitas hari ini</div>
+
+            <div class="log-stat-note">
+                Pengguna beraktivitas hari ini
+            </div>
+
         </div>
 
         <div class="log-stat">
-            <div class="log-stat-label">Aktivitas dengan Referensi</div>
-            <div class="log-stat-icon">◇</div>
+
+            <div class="log-stat-top">
+
+                <span class="log-stat-label">
+                    Aktivitas dengan Referensi
+                </span>
+
+                <div class="log-stat-icon icon-purple">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <path d="M6 3h8l4 4v14H6z"/>
+                        <path d="M14 3v5h4M9 12h6M9 16h6"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
             <div class="log-stat-value">
                 {{ number_format($aktivitasDenganReferensi, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Aktivitas terkait dokumen atau SK</div>
+
+            <div class="log-stat-note">
+                Aktivitas terkait dokumen atau SK
+            </div>
+
         </div>
 
     </div>
 
-    {{-- FILTER --}}
     <div class="log-panel">
+
+        <div class="log-panel-heading">
+
+            <h3>Filter dan Pencarian Aktivitas</h3>
+
+            <p>
+                Temukan riwayat aktivitas berdasarkan pengguna,
+                aksi, tanggal, atau kata kunci.
+            </p>
+
+        </div>
+
         <form action="{{ route('log-aktivitas.index') }}"
               method="GET"
+              id="logSearchForm"
               class="log-filter">
 
-            <div class="log-filter-title">FILTER DAN PENCARIAN AKTIVITAS</div>
+            <input type="hidden"
+                   name="sort"
+                   id="logSort"
+                   value="{{ $sort }}">
+
+            <input type="hidden"
+                   name="direction"
+                   id="logDirection"
+                   value="{{ $direction }}">
 
             <div class="log-filter-grid">
 
                 <div class="log-field">
+
                     <label for="user_id">Pengguna</label>
+
                     <select name="user_id" id="user_id">
+
                         <option value="">Semua Pengguna</option>
+
                         @foreach ($daftarPengguna as $pengguna)
+
                             <option value="{{ $pengguna->id }}"
-                                {{ request('user_id') == $pengguna->id ? 'selected' : '' }}>
+                                @selected(request('user_id') == $pengguna->id)>
+
                                 {{ $pengguna->nama_lengkap }}
+
                             </option>
+
                         @endforeach
+
                     </select>
+
                 </div>
 
                 <div class="log-field">
+
                     <label for="aksi">Aksi</label>
+
                     <select name="aksi" id="aksi">
+
                         <option value="">Semua Aksi</option>
+
                         @foreach ($daftarAksi as $aksi)
+
                             <option value="{{ $aksi }}"
-                                {{ request('aksi') == $aksi ? 'selected' : '' }}>
-                                {{ ucfirst($aksi) }}
+                                @selected(request('aksi') == $aksi)>
+
+                                {{ ucfirst(str_replace('_', ' ', $aksi)) }}
+
                             </option>
+
                         @endforeach
+
                     </select>
+
                 </div>
 
                 <div class="log-field">
-                    <label for="tanggal_mulai">Tanggal Mulai</label>
+
+                    <label for="tanggal_mulai">
+                        Tanggal Mulai
+                    </label>
+
                     <input type="date"
                            name="tanggal_mulai"
                            id="tanggal_mulai"
                            value="{{ request('tanggal_mulai') }}">
+
                 </div>
 
                 <div class="log-field">
-                    <label for="tanggal_akhir">Tanggal Akhir</label>
+
+                    <label for="tanggal_akhir">
+                        Tanggal Akhir
+                    </label>
+
                     <input type="date"
                            name="tanggal_akhir"
                            id="tanggal_akhir"
                            value="{{ request('tanggal_akhir') }}">
+
                 </div>
 
-                <div class="log-field">
-                    <label for="search">Kata Kunci</label>
-                    <input type="text"
-                           name="search"
-                           id="search"
-                           value="{{ request('search') }}"
-                           placeholder="ID, nama, aksi, IP...">
+                <div class="log-field log-search-field">
+
+                    <label for="logSearchInput">
+                        Kata Kunci
+                    </label>
+
+                    <div class="log-search-box">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             aria-hidden="true">
+
+                            <circle cx="11" cy="11" r="7"/>
+                            <path d="m16 16 4 4"/>
+
+                        </svg>
+
+                        <input type="search"
+                               name="search"
+                               id="logSearchInput"
+                               value="{{ $search }}"
+                               maxlength="100"
+                               autocomplete="off"
+                               placeholder="Cari aktivitas...">
+
+                    </div>
+
                 </div>
 
                 <div class="log-filter-actions">
-                    <button type="submit" class="log-btn log-btn-primary">
-                        Terapkan
-                    </button>
 
                     <a href="{{ route('log-aktivitas.index') }}"
-                       class="log-btn log-btn-light">
+                       id="logReset"
+                       class="log-btn log-btn-reset">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round"
+                             aria-hidden="true">
+
+                            <path d="M3 12a9 9 0 1 1 3 6.7"/>
+                            <path d="M3 5v7h7"/>
+
+                        </svg>
+
                         Reset
+
                     </a>
+
                 </div>
 
             </div>
+
         </form>
+
     </div>
 
-    {{-- TABEL AKTIVITAS --}}
-    <div class="log-panel">
+    <div class="log-panel log-results-panel"
+         id="logResultsPanel"
+         aria-busy="false">
 
-        <div class="log-table-head">
-            <h3 class="log-table-title">Daftar Jejak Audit Sistem</h3>
+        <div class="log-loading"
+             id="logLoading"
+             role="status"
+             hidden>
 
-            <span class="log-table-count">
-                {{ number_format($aktivitas->total(), 0, ',', '.') }} data
-            </span>
-        </div>
+            <div class="log-loading-content">
 
-        <div class="log-table-wrap">
-            <table class="log-table">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>WAKTU (TANGGAL)</th>
-                        <th>PENGGUNA</th>
-                        <th>AKSI</th>
-                        <th>OBJEK & REFERENSI</th>
-                        <th>ALAMAT IP</th>
-                    </tr>
-                </thead>
+                <span class="log-spinner"></span>
 
-                <tbody>
-                    @forelse ($aktivitas as $log)
-                        <tr>
-                            <td class="log-number">
-                                {{ $aktivitas->firstItem() + $loop->index }}
-                            </td>
+                <span>Memuat data...</span>
 
-                            <td>
-                                <div class="log-date-main">
-                                    {{ $log->created_at
-                                        ? $log->created_at->format('d M Y')
-                                        : '-' }}
-                                </div>
-
-                                <div class="log-date-time">
-                                    {{ $log->created_at
-                                        ? $log->created_at->format('H:i:s')
-                                        : '-' }}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div class="log-user">
-                                    <div class="log-avatar">
-                                        {{ substr($log->user->nama_lengkap ?? '?', 0, 1) }}
-                                    </div>
-
-                                    <div>
-                                        <div class="log-user-name">
-                                            {{ $log->user->nama_lengkap ?? 'Pengguna tidak ditemukan' }}
-                                        </div>
-
-                                        <div class="log-user-email">
-                                            {{ $log->user->email ?? '-' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="log-action">
-                                    {{ ucfirst(str_replace('_', ' ', $log->aksi)) }}
-                                </span>
-                            </td>
-
-                            <td>
-                                @if ($log->dokumen_id)
-                                    <div class="log-reference">
-                                        Dokumen #{{ $log->dokumen_id }}
-                                    </div>
-                                @elseif ($log->sk_id)
-                                    <div class="log-reference">
-                                        Surat Keputusan #{{ $log->sk_id }}
-                                    </div>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
-
-                            <td>
-                                <span class="log-ip">
-                                    {{ $log->ip_address ?? '-' }}
-                                </span>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="log-empty">
-                                Belum ada aktivitas yang tercatat.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="log-pagination">
-            <div class="log-pagination-info">
-                @if ($aktivitas->total() > 0)
-                    Menampilkan {{ $aktivitas->firstItem() }}
-                    sampai {{ $aktivitas->lastItem() }}
-                    dari {{ $aktivitas->total() }} aktivitas
-                @else
-                    Tidak ada data untuk ditampilkan
-                @endif
             </div>
 
-            <div>
-                {{ $aktivitas->links() }}
-            </div>
+        </div>
+
+        <div id="logResults">
+
+            @include('log-aktivitas.partials.results')
+
         </div>
 
     </div>
 
-    {{-- INFORMASI AUDIT --}}
     <div class="log-audit-footer">
-        <div class="log-audit-icon">✓</div>
+
+        <div class="log-audit-icon">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+
+                <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+                <path d="m9 12 2 2 4-4"/>
+
+            </svg>
+
+        </div>
 
         <div>
+
             <div class="log-audit-title">
-                Integritas Log Aktivitas
+                Informasi Log Aktivitas
             </div>
 
             <p class="log-audit-text">
-                Halaman ini menampilkan riwayat aktivitas yang tersimpan
-                pada database SIDOKSPI, termasuk pengguna, aksi, waktu,
+                Riwayat aktivitas mencakup pengguna, aksi, waktu,
                 alamat IP, dan referensi dokumen atau surat keputusan.
-                Informasi hash dan validasi kriptografi belum tersedia
+                Validasi integritas secara kriptografi belum tersedia
                 pada struktur database saat ini.
             </p>
+
         </div>
+
     </div>
 
 </div>
+
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/log-aktivitas.js') }}?v=1"
+            defer></script>
+@endpush

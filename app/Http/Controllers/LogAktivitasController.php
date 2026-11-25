@@ -10,84 +10,62 @@ use Illuminate\View\View;
 
 class LogAktivitasController extends Controller
 {
-    // ==========================================
-    // HALAMAN LOG AKTIVITAS
-    // ==========================================
     public function index(Request $request): View
     {
-        // LOG AKTIVITAS KHUSUS ADMIN
         abort_unless(
-            $request->user()->role === 'admin',
+            $request->user()?->role === 'admin',
             403
         );
 
-        // ==========================================
-        // VALIDASI FILTER
-        // ==========================================
         $filters = $request->validate([
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'aksi' => ['nullable', 'string', 'max:100'],
-            'tanggal_mulai' => ['nullable', 'date'],
+            'tanggal_mulai' => ['nullable', 'date_format:Y-m-d'],
             'tanggal_akhir' => [
                 'nullable',
-                'date',
-                'after_or_equal:tanggal_mulai',
+                'date_format:Y-m-d',
+                ...($request->filled('tanggal_mulai')
+                    ? ['after_or_equal:tanggal_mulai']
+                    : []),
             ],
             'search' => ['nullable', 'string', 'max:100'],
+            'sort' => [
+                'nullable',
+                'in:created_at,pengguna,aksi,referensi,ip_address',
+            ],
+            'direction' => ['nullable', 'in:asc,desc'],
         ]);
 
-        // ==========================================
-        // QUERY UTAMA
-        // ==========================================
         $query = LogAktivitas::with([
             'user',
             'dokumen',
             'suratKeputusan',
         ]);
 
-        // FILTER PENGGUNA
-        $query->when(
-            !empty($filters['user_id']),
-            function (Builder $query) use ($filters) {
-                $query->where('user_id', $filters['user_id']);
-            }
-        );
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
 
-        // FILTER AKSI
-        $query->when(
-            !empty($filters['aksi']),
-            function (Builder $query) use ($filters) {
-                $query->where('aksi', $filters['aksi']);
-            }
-        );
+        if (!empty($filters['aksi'])) {
+            $query->where('aksi', $filters['aksi']);
+        }
 
-        // FILTER TANGGAL MULAI
-        $query->when(
-            !empty($filters['tanggal_mulai']),
-            function (Builder $query) use ($filters) {
-                $query->whereDate(
-                    'created_at',
-                    '>=',
-                    $filters['tanggal_mulai']
-                );
-            }
-        );
+        if (!empty($filters['tanggal_mulai'])) {
+            $query->whereDate(
+                'created_at',
+                '>=',
+                $filters['tanggal_mulai']
+            );
+        }
 
-        // FILTER TANGGAL AKHIR
-        $query->when(
-            !empty($filters['tanggal_akhir']),
-            function (Builder $query) use ($filters) {
-                $query->whereDate(
-                    'created_at',
-                    '<=',
-                    $filters['tanggal_akhir']
-                );
-            }
-        );
+        if (!empty($filters['tanggal_akhir'])) {
+            $query->whereDate(
+                'created_at',
+                '<=',
+                $filters['tanggal_akhir']
+            );
+        }
 
-        // ==========================================
-        // PENCARIAN
-        // ==========================================
         $search = trim($filters['search'] ?? '');
 
         if ($search !== '') {
@@ -95,6 +73,8 @@ class LogAktivitasController extends Controller
                 $q->where('aksi', 'like', "%{$search}%")
                     ->orWhere('ip_address', 'like', "%{$search}%")
                     ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('dokumen_id', 'like', "%{$search}%")
+                    ->orWhere('sk_id', 'like', "%{$search}%")
                     ->orWhereHas('user', function (Builder $user) use ($search) {
                         $user->where('nama_lengkap', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");
@@ -102,20 +82,66 @@ class LogAktivitasController extends Controller
             });
         }
 
-        // ==========================================
-        // STATISTIK LOG AKTIVITAS
-        // ==========================================
+        $sort = $filters['sort'] ?? 'created_at';
+        $direction = $filters['direction'] ?? 'desc';
 
-        // TOTAL SELURUH AKTIVITAS
+        switch ($sort) {
+            case 'pengguna':
+                $query->orderBy(
+                    User::select('nama_lengkap')
+                        ->whereColumn(
+                            'users.id',
+                            'log_aktivitas.user_id'
+                        )
+                        ->limit(1),
+                    $direction
+                );
+                break;
+
+            case 'referensi':
+                $query->orderByRaw(
+                    'CASE
+                        WHEN dokumen_id IS NOT NULL THEN 1
+                        WHEN sk_id IS NOT NULL THEN 2
+                        ELSE 3
+                    END ' . $direction
+                )
+                    ->orderBy('dokumen_id', $direction)
+                    ->orderBy('sk_id', $direction);
+                break;
+
+            default:
+                $query->orderBy($sort, $direction);
+                break;
+        }
+
+        $aktivitas = $query
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        $tableData = [
+            'aktivitas' => $aktivitas,
+            'sort' => $sort,
+            'direction' => $direction,
+            'search' => $search,
+            'filters' => $filters,
+        ];
+
+        if ($request->ajax()) {
+            return view(
+                'log-aktivitas.partials.results',
+                $tableData
+            );
+        }
+
         $totalLog = LogAktivitas::count();
 
-        // AKTIVITAS HARI INI
         $aktivitasHariIni = LogAktivitas::whereDate(
             'created_at',
             today()
         )->count();
 
-        // PENGGUNA AKTIF HARI INI
         $penggunaAktif = LogAktivitas::whereDate(
             'created_at',
             today()
@@ -123,50 +149,32 @@ class LogAktivitasController extends Controller
             ->distinct()
             ->count('user_id');
 
-        // AKTIVITAS DENGAN REFERENSI DOKUMEN ATAU SK
         $aktivitasDenganReferensi = LogAktivitas::where(
-            function ($query) {
+            function (Builder $query) {
                 $query->whereNotNull('dokumen_id')
                     ->orWhereNotNull('sk_id');
             }
         )->count();
 
-        // ==========================================
-        // DATA AKTIVITAS
-        // ==========================================
-        $aktivitas = $query
-            ->orderByDesc('created_at')
-            ->paginate(10)
-            ->withQueryString();
-
-        // ==========================================
-        // DAFTAR PENGGUNA
-        // ==========================================
         $daftarPengguna = User::orderBy('nama_lengkap')
             ->get();
 
-        // ==========================================
-        // DAFTAR AKSI
-        // ==========================================
         $daftarAksi = LogAktivitas::query()
             ->whereNotNull('aksi')
             ->distinct()
             ->orderBy('aksi')
             ->pluck('aksi');
 
-        // ==========================================
-        // TAMPILKAN HALAMAN
-        // ==========================================
-        return view('log-aktivitas.index', [
-            'aktivitas' => $aktivitas,
-            'totalLog' => $totalLog,
-            'aktivitasHariIni' => $aktivitasHariIni,
-            'penggunaAktif' => $penggunaAktif,
-            'aktivitasDenganReferensi' => $aktivitasDenganReferensi,
-            'daftarPengguna' => $daftarPengguna,
-            'daftarAksi' => $daftarAksi,
-            'search' => $search,
-            'filters' => $filters,
-        ]);
+        return view('log-aktivitas.index', array_merge(
+            $tableData,
+            compact(
+                'totalLog',
+                'aktivitasHariIni',
+                'penggunaAktif',
+                'aktivitasDenganReferensi',
+                'daftarPengguna',
+                'daftarAksi'
+            )
+        ));
     }
 }

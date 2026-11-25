@@ -1,0 +1,528 @@
+.kategori-page,
+.kategori-modal {
+    color: #17243b;
+}
+.kategori-page *,
+.kategori-modal * {
+    box-sizing: border-box;
+}
+.kategori-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+.kategori-page .laporan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+.kategori-page .laporan-heading h2 {
+    margin: 0;
+}
+.kategori-page .laporan-heading p {
+    margin: 7px 0 0;
+    color: #78839a;
+}
+.kategori-page .laporan-breadcrumb {
+    margin-bottom: 8px;
+    color: #2168d6;
+}
+.kategori-page .laporan-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #e8edf6;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 4px 18px rgba(35, 55, 90, 0.035);
+}
+.kategori-page .panel-heading {
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf0f8;
+}
+.kategori-page .panel-heading h3 {
+    margin: 0;
+}
+.kategori-page .panel-heading p {
+    margin: 6px 0 0;
+    color: #78839a;
+}
+.kategori-page .panel-body {
+    padding: 22px;
+}
+.kategori-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 22px;
+}
+.kategori-search {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.kategori-search input {
+    width: 300px;
+    max-width: 100%;
+}
+.kategori-total {
+    color: #78839a;
+}
+.kategori-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+.kategori-btn-primary {
+    background: #2168d6;
+    color: #fff;
+}
+.kategori-btn-primary:hover {
+    background: #0753c5;
+    color: #fff;
+}
+.kategori-btn-cancel {
+    background: #f4f6fb;
+    border-color: #e4e9f2;
+    color: #52627a;
+}
+.kategori-btn-cancel:hover {
+    background: #e8edf6;
+}
+.kategori-page .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.kategori-page .laporan-table {
+    width: 100%;
+    min-width: 790px;
+    border-collapse: collapse;
+    text-align: left;
+}
+.kategori-page .laporan-table th {
+    padding: 14px 16px;
+    background: #f4f6fc;
+    color: #78839a;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.kategori-page .laporan-table td {
+    padding: 16px;
+    border-bottom: 1px solid #edf0f8;
+    color: #52627a;
+    vertical-align: middle;
+}
+.kategori-page .laporan-table td:nth-child(4) {
+    min-width: 180px;
+    max-width: 340px;
+    overflow-wrap: anywhere;
+}
+.kategori-page .laporan-table td:nth-child(5) {
+    white-space: nowrap;
+}
+.kategori-page .laporan-table tbody tr:hover {
+    background: #f9faff;
+}
+.kategori-page .table-primary-text {
+    color: #17243b;
+}
+.kategori-code {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #eaf1ff;
+    color: #2168d6;
+    white-space: nowrap;
+}
+.kategori-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.kategori-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.kategori-status.status-aktif {
+    background: #eaf1ff;
+    color: #2168d6;
+}
+.kategori-status.status-nonaktif {
+    background: #edf0f5;
+    color: #68758a;
+}
+.kategori-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.kategori-actions form {
+    margin: 0;
+}
+.kategori-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 11px;
+    border: 0;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+}
+.kategori-action.action-edit {
+    background: #eaf1ff;
+    color: #2168d6;
+}
+.kategori-action.action-edit:hover {
+    background: #dce8fc;
+}
+.kategori-action.action-delete {
+    background: #fff0f2;
+    color: #c03945;
+}
+.kategori-action.action-delete:hover {
+    background: #ffe0e5;
+}
+.kategori-page .table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 22px;
+}
+.kategori-page .table-info {
+    color: #78839a;
+}
+.kategori-page .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.kategori-page .pagination a,
+.kategori-page .pagination span {
+    display: inline-flex;
+    min-width: 32px;
+    min-height: 32px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border: 1px solid #e4e9f2;
+    border-radius: 7px;
+    color: #52627a;
+    text-decoration: none;
+}
+.kategori-page .pagination .active span,
+.kategori-page .pagination .active a {
+    background: #2168d6;
+    color: #fff;
+    border-color: #2168d6;
+}
+.kategori-page .pagination .disabled span {
+    color: #a3adbf;
+}
+.kategori-empty {
+    padding: 35px !important;
+    text-align: center;
+    color: #78839a !important;
+}
+.kategori-alert {
+    padding: 13px 16px;
+    border: 1px solid #dce8fc;
+    border-radius: 9px;
+}
+.kategori-alert ul {
+    margin: 7px 0 0;
+    padding-left: 20px;
+}
+.kategori-alert-success {
+    background: #edf4ff;
+    color: #0753c5;
+}
+.kategori-alert-error {
+    background: #fff1f2;
+    border-color: #f5d0d5;
+    color: #b42332;
+}
+.kategori-page .kategori-form {
+    width: 100%;
+    max-width: 760px;
+}
+.kategori-field,
+.kategori-form-group {
+    margin-bottom: 18px;
+}
+.kategori-field label,
+.kategori-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #34435c;
+}
+.kategori-input,
+.kategori-search input,
+.kategori-form-group input,
+.kategori-form-group textarea,
+.kategori-form-group select {
+    width: 100%;
+    min-height: 40px;
+    padding: 11px 13px;
+    border: 1px solid #dce3ef;
+    border-radius: 9px;
+    background: #fbfcff;
+    color: #263650;
+    outline: none;
+}
+.kategori-search input {
+    width: 300px;
+}
+.kategori-input:focus,
+.kategori-search input:focus,
+.kategori-form-group input:focus,
+.kategori-form-group textarea:focus,
+.kategori-form-group select:focus {
+    border-color: #2168d6;
+    box-shadow: 0 0 0 3px rgba(33, 104, 214, 0.1);
+}
+.kategori-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+.kategori-error {
+    margin-top: 6px;
+    color: #c03945;
+}
+.kategori-form-actions,
+.kategori-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding-top: 18px;
+    border-top: 1px solid #edf0f8;
+}
+.kategori-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(23, 36, 59, 0.48);
+}
+.kategori-modal.show {
+    display: flex;
+}
+.kategori-modal-content {
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(23, 36, 59, 0.18);
+}
+.kategori-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #edf0f8;
+}
+.kategori-modal-header h3 {
+    margin: 0;
+}
+.kategori-modal-close {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: #f4f6fb;
+    color: #52627a;
+    cursor: pointer;
+}
+.kategori-modal-body {
+    padding: 22px 24px;
+}
+.kategori-btn:focus-visible,
+.kategori-action:focus-visible,
+.kategori-modal-close:focus-visible {
+    outline: 2px solid #2168d6;
+    outline-offset: 3px;
+}
+@media (max-width: 650px) {
+    .kategori-page .laporan-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .kategori-toolbar,
+    .kategori-page .panel-heading,
+    .kategori-page .panel-body,
+    .kategori-page .table-footer {
+        padding: 14px;
+    }
+    .kategori-search {
+        width: 100%;
+    }
+    .kategori-search input {
+        width: 100%;
+    }
+    .kategori-form-actions > *,
+    .kategori-form-footer > * {
+        flex: 1;
+    }
+    .kategori-modal-header,
+    .kategori-modal-body {
+        padding: 16px;
+    }
+}
+
+.kategori-form-page {
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+}
+.kategori-form-page .kategori-form {
+    margin-inline: auto;
+}
+.kategori-search {
+    flex: 1 1 300px;
+    min-width: 0;
+}
+.kategori-search input {
+    width: min(100%, 380px);
+}
+#kategoriSearchStatus {
+    color: #78839a;
+}
+
+@media (max-width: 520px) {
+    .kategori-search {
+        flex-basis: auto;
+        width: 100%;
+    }
+    .kategori-search input {
+        width: 100%;
+    }
+}
+
+.kategori-inline {
+    width: 100%;
+    min-width: 95px;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #263650;
+}
+.kategori-inline:hover {
+    border-color: #dce3ef;
+    background: #f8faff;
+}
+.kategori-inline:focus {
+    outline: none;
+    border-color: #2168d6;
+    background: #fff;
+    box-shadow: 0 0 0 3px #eaf1ff;
+}
+.kategori-inline-code {
+    color: #2168d6;
+}
+.kategori-inline-status {
+    color: #2168d6;
+    background: #eaf1ff;
+    cursor: pointer;
+}
+.kategori-inline:disabled {
+    opacity: 0.6;
+}
+.kategori-action.action-delete {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+}
+#kategoriSaveStatus:not(:empty) {
+    padding: 8px 22px;
+    color: #34435c;
+}
+
+.kategori-page .laporan-table thead th {
+    padding: 15px 16px;
+    background: #edf3ff;
+    color: #344e78;
+    border-top: 1px solid #e1e9f7;
+    border-bottom: 1px solid #dce5f5;
+}
+.kategori-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none;
+}
+.kategori-sort:hover,
+th[aria-sort="ascending"] .kategori-sort,
+th[aria-sort="descending"] .kategori-sort {
+    color: #0753c5;
+}
+.kategori-sort-icon {
+    color: #8b9cba;
+}
+th[aria-sort="ascending"] .kategori-sort-icon,
+th[aria-sort="descending"] .kategori-sort-icon {
+    color: #0753c5;
+}
+.kategori-inline.kategori-inline-status {
+    width: 120px;
+    min-width: 110px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 7px 12px;
+    cursor: pointer;
+}
+.kategori-inline-status[data-status="aktif"] {
+    background: #e3f8eb;
+    color: #16834c;
+}
+.kategori-inline-status[data-status="nonaktif"] {
+    background: #ffebee;
+    color: #c83c49;
+}
+.kategori-inline-status option {
+    background: #fff;
+    color: #263650;
+}
+
+.kategori-page .kategori-inline.kategori-inline-status {
+    appearance: none;
+    width: 106px;
+    min-width: 106px;
+    padding: 7px 28px 7px 13px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364758b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}

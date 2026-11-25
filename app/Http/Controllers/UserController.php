@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -9,25 +11,40 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    /**
-     * DAFTAR ROLE YANG DIIZINKAN
-     */
     private const ROLES = [
         'admin',
         'staf_spi',
         'auditee',
     ];
 
-    // ==========================================
-    // MENAMPILKAN DAFTAR PENGGUNA
-    // ==========================================
     public function index(Request $request): View
     {
         $query = User::query();
 
-        // PENCARIAN
-        if ($request->filled('search')) {
-            $search = trim($request->search);
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'id');
+        $direction = $request->input('direction', 'desc');
+
+        $allowedSorts = [
+            'id',
+            'nama_lengkap',
+            'nip',
+            'email',
+            'role',
+            'bidang',
+            'status',
+        ];
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'desc';
+        }
+
+        if (is_string($search) && trim($search) !== '') {
+            $search = trim($search);
 
             $query->where(function ($q) use ($search) {
                 $q->where('nama_lengkap', 'like', "%{$search}%")
@@ -36,35 +53,37 @@ class UserController extends Controller
             });
         }
 
-        // FILTER ROLE
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
+        foreach (['role', 'status'] as $filter) {
+            if (
+                $request->filled($filter) &&
+                is_string($request->input($filter))
+            ) {
+                $query->where($filter, $request->input($filter));
+            }
         }
 
-        // FILTER STATUS
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        $query->orderBy($sort, $direction);
+
+        if ($sort !== 'id') {
+            $query->orderBy('id', 'asc');
         }
 
         $pengguna = $query
-            ->latest('id')
             ->paginate(10)
             ->withQueryString();
 
-        return view('pengguna.index', compact('pengguna'));
+        return view('pengguna.index', compact(
+            'pengguna',
+            'sort',
+            'direction'
+        ));
     }
 
-    // ==========================================
-    // FORM TAMBAH PENGGUNA
-    // ==========================================
     public function create(): View
     {
         return view('pengguna.create');
     }
 
-    // ==========================================
-    // MENYIMPAN PENGGUNA BARU
-    // ==========================================
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -127,17 +146,11 @@ class UserController extends Controller
             ->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
-    // ==========================================
-    // FORM EDIT PENGGUNA
-    // ==========================================
     public function edit(User $pengguna): View
     {
         return view('pengguna.edit', compact('pengguna'));
     }
 
-    // ==========================================
-    // MEMPERBARUI DATA PENGGUNA
-    // ==========================================
     public function update(
         Request $request,
         User $pengguna
@@ -195,7 +208,6 @@ class UserController extends Controller
         $pengguna->bidang = $validated['bidang'] ?? null;
         $pengguna->status = $validated['status'];
 
-        // PASSWORD HANYA DIUBAH JIKA DIISI
         if (!empty($validated['password'])) {
             $pengguna->password_hash = Hash::make(
                 $validated['password']
@@ -209,12 +221,8 @@ class UserController extends Controller
             ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    // ==========================================
-    // MENGHAPUS PENGGUNA
-    // ==========================================
     public function destroy(User $pengguna): RedirectResponse
     {
-        // MENCEGAH PENGHAPUSAN AKUN SENDIRI
         if (auth()->id() === $pengguna->id) {
             return redirect()
                 ->route('pengguna.index')
