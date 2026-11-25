@@ -2,7 +2,9 @@
 @extends('layouts.app')
 
 @section('title', 'Log Aktivitas - SIDOKSPI')
+
 @section('active-menu', 'log-aktivitas')
+
 @section('breadcrumb', 'Pengawasan & Keamanan / Log Aktivitas')
 
 @push('styles')
@@ -11,6 +13,7 @@
         color: #263650;
     }
 
+    /* HEADING */
     .log-heading {
         display: flex;
         justify-content: space-between;
@@ -38,6 +41,7 @@
         white-space: nowrap;
     }
 
+    /* STATISTIK */
     .log-stats {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -106,6 +110,7 @@
         color: #7555c7;
     }
 
+    /* PANEL */
     .log-panel {
         margin-bottom: 16px;
         border: 1px solid #edf0f8;
@@ -114,6 +119,7 @@
         box-shadow: 0 3px 12px rgba(35, 53, 90, .035);
     }
 
+    /* FILTER */
     .log-filter {
         padding: 15px;
     }
@@ -151,6 +157,7 @@
         background: #fff;
         color: #40516b;
         font-size: 11px;
+        box-sizing: border-box;
     }
 
     .log-field input:focus,
@@ -190,6 +197,7 @@
         color: #64718a;
     }
 
+    /* TABEL */
     .log-table-head {
         display: flex;
         justify-content: space-between;
@@ -329,12 +337,15 @@
         text-align: center;
     }
 
+    /* PAGINATION */
     .log-pagination {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         gap: 12px;
         padding: 13px 15px;
+        border-top: 1px solid #f0f2f7;
     }
 
     .log-pagination-info {
@@ -342,10 +353,49 @@
         font-size: 10px;
     }
 
-    .log-pagination nav {
-        font-size: 11px;
+    .log-pagination-links {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
+    .log-page-link {
+        display: inline-flex;
+        min-width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 9px;
+        border: 1px solid #e7eaf2;
+        border-radius: 6px;
+        background: #fff;
+        color: #526078;
+        font-size: 11px;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+
+    .log-page-link:hover {
+        border-color: #0753c5;
+        background: #f2f6ff;
+        color: #0753c5;
+    }
+
+    .log-page-link.active {
+        border-color: #0753c5;
+        background: #0753c5;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .log-page-link.disabled {
+        background: #f8f9fc;
+        color: #aab2c0;
+        cursor: not-allowed;
+    }
+
+    /* FOOTER AUDIT */
     .log-audit-footer {
         display: flex;
         align-items: center;
@@ -382,6 +432,7 @@
         line-height: 1.6;
     }
 
+    /* RESPONSIVE */
     @media (max-width: 1050px) {
         .log-stats {
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -453,7 +504,9 @@
             <div class="log-stat-value">
                 {{ number_format($totalLog, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Seluruh riwayat aktivitas tersimpan</div>
+            <div class="log-stat-note">
+                Seluruh riwayat aktivitas tersimpan
+            </div>
         </div>
 
         <div class="log-stat">
@@ -462,7 +515,9 @@
             <div class="log-stat-value">
                 {{ number_format($aktivitasHariIni, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Aktivitas pada tanggal hari ini</div>
+            <div class="log-stat-note">
+                Aktivitas pada tanggal hari ini
+            </div>
         </div>
 
         <div class="log-stat">
@@ -471,7 +526,9 @@
             <div class="log-stat-value">
                 {{ number_format($penggunaAktif, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Pengguna yang tercatat beraktivitas hari ini</div>
+            <div class="log-stat-note">
+                Pengguna yang tercatat beraktivitas hari ini
+            </div>
         </div>
 
         <div class="log-stat">
@@ -480,7 +537,9 @@
             <div class="log-stat-value">
                 {{ number_format($aktivitasDenganReferensi, 0, ',', '.') }}
             </div>
-            <div class="log-stat-note">Aktivitas terkait dokumen atau SK</div>
+            <div class="log-stat-note">
+                Aktivitas terkait dokumen atau SK
+            </div>
         </div>
 
     </div>
@@ -491,14 +550,18 @@
               method="GET"
               class="log-filter">
 
-            <div class="log-filter-title">FILTER DAN PENCARIAN AKTIVITAS</div>
+            <div class="log-filter-title">
+                FILTER DAN PENCARIAN AKTIVITAS
+            </div>
 
             <div class="log-filter-grid">
 
                 <div class="log-field">
                     <label for="user_id">Pengguna</label>
+
                     <select name="user_id" id="user_id">
                         <option value="">Semua Pengguna</option>
+
                         @foreach ($daftarPengguna as $pengguna)
                             <option value="{{ $pengguna->id }}"
                                 {{ request('user_id') == $pengguna->id ? 'selected' : '' }}>
@@ -510,8 +573,10 @@
 
                 <div class="log-field">
                     <label for="aksi">Aksi</label>
+
                     <select name="aksi" id="aksi">
                         <option value="">Semua Aksi</option>
+
                         @foreach ($daftarAksi as $aksi)
                             <option value="{{ $aksi }}"
                                 {{ request('aksi') == $aksi ? 'selected' : '' }}>
@@ -523,6 +588,7 @@
 
                 <div class="log-field">
                     <label for="tanggal_mulai">Tanggal Mulai</label>
+
                     <input type="date"
                            name="tanggal_mulai"
                            id="tanggal_mulai"
@@ -531,6 +597,7 @@
 
                 <div class="log-field">
                     <label for="tanggal_akhir">Tanggal Akhir</label>
+
                     <input type="date"
                            name="tanggal_akhir"
                            id="tanggal_akhir"
@@ -539,6 +606,7 @@
 
                 <div class="log-field">
                     <label for="search">Kata Kunci</label>
+
                     <input type="text"
                            name="search"
                            id="search"
@@ -565,7 +633,9 @@
     <div class="log-panel">
 
         <div class="log-table-head">
-            <h3 class="log-table-title">Daftar Jejak Audit Sistem</h3>
+            <h3 class="log-table-title">
+                Daftar Jejak Audit Sistem
+            </h3>
 
             <span class="log-table-count">
                 {{ number_format($aktivitas->total(), 0, ',', '.') }} data
@@ -574,6 +644,7 @@
 
         <div class="log-table-wrap">
             <table class="log-table">
+
                 <thead>
                     <tr>
                         <th>NO</th>
@@ -588,6 +659,7 @@
                 <tbody>
                     @forelse ($aktivitas as $log)
                         <tr>
+
                             <td class="log-number">
                                 {{ $aktivitas->firstItem() + $loop->index }}
                             </td>
@@ -608,6 +680,7 @@
 
                             <td>
                                 <div class="log-user">
+
                                     <div class="log-avatar">
                                         {{ substr($log->user->nama_lengkap ?? '?', 0, 1) }}
                                     </div>
@@ -621,6 +694,7 @@
                                             {{ $log->user->email ?? '-' }}
                                         </div>
                                     </div>
+
                                 </div>
                             </td>
 
@@ -649,7 +723,9 @@
                                     {{ $log->ip_address ?? '-' }}
                                 </span>
                             </td>
+
                         </tr>
+
                     @empty
                         <tr>
                             <td colspan="6" class="log-empty">
@@ -658,10 +734,13 @@
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
 
+        {{-- PAGINATION TANPA IKON SVG --}}
         <div class="log-pagination">
+
             <div class="log-pagination-info">
                 @if ($aktivitas->total() > 0)
                     Menampilkan {{ $aktivitas->firstItem() }}
@@ -672,15 +751,58 @@
                 @endif
             </div>
 
-            <div>
-                {{ $aktivitas->links() }}
-            </div>
+            @if ($aktivitas->lastPage() > 1)
+                <div class="log-pagination-links">
+
+                    {{-- SEBELUMNYA --}}
+                    @if ($aktivitas->onFirstPage())
+                        <span class="log-page-link disabled">
+                            Sebelumnya
+                        </span>
+                    @else
+                        <a href="{{ $aktivitas->previousPageUrl() }}"
+                           class="log-page-link">
+                            Sebelumnya
+                        </a>
+                    @endif
+
+                    {{-- NOMOR HALAMAN --}}
+                    @for ($page = 1; $page <= $aktivitas->lastPage(); $page++)
+                        @if ($page == $aktivitas->currentPage())
+                            <span class="log-page-link active"
+                                  aria-current="page">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <a href="{{ $aktivitas->url($page) }}"
+                               class="log-page-link">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endfor
+
+                    {{-- SELANJUTNYA --}}
+                    @if ($aktivitas->hasMorePages())
+                        <a href="{{ $aktivitas->nextPageUrl() }}"
+                           class="log-page-link">
+                            Selanjutnya
+                        </a>
+                    @else
+                        <span class="log-page-link disabled">
+                            Selanjutnya
+                        </span>
+                    @endif
+
+                </div>
+            @endif
+
         </div>
 
     </div>
 
     {{-- INFORMASI AUDIT --}}
     <div class="log-audit-footer">
+
         <div class="log-audit-icon">✓</div>
 
         <div>
@@ -696,6 +818,7 @@
                 pada struktur database saat ini.
             </p>
         </div>
+
     </div>
 
 </div>

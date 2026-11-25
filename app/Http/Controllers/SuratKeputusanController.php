@@ -348,6 +348,70 @@ class SuratKeputusanController extends Controller
     }
 
     // ==========================================
+    // HAPUS SURAT KEPUTUSAN
+    // ==========================================
+    public function destroy(
+        Request $request,
+        SuratKeputusan $suratKeputusan
+    ): RedirectResponse {
+        $this->authorizeSK($request);
+
+        $pathFile = null;
+
+        DB::transaction(function () use (
+            $request,
+            $suratKeputusan,
+            &$pathFile
+        ): void {
+            // Kunci data SK selama proses penghapusan.
+            $sk = SuratKeputusan::query()
+                ->whereKey($suratKeputusan->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $pathFile = $sk->path_file;
+
+            // Lepaskan relasi log lama agar riwayat aktivitas
+            // tetap tersimpan dan tidak menghalangi penghapusan SK.
+            LogAktivitas::where('sk_id', $sk->id)
+                ->update(['sk_id' => null]);
+
+            // Catat aktivitas penghapusan.
+            LogAktivitas::create([
+                'user_id' => $request->user()->id,
+                'sk_id' => null,
+                'aksi' => 'hapus_surat_keputusan',
+                'ip_address' => $request->ip(),
+            ]);
+
+            // Hapus data SK dari database.
+            $sk->delete();
+        });
+
+        // Hapus file setelah transaksi database berhasil.
+        if (
+            filled($pathFile)
+            && Storage::disk('public')->exists($pathFile)
+            && ! Storage::disk('public')->delete($pathFile)
+        ) {
+            report(new \RuntimeException(
+                'Data SK sudah dihapus, tetapi file PDF gagal dihapus: '.$pathFile
+            ));
+
+            return redirect()
+                ->route('sk.index')
+                ->with(
+                    'warning',
+                    'Data SK berhasil dihapus, tetapi file PDF gagal dihapus dari penyimpanan.'
+                );
+        }
+
+        return redirect()
+            ->route('sk.index')
+            ->with('success', 'Surat Keputusan berhasil dihapus.');
+    }
+
+    // ==========================================
     // HALAMAN ARSIP SURAT KEPUTUSAN
     // ==========================================
     public function arsip(Request $request): View

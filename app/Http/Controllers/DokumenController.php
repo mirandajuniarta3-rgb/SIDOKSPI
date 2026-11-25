@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 use ZipArchive;
 
@@ -334,6 +335,56 @@ class DokumenController extends Controller
     }
 
     /**
+     * PREVIEW DOKUMEN
+     * Menampilkan file langsung di browser.
+     */
+    public function preview(
+        Request $request,
+        Dokumen $dokumen
+    ): Response {
+        $this->authorizeDokumen($request);
+
+        abort_unless(
+            filled($dokumen->path_file)
+            && Storage::disk('local')->exists($dokumen->path_file),
+            404,
+            'File dokumen tidak ditemukan.'
+        );
+
+        $disk = Storage::disk('local');
+        $path = $disk->path($dokumen->path_file);
+
+        $namaFile = basename(
+            $dokumen->nama_file ?: 'dokumen'
+        );
+
+        $mimeType = $disk->mimeType($dokumen->path_file)
+            ?: 'application/octet-stream';
+
+        // Hanya PDF yang ditampilkan langsung di browser.
+        // Format DOCX dan XLSX diarahkan untuk diunduh.
+        if ($mimeType !== 'application/pdf') {
+            return $disk->download(
+                $dokumen->path_file,
+                $namaFile
+            );
+        }
+
+        LogAktivitas::create([
+            'user_id' => $request->user()->id,
+            'dokumen_id' => $dokumen->id,
+            'aksi' => 'preview_dokumen',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $namaFile . '"',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
+    /**
      * Ekspor seluruh data dokumen sesuai filter ke Excel.
      */
     public function export(Request $request)
@@ -579,13 +630,11 @@ class DokumenController extends Controller
                 ->lockForUpdate()
                 ->findOrFail($dokumen->id);
 
-            // Lepaskan hubungan log lama dengan dokumen.
             LogAktivitas::where('dokumen_id', $lockedDocument->id)
                 ->update([
                     'dokumen_id' => null,
                 ]);
 
-            // Simpan catatan penghapusan.
             LogAktivitas::create([
                 'user_id' => $request->user()->id,
                 'dokumen_id' => null,
@@ -593,11 +642,9 @@ class DokumenController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            // Hapus data dokumen.
             $lockedDocument->delete();
         });
 
-        // Hapus file fisik setelah transaksi database berhasil.
         if (filled($pathFile)) {
             $disk = Storage::disk('local');
 

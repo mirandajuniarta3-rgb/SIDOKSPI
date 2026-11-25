@@ -38,7 +38,6 @@
         </div>
 
         <div class="heading-actions">
-
             <button class="button export-button" type="button" disabled
                 title="Fitur ekspor belum tersedia">
                 <svg viewBox="0 0 24 24" fill="none"
@@ -48,30 +47,25 @@
                 Ekspor Data SK
             </button>
 
-            <a href="{{ route('sk.create') }}"
-                class="button primary">
+            <a href="{{ route('sk.create') }}" class="button primary">
                 <svg viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
                     <path d="M12 5v14m-7-7h14"/>
                 </svg>
                 Tambah SK
             </a>
-
         </div>
     </section>
 
     {{-- STATISTIK SK --}}
     <section class="stats-grid" aria-label="Statistik Surat Keputusan">
 
-        {{-- TOTAL SK --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">Total Surat Keputusan</div>
-
                 <div class="stat-value">
                     {{ number_format($totalSk, 0, ',', '.') }}
                 </div>
-
                 <span class="stat-note">
                     Tercatat dalam basis data hukum SPI
                 </span>
@@ -86,15 +80,12 @@
             </span>
         </article>
 
-        {{-- SK BERLAKU --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">SK Berlaku (Aktif)</div>
-
                 <div class="stat-value" style="color:#087c68">
                     {{ number_format($skBerlaku, 0, ',', '.') }}
                 </div>
-
                 <span class="stat-note">
                     Memiliki status berlaku
                 </span>
@@ -109,15 +100,12 @@
             </span>
         </article>
 
-        {{-- SK ARSIP --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">SK Berakhir / Arsip</div>
-
                 <div class="stat-value" style="color:#78839a">
                     {{ number_format($skArsip, 0, ',', '.') }}
                 </div>
-
                 <span class="stat-note">
                     Berstatus arsip atau tidak berlaku
                 </span>
@@ -145,7 +133,6 @@
                     <path d="m12 3 8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3Z"/>
                     <path d="m9 12 2 2 4-4"/>
                 </svg>
-
                 Register Surat Keputusan Digital SPI — Tirta Pinang
             </span>
 
@@ -225,7 +212,6 @@
         {{-- TABEL SK --}}
         <div class="table-scroll">
             <table>
-
                 <thead>
                     <tr>
                         <th>NO</th>
@@ -239,20 +225,11 @@
                 </thead>
 
                 <tbody>
-
                     @forelse ($suratKeputusan as $item)
 
                         @php
                             $uploaderName = $item->uploader?->nama_lengkap
                                 ?? 'Tidak diketahui';
-
-                            $uploaderInitials = collect(
-                                explode(' ', trim($uploaderName))
-                            )
-                                ->filter()
-                                ->take(2)
-                                ->map(fn ($part) => mb_substr($part, 0, 1))
-                                ->implode('');
 
                             $statusLabel = [
                                 'final' => 'Berlaku',
@@ -266,7 +243,6 @@
                         @endphp
 
                         <tr>
-
                             <td class="number-cell">
                                 {{ $suratKeputusan->firstItem() + $loop->index }}
                             </td>
@@ -303,7 +279,7 @@
                                 </span>
                             </td>
 
-                            {{-- TIGA TOMBOL AKSI --}}
+                            {{-- AKSI MANAJEMEN --}}
                             <td>
                                 <span class="actions">
 
@@ -336,7 +312,6 @@
 
                                     {{-- ARSIPKAN --}}
                                     @if ($item->status !== 'arsip')
-
                                         <form
                                             action="{{ route('sk.simpanArsip', $item->id) }}"
                                             method="POST"
@@ -357,18 +332,42 @@
                                                     <path d="M10 11v6m4-6v6"/>
                                                 </svg>
                                             </button>
-
                                         </form>
-
                                     @endif
+
+                                    {{-- HAPUS --}}
+                                    <form
+                                        action="{{ route('sk.destroy', $item->id) }}"
+                                        method="POST"
+                                        style="display:inline"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus Surat Keputusan {{ addslashes($item->nomor_sk ?: $item->judul) }}? Data yang dihapus tidak dapat dikembalikan.')">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            class="action-button"
+                                            type="submit"
+                                            aria-label="Hapus Surat Keputusan"
+                                            title="Hapus SK"
+                                            style="color:#dc3545">
+
+                                            <svg viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8">
+                                                <path d="M3 6h18"/>
+                                                <path d="M8 6V4h8v2"/>
+                                                <path d="m19 6-1 14H6L5 6"/>
+                                                <path d="M10 11v5m4-5v5"/>
+                                            </svg>
+                                        </button>
+                                    </form>
 
                                 </span>
                             </td>
-
                         </tr>
 
                     @empty
-
                         <tr>
                             <td class="empty-cell" colspan="7">
                                 {{ $search !== '' || $selectedTahun !== '' || $selectedStatus !== ''
@@ -376,9 +375,7 @@
                                     : 'Belum ada Surat Keputusan untuk ditampilkan.' }}
                             </td>
                         </tr>
-
                     @endforelse
-
                 </tbody>
             </table>
         </div>
@@ -388,7 +385,6 @@
 
             <span class="pagination-summary">
                 @if ($suratKeputusan->total() > 0)
-
                     Menampilkan
                     <strong>
                         {{ $suratKeputusan->firstItem() }}–{{ $suratKeputusan->lastItem() }}
@@ -398,11 +394,8 @@
                         {{ number_format($suratKeputusan->total(), 0, ',', '.') }}
                     </strong>
                     total data
-
                 @else
-
                     Menampilkan <strong>0</strong> dari <strong>0</strong> total data
-
                 @endif
             </span>
 
@@ -429,7 +422,6 @@
 
             <span>
                 <strong>Register Surat Keputusan SPI</strong>
-
                 <span>
                     Status Berlaku dan Arsip mengikuti data pada register SK.
                     Gunakan pencarian dan filter untuk menelusuri nomor,

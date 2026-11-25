@@ -28,17 +28,11 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| ROUTE PENGGUNA YANG SUDAH LOGIN
+| PENGGUNA YANG SUDAH LOGIN
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | HALAMAN UTAMA
-    |--------------------------------------------------------------------------
-    */
 
     Route::get('/', function () {
         return redirect()->route('dashboard');
@@ -46,7 +40,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | PENGARAH DASHBOARD BERDASARKAN ROLE
+    | DASHBOARD
     |--------------------------------------------------------------------------
     */
 
@@ -64,22 +58,10 @@ Route::middleware('auth')->group(function () {
         abort(403, 'Role pengguna tidak memiliki akses dashboard.');
     })->name('dashboard');
 
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD ADMIN SPI
-    |--------------------------------------------------------------------------
-    */
-
     Route::middleware('role:admin')->group(function () {
         Route::get('/dashboard/admin', [DashboardController::class, 'index'])
             ->name('dashboard.admin');
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD STAF SPI
-    |--------------------------------------------------------------------------
-    */
 
     Route::middleware('role:staf_spi')->group(function () {
         Route::get('/dashboard/staf', [DashboardController::class, 'staf'])
@@ -88,8 +70,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | DOKUMEN, SK, DAN LAPORAN
-    | KHUSUS ADMIN SPI DAN STAF SPI
+    | DOKUMEN, SURAT KEPUTUSAN, DAN LAPORAN
     |--------------------------------------------------------------------------
     */
 
@@ -130,25 +111,57 @@ Route::middleware('auth')->group(function () {
 
         /*
         |--------------------------------------------------------------------------
+        | PREVIEW DOKUMEN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/dokumen/{dokumen}/preview', [
+            DokumenController::class,
+            'preview'
+        ])->name('dokumen.preview');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD DOKUMEN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/dokumen/{dokumen}/download', [
+            DokumenController::class,
+            'download'
+        ])->name('dokumen.download');
+
+        /*
+        |--------------------------------------------------------------------------
         | AKSI DOKUMEN
         |--------------------------------------------------------------------------
         */
 
-        Route::get('/dokumen/{dokumen}/download', [DokumenController::class, 'download'])
-            ->name('dokumen.download');
+        Route::post('/dokumen/{dokumen}/archive', [
+            DokumenController::class,
+            'archive'
+        ])->name('dokumen.archive');
 
-        Route::post('/dokumen/{dokumen}/archive', [DokumenController::class, 'archive'])
-            ->name('dokumen.archive');
+        Route::post('/dokumen/{dokumen}/restore', [
+            DokumenController::class,
+            'restore'
+        ])->name('dokumen.restore');
 
-        Route::post('/dokumen/{dokumen}/restore', [DokumenController::class, 'restore'])
-            ->name('dokumen.restore');
+        Route::delete('/dokumen/{dokumen}', [
+            DokumenController::class,
+            'destroy'
+        ])->name('dokumen.destroy');
 
-        // ROUTE HAPUS DOKUMEN
-        Route::delete('/dokumen/{dokumen}', [DokumenController::class, 'destroy'])
-            ->name('dokumen.destroy');
+        /*
+        |--------------------------------------------------------------------------
+        | DETAIL DOKUMEN
+        |--------------------------------------------------------------------------
+        */
 
-        Route::get('/dokumen/{dokumen}', [DokumenController::class, 'show'])
-            ->name('dokumen.show');
+        Route::get('/dokumen/{dokumen}', [
+            DokumenController::class,
+            'show'
+        ])->name('dokumen.show');
 
         /*
         |--------------------------------------------------------------------------
@@ -196,6 +209,11 @@ Route::middleware('auth')->group(function () {
             'simpanArsip'
         ])->name('sk.simpanArsip');
 
+        Route::delete('/sk/{suratKeputusan}', [
+            SuratKeputusanController::class,
+            'destroy'
+        ])->name('sk.destroy');
+
         Route::get('/sk/{suratKeputusan}', [
             SuratKeputusanController::class,
             'show'
@@ -216,7 +234,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | MASTER DATA KHUSUS ADMIN SPI
+    | MASTER DATA KHUSUS ADMIN
     |--------------------------------------------------------------------------
     */
 
@@ -230,14 +248,10 @@ Route::middleware('auth')->group(function () {
             ->except(['show'])
             ->names('pengguna');
 
-        Route::get('/log-aktivitas', [LogAktivitasController::class, 'index'])
-            ->name('log-aktivitas.index');
-
-        /*
-        |--------------------------------------------------------------------------
-        | PROFIL ADMIN
-        |--------------------------------------------------------------------------
-        */
+        Route::get('/log-aktivitas', [
+            LogAktivitasController::class,
+            'index'
+        ])->name('log-aktivitas.index');
 
         Route::get('/profil', [ProfilController::class, 'index'])
             ->name('profil.index');

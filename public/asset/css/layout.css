@@ -1,18 +1,21 @@
 
-/* =========================================
-   APP LAYOUT
-========================================= */
+/* =========================================================
+   APP LAYOUT - SIDOKSPI
+   Layout utama, sidebar, topbar, dan navigasi
+========================================================= */
+
+/* =========================================================
+   1. APP LAYOUT
+========================================================= */
 
 .app-layout {
     min-height: 100vh;
+    width: 100%;
 }
 
-
-/* =========================================
-   SIDEBAR
-   Tertutup: lebar 0, tidak memakan ruang.
-   Terbuka: melayang di bawah baris logo.
-========================================= */
+/* =========================================================
+   2. SIDEBAR
+========================================================= */
 
 .sidebar {
     position: fixed;
@@ -24,30 +27,33 @@
     flex-direction: column;
 
     padding: 0;
-    border-right: 0;
 
+    border-right: 0;
     background: #fff;
 
     overflow-x: hidden;
     overflow-y: auto;
 
-    transition: width .25s ease;
+    transition:
+        width .25s ease,
+        padding .25s ease,
+        box-shadow .25s ease;
 }
 
 body.sidebar-open .sidebar {
     top: 58px;
+    bottom: 0;
     width: 250px;
 
-    padding: 12px 10px 12px;
+    padding: 12px 10px;
 
     border-right: 1px solid #eef0f7;
     box-shadow: 8px 0 30px rgba(30, 45, 75, .12);
 }
 
-
-/* =========================================
-   LOGO PDAM TIRTA PINANG
-========================================= */
+/* =========================================================
+   3. LOGO PDAM TIRTA PINANG
+========================================================= */
 
 .brand {
     position: fixed;
@@ -60,37 +66,42 @@ body.sidebar-open .sidebar {
     gap: 10px;
 
     margin: 0;
+    padding: 3px 5px;
+
     text-decoration: none;
 }
 
 .brand-mark {
+    display: flex;
+
     width: 42px;
     height: 42px;
     min-width: 42px;
+    flex: 0 0 42px;
 
-    display: flex;
     align-items: center;
     justify-content: center;
 
-    flex: 0 0 42px;
+    overflow: hidden;
+
+    border-radius: 7px;
+    background: #fff;
 }
 
 .brand-mark img {
+    display: block;
     width: 100%;
     height: 100%;
-
     object-fit: contain;
-    display: block;
 }
 
 .brand-text {
     display: none;
 }
 
-
-/* =========================================
-   TOMBOL TIGA GARIS
-========================================= */
+/* =========================================================
+   4. TOMBOL HAMBURGER
+========================================================= */
 
 .sidebar-hamburger {
     position: fixed;
@@ -99,6 +110,7 @@ body.sidebar-open .sidebar {
     z-index: 31;
 
     display: inline-flex;
+
     width: 36px;
     height: 36px;
 
@@ -115,7 +127,9 @@ body.sidebar-open .sidebar {
 
     cursor: pointer;
 
-    transition: background .2s ease, border-color .2s ease;
+    transition:
+        background .2s ease,
+        border-color .2s ease;
 }
 
 .sidebar-hamburger:hover {
@@ -134,10 +148,9 @@ body.sidebar-open .sidebar {
     height: 20px;
 }
 
-
-/* =========================================
-   AREA NAVIGASI
-========================================= */
+/* =========================================================
+   5. AREA NAVIGASI
+========================================================= */
 
 .sidebar-navigation {
     display: none;
@@ -164,7 +177,6 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-
 /* LABEL MENU */
 
 .nav-label {
@@ -176,7 +188,6 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 800;
     letter-spacing: .08em;
 }
-
 
 /* DAFTAR MENU */
 
@@ -190,11 +201,11 @@ body.sidebar-open .sidebar-navigation {
     list-style: none;
 }
 
-
 /* LINK MENU */
 
 .nav-link {
     display: flex;
+
     min-height: 34px;
 
     align-items: center;
@@ -210,6 +221,10 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 650;
 
     text-decoration: none;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .nav-link svg {
@@ -229,8 +244,9 @@ body.sidebar-open .sidebar-navigation {
     color: #064eb6;
 }
 
-
-/* DROPDOWN MENU */
+/* =========================================================
+   6. DROPDOWN NAVIGASI
+========================================================= */
 
 .nav-dropdown {
     position: relative;
@@ -258,7 +274,6 @@ body.sidebar-open .sidebar-navigation {
     transform: rotate(180deg);
 }
 
-
 /* SUBMENU */
 
 .nav-sublist {
@@ -273,6 +288,7 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-sublink {
     display: flex;
+
     min-height: 30px;
 
     align-items: center;
@@ -287,6 +303,10 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 600;
 
     text-decoration: none;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .nav-sublink.active {
@@ -294,10 +314,9 @@ body.sidebar-open .sidebar-navigation {
     color: #064eb6;
 }
 
-
-/* =========================================
-   BAGIAN BAWAH SIDEBAR
-========================================= */
+/* =========================================================
+   7. BAGIAN BAWAH SIDEBAR
+========================================================= */
 
 .sidebar-bottom {
     margin-top: auto;
@@ -343,20 +362,25 @@ body.sidebar-open .sidebar-navigation {
     color: #8a94a8;
 }
 
-
-/* =========================================
-   AREA UTAMA
-========================================= */
+/* =========================================================
+   8. AREA UTAMA
+========================================================= */
 
 .main-area {
+    width: 100%;
     min-height: 100vh;
+
     margin-left: 0;
+
+    box-sizing: border-box;
+
+    transition:
+        width .25s ease;
 }
 
-
-/* =========================================
-   TOPBAR
-========================================= */
+/* =========================================================
+   9. TOPBAR
+========================================================= */
 
 .topbar {
     position: sticky;
@@ -364,6 +388,7 @@ body.sidebar-open .sidebar-navigation {
     z-index: 15;
 
     display: flex;
+
     min-height: 58px;
 
     align-items: center;
@@ -374,9 +399,9 @@ body.sidebar-open .sidebar-navigation {
     border-bottom: 1px solid #eceef6;
 
     background: rgba(255, 255, 255, .97);
+
     backdrop-filter: blur(12px);
 }
-
 
 /* BREADCRUMB */
 
@@ -401,10 +426,9 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 700;
 }
 
-
-/* =========================================
-   SEARCH
-========================================= */
+/* =========================================================
+   10. SEARCH
+========================================================= */
 
 .search-form {
     display: flex;
@@ -454,15 +478,15 @@ body.sidebar-open .sidebar-navigation {
     flex: 1 1 auto;
 }
 
-
-/* =========================================
-   ICON BUTTON
-========================================= */
+/* =========================================================
+   11. ICON BUTTON
+========================================================= */
 
 .icon-button {
     position: relative;
 
     display: grid;
+
     width: 32px;
     height: 32px;
     flex: 0 0 32px;
@@ -502,10 +526,9 @@ body.sidebar-open .sidebar-navigation {
     background: #e44b58;
 }
 
-
-/* =========================================
-   ROLE BADGE
-========================================= */
+/* =========================================================
+   12. ROLE BADGE
+========================================================= */
 
 .role-badge {
     padding: 6px 9px;
@@ -521,10 +544,9 @@ body.sidebar-open .sidebar-navigation {
     white-space: nowrap;
 }
 
-
-/* =========================================
-   ACCOUNT DROPDOWN
-========================================= */
+/* =========================================================
+   13. ACCOUNT DROPDOWN
+========================================================= */
 
 .account-switcher {
     position: relative;
@@ -533,6 +555,7 @@ body.sidebar-open .sidebar-navigation {
 
 .account-switch-trigger {
     display: flex;
+
     min-height: 40px;
 
     align-items: center;
@@ -560,7 +583,6 @@ body.sidebar-open .sidebar-navigation {
     background: #f8faff;
 }
 
-
 /* ACCOUNT */
 
 .account {
@@ -571,7 +593,6 @@ body.sidebar-open .sidebar-navigation {
     align-items: center;
     gap: 8px;
 }
-
 
 /* AVATAR */
 
@@ -593,13 +614,11 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 800;
 }
 
-
 /* ACCOUNT TEXT */
 
 .account-text {
     display: block;
     min-width: 0;
-
     text-align: left;
 }
 
@@ -620,14 +639,11 @@ body.sidebar-open .sidebar-navigation {
 
 .account-role {
     display: block;
-
     margin-top: 2px;
 
     color: #7e899c;
-
     font-size: 10px;
 }
-
 
 /* ACCOUNT CHEVRON */
 
@@ -645,13 +661,13 @@ body.sidebar-open .sidebar-navigation {
     transform: rotate(180deg);
 }
 
-
-/* =========================================
-   ISI DROPDOWN
-========================================= */
+/* =========================================================
+   14. ISI DROPDOWN AKUN
+========================================================= */
 
 .account-switch-dropdown {
     position: absolute;
+
     top: calc(100% + 9px);
     right: 0;
     z-index: 100;
@@ -668,8 +684,7 @@ body.sidebar-open .sidebar-navigation {
     box-shadow: 0 12px 30px rgba(30, 45, 75, .14);
 }
 
-
-/* DROPDOWN USER INFO */
+/* USER INFO */
 
 .dropdown-user-info {
     display: flex;
@@ -692,11 +707,9 @@ body.sidebar-open .sidebar-navigation {
 
 .dropdown-user-info small {
     margin-top: 3px;
-
     color: #8290a5;
     font-size: 10px;
 }
-
 
 /* DROPDOWN AVATAR */
 
@@ -706,8 +719,7 @@ body.sidebar-open .sidebar-navigation {
     flex-basis: 36px;
 }
 
-
-/* DROPDOWN DIVIDER */
+/* DIVIDER */
 
 .dropdown-divider {
     height: 1px;
@@ -716,7 +728,6 @@ body.sidebar-open .sidebar-navigation {
 
     background: #edf0f6;
 }
-
 
 /* ACCOUNT MENU LINK */
 
@@ -759,7 +770,6 @@ body.sidebar-open .sidebar-navigation {
     margin: 0;
 }
 
-
 /* LOGOUT */
 
 .logout-menu-link {
@@ -771,19 +781,40 @@ body.sidebar-open .sidebar-navigation {
     color: #c32e2e;
 }
 
-
-/* =========================================
-   KONTEN
-========================================= */
+/* =========================================================
+   15. KONTEN HALAMAN
+========================================================= */
 
 .page-content {
+    width: 100%;
+    min-width: 0;
+
     padding: 22px 26px 30px;
+
+    box-sizing: border-box;
+
+    transition:
+        width .25s ease,
+        margin-left .25s ease;
 }
 
+/* =========================================================
+   16. SIDEBAR TERBUKA - KONTEN BERGESER
+========================================================= */
 
-/* =========================================
-   TABLET
-========================================= */
+/*
+   Topbar tetap di tempat.
+   Hanya konten halaman yang bergeser ke kanan.
+*/
+
+body.sidebar-open .main-area .page-content {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+}
+
+/* =========================================================
+   17. TABLET
+========================================================= */
 
 @media (max-width: 1000px) {
 
@@ -793,6 +824,11 @@ body.sidebar-open .sidebar-navigation {
 
     .sidebar-navigation {
         min-width: 203px;
+    }
+
+    body.sidebar-open .main-area .page-content {
+        width: calc(100% - 225px);
+        margin-left: 225px;
     }
 
     .topbar {
@@ -809,10 +845,9 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-
-/* =========================================
-   MOBILE
-========================================= */
+/* =========================================================
+   18. MOBILE
+========================================================= */
 
 @media (max-width: 620px) {
 
@@ -856,7 +891,8 @@ body.sidebar-open .sidebar-navigation {
         padding: 7px 9px 7px 110px;
     }
 
-    .topbar .top-search {
+    .topbar .top-search,
+    .topbar .search-form {
         flex: 1 1 auto;
 
         width: auto;
@@ -895,13 +931,22 @@ body.sidebar-open .sidebar-navigation {
     .page-content {
         padding: 16px 12px 24px;
     }
+
+    /*
+       Pada layar kecil, sidebar tetap menjadi drawer
+       agar area dashboard tidak menjadi terlalu sempit.
+    */
+
+    body.sidebar-open .main-area .page-content {
+        width: 100%;
+        margin-left: 0;
+    }
 }
 
+/* =========================================================
+   19. PAGINATION
+========================================================= */
 
-/* =========================================
-   MENGHILANGKAN IKON PANAH PAGINATION
-========================================= */
-
-nav[role="navigation"] svg {
+.pagination nav svg {
     display: none !important;
 }
