@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('tahun')->nullable()->index();
             $table->string('tingkat_kerahasiaan', 15)->default('umum');
             $table->string('status', 15)->default('draft');
+            $table->timestamp('archived_at')->nullable();
+            $table->unsignedSmallInteger('retensi_tahun')->nullable();
             $table->string('nama_file', 255)->nullable();
             $table->string('path_file', 500)->nullable();
             $table->integer('ukuran_kb')->nullable();
