@@ -1,3 +1,4 @@
+
 /* =========================================
    APP LAYOUT
 ========================================= */
@@ -30,13 +31,12 @@ textarea {
 
 /* =========================================
    SIDEBAR
-   Sidebar desktop selalu mengambil ruang sendiri agar tidak menutupi konten.
 ========================================= */
 
 .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
     width: 280px;
@@ -52,43 +52,66 @@ textarea {
 
     transition:
         width 0.25s ease,
-        transform 0.25s ease;
+        padding 0.25s ease,
+        border 0.25s ease;
 }
 
 /* =========================================
-   LOGO PDAM TIRTA PINANG
+   IDENTITAS SIDOKSPI
 ========================================= */
+
+.sidebar-brand-row {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 24px;
+}
 
 .brand {
     display: flex;
+    min-width: 0;
+    min-height: 50px;
+
+    flex: 1 1 auto;
     align-items: center;
     gap: 10px;
 
-    min-height: 50px;
-    margin: 0 10px 24px;
+    margin: 0 4px 0 10px;
+
     text-decoration: none;
 }
 
+/* LOGO PDAM */
 .brand-mark {
+    display: flex;
     width: 50px;
     height: 50px;
     min-width: 50px;
 
-    display: flex;
+    flex: 0 0 50px;
     align-items: center;
     justify-content: center;
 
-    flex: 0 0 50px;
     border-radius: 12px;
-    background: #0b5fe0;
-    color: #fff;
+    background: transparent;
+
+    overflow: hidden;
 }
 
-.brand-mark svg {
-    width: 27px;
-    height: 27px;
+/* GAMBAR LOGO */
+.logo-pdam {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
 }
 
+/* TEKS IDENTITAS */
 .brand-text {
     display: block;
     min-width: 0;
@@ -114,7 +137,53 @@ textarea {
 }
 
 /* =========================================
-   TOMBOL TIGA GARIS
+   TOMBOL HAMBURGER DESKTOP
+========================================= */
+
+.sidebar-desktop-toggle {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+
+    flex: 0 0 36px;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e7edf6;
+    border-radius: 9px;
+
+    background: #f4f7fc;
+    color: #0753c5;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.sidebar-desktop-toggle:hover {
+    border-color: #cbdcf5;
+    background: #eaf2ff;
+}
+
+.sidebar-desktop-toggle:focus-visible {
+    outline: 2px solid #0753c5;
+    outline-offset: 2px;
+}
+
+.sidebar-desktop-toggle svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+/* =========================================
+   TOMBOL HAMBURGER MOBILE
 ========================================= */
 
 .sidebar-hamburger {
@@ -187,9 +256,7 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-label {
     margin: 12px 5px 8px;
-
     color: #929bb0;
-
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -221,7 +288,6 @@ body.sidebar-open .sidebar-navigation {
     border-radius: 7px;
 
     color: #4f5c72;
-
     font-size: 15px;
     font-weight: 650;
 
@@ -296,7 +362,6 @@ body.sidebar-open .sidebar-navigation {
     border-radius: 6px;
 
     color: #56637a;
-
     font-size: 13px;
     font-weight: 600;
 
@@ -364,7 +429,71 @@ body.sidebar-open .sidebar-navigation {
     min-height: 100vh;
     width: calc(100% - 280px);
     margin-left: 280px;
+
+    transition:
+        width 0.25s ease,
+        margin-left 0.25s ease;
 }
+
+
+/* =========================================
+   SIDEBAR DESKTOP DITUTUP
+========================================= */
+
+@media (min-width: 621px) {
+
+    body.sidebar-collapsed .sidebar {
+        width: 0;
+        padding: 0;
+        border: 0;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row {
+        margin: 0;
+        visibility: visible;
+        pointer-events: none;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row .brand {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    /* Tombol hamburger */
+    body.sidebar-collapsed .sidebar-desktop-toggle {
+        position: fixed;
+        top: 11px;
+        left: 12px;
+        z-index: 1000;
+
+        display: inline-flex;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+
+        background: #fff;
+        border-color: #dce5f2;
+
+        box-shadow: 0 3px 12px rgba(20, 45, 85, 0.12);
+    }
+
+    /* Beri ruang agar tombol tidak menutupi Portal SPI */
+    body.sidebar-collapsed .topbar {
+        padding-left: 58px;
+    }
+
+    body.sidebar-collapsed .sidebar-navigation {
+        display: none;
+    }
+
+    body.sidebar-collapsed .main-area {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
 
 /* =========================================
    TOPBAR
@@ -395,7 +524,6 @@ body.sidebar-open .sidebar-navigation {
     flex: 0 1 auto;
 
     color: #4e5a70;
-
     font-size: 12px;
     font-weight: 650;
 
@@ -780,7 +908,7 @@ body.sidebar-open .sidebar-navigation {
    TABLET
 ========================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 1000px) and (min-width: 621px) {
     .sidebar {
         width: 240px;
     }
@@ -792,6 +920,11 @@ body.sidebar-open .sidebar-navigation {
     .main-area {
         width: calc(100% - 240px);
         margin-left: 240px;
+    }
+
+    body.sidebar-collapsed .main-area {
+        width: 100%;
+        margin-left: 0;
     }
 
     .topbar {
@@ -823,24 +956,6 @@ body.sidebar-open .sidebar-navigation {
         min-width: 320px;
     }
 
-    .sidebar-navigation {
-        display: none;
-    }
-
-    .brand {
-        margin: 0 4px 12px;
-    }
-
-    .sidebar-hamburger {
-        display: inline-flex;
-        position: static;
-        flex: 0 0 36px;
-    }
-
-    body.sidebar-open .sidebar-navigation {
-        display: flex;
-    }
-
     .app-layout {
         display: block;
     }
@@ -848,11 +963,66 @@ body.sidebar-open .sidebar-navigation {
     .sidebar {
         position: relative;
         inset: auto;
+
         width: 100%;
         padding: 12px 16px;
+
         overflow: visible;
+
         border-right: 0;
         border-bottom: 1px solid #eef0f7;
+    }
+
+    .sidebar-brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 0;
+    }
+
+    .brand {
+        margin: 0 4px 12px;
+    }
+
+    /* Tombol desktop tidak digunakan di HP */
+    .sidebar-desktop-toggle {
+        display: none !important;
+    }
+
+    /* Tombol hamburger mobile tetap mengikuti topbar */
+    .sidebar-hamburger {
+        display: inline-flex;
+        position: static;
+        flex: 0 0 36px;
+    }
+
+    .sidebar-navigation {
+        display: none;
+    }
+
+    body.sidebar-open .sidebar-navigation {
+        display: flex;
+    }
+
+    body.sidebar-collapsed .sidebar {
+        width: 100%;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eef0f7;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row .brand {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    body.sidebar-collapsed .sidebar-navigation {
+        display: none;
     }
 
     .main-area {
@@ -917,6 +1087,10 @@ body.sidebar-open .sidebar-navigation {
 nav[role="navigation"] svg {
     display: none !important;
 }
+
+/* =========================================
+   ADMIN DASHBOARD TYPOGRAPHY
+========================================= */
 
 body .admin-dashboard {
     font-family: "Montserrat", sans-serif;

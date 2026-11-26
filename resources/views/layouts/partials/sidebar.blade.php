@@ -1,3 +1,4 @@
+
 @php
     $user = auth()->user();
     $role = strtolower(trim($user->role ?? ''));
@@ -11,35 +12,64 @@
     $isAdmin = $role === 'admin';
 @endphp
 
-{{-- Terapkan status sidebar sebelum tampil, supaya tidak berkedip --}}
+{{-- Pulihkan status sidebar sebelum tampilan selesai dimuat --}}
 <script>
     try {
         if (localStorage.getItem('sidokspi_sidebar_open') === 'true') {
             document.body.classList.add('sidebar-open');
+        }
+
+        if (
+            window.innerWidth > 620 &&
+            localStorage.getItem('sidokspi_sidebar_collapsed') === 'true'
+        ) {
+            document.body.classList.add('sidebar-collapsed');
         }
     } catch (e) {}
 </script>
 
 <aside class="sidebar" aria-label="Navigasi utama">
 
-    {{-- Identitas SIDOKSPI --}}
-    <a class="brand" href="{{ route($dashboardRoute) }}">
-        <span class="brand-mark">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 3.2C9.1 7.3 5.2 11.1 5.2 15.1a6.8 6.8 0 0 0 13.6 0C18.8 11.1 14.9 7.3 12 3.2Z"
-                      stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.8 15.2a3.3 3.3 0 0 0 3.3 3.2"
-                      stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    {{-- IDENTITAS DAN TOMBOL HAMBURGER DESKTOP --}}
+    <div class="sidebar-brand-row">
+
+        {{-- LOGO BARU PDAM --}}
+        <a class="brand" href="{{ route($dashboardRoute) }}">
+            <span class="brand-mark">
+                <img
+                    src="{{ asset('asset/img/logo-pdam.png') }}"
+                    alt="Logo PDAM"
+                    class="logo-pdam"
+                >
+            </span>
+
+            <span class="brand-text">
+                <span class="brand-name">SIDOKSPI</span>
+                <span class="brand-caption">SPI PDAM Tirta Pinang</span>
+            </span>
+        </a>
+
+        <button
+            type="button"
+            class="sidebar-desktop-toggle"
+            id="sidebarDesktopToggle"
+            aria-expanded="true"
+            aria-controls="sidebarNavigation"
+            aria-label="Tutup menu navigasi"
+            title="Tutup atau buka menu navigasi"
+        >
+            <svg viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" aria-hidden="true">
+                <path d="M4 6h16"/>
+                <path d="M4 12h16"/>
+                <path d="M4 18h16"/>
             </svg>
-        </span>
+        </button>
 
-        <span class="brand-text">
-            <span class="brand-name">SIDOKSPI</span>
-            <span class="brand-caption">SPI PDAM Tirta Pinang</span>
-        </span>
-    </a>
+    </div>
 
-    {{-- Menu utama (dapat dilipat di layar kecil) --}}
+    {{-- MENU NAVIGASI --}}
     <div class="sidebar-navigation" id="sidebarNavigation">
 
         <p class="nav-label">MENU NAVIGASI</p>
@@ -217,7 +247,6 @@
                     </li>
                 </ul>
             @endif
-
         </nav>
 
         {{-- STATUS SISTEM --}}
@@ -236,46 +265,90 @@
         </div>
 
     </div>
-
 </aside>
 
-{{-- SCRIPT: buka/tutup menu lewat tombol tiga garis, tertutup secara default --}}
+{{-- SCRIPT SIDEBAR DESKTOP DAN MOBILE --}}
 <script>
 (function () {
-    const STORAGE_KEY = 'sidokspi_sidebar_open';
+    const DESKTOP_KEY = 'sidokspi_sidebar_collapsed';
+    const MOBILE_KEY = 'sidokspi_sidebar_open';
 
-    function syncButton() {
-        const btn = document.getElementById('sidebarMenuToggle');
-        if (!btn) return;
+    function syncButtons() {
+        const desktopButton = document.getElementById('sidebarDesktopToggle');
+        const mobileButton = document.getElementById('sidebarMenuToggle');
 
-        const isOpen = document.body.classList.contains('sidebar-open');
-        btn.setAttribute('aria-expanded', String(isOpen));
-        btn.setAttribute('aria-label', isOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi');
+        const desktopCollapsed = document.body.classList.contains('sidebar-collapsed');
+        const mobileOpen = document.body.classList.contains('sidebar-open');
+
+        if (desktopButton) {
+            desktopButton.setAttribute('aria-expanded', String(!desktopCollapsed));
+            desktopButton.setAttribute(
+                'aria-label',
+                desktopCollapsed ? 'Buka menu navigasi' : 'Tutup menu navigasi'
+            );
+            desktopButton.setAttribute(
+                'title',
+                desktopCollapsed ? 'Buka menu navigasi' : 'Tutup menu navigasi'
+            );
+        }
+
+        if (mobileButton) {
+            mobileButton.setAttribute('aria-expanded', String(mobileOpen));
+            mobileButton.setAttribute(
+                'aria-label',
+                mobileOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'
+            );
+        }
     }
 
-    document.addEventListener('DOMContentLoaded', syncButton);
+    document.addEventListener('click', function (event) {
+        const desktopButton = event.target.closest('#sidebarDesktopToggle');
 
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest('#sidebarMenuToggle');
-        if (!btn) return;
+        if (desktopButton) {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
 
-        const isOpen = document.body.classList.toggle('sidebar-open');
-
-        try {
-            localStorage.setItem(STORAGE_KEY, String(isOpen));
-        } catch (err) {}
-
-        syncButton();
-    });
-
-    // Saat logout, reset supaya login berikutnya menu kembali tertutup
-    document.addEventListener('submit', function (e) {
-        const action = (e.target.getAttribute('action') || '').toLowerCase();
-        if (action.indexOf('logout') !== -1) {
             try {
-                localStorage.removeItem(STORAGE_KEY);
-            } catch (err) {}
+                localStorage.setItem(DESKTOP_KEY, String(collapsed));
+            } catch (error) {}
+
+            syncButtons();
+            return;
+        }
+
+        const mobileButton = event.target.closest('#sidebarMenuToggle');
+
+        if (mobileButton) {
+            const opened = document.body.classList.toggle('sidebar-open');
+
+            try {
+                localStorage.setItem(MOBILE_KEY, String(opened));
+            } catch (error) {}
+
+            syncButtons();
         }
     });
+
+    document.addEventListener('submit', function (event) {
+        const action = (event.target.getAttribute('action') || '').toLowerCase();
+
+        if (action.includes('logout')) {
+            try {
+                localStorage.removeItem(DESKTOP_KEY);
+                localStorage.removeItem(MOBILE_KEY);
+            } catch (error) {}
+        }
+    });
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth <= 620) {
+            document.body.classList.remove('sidebar-collapsed');
+        } else {
+            document.body.classList.remove('sidebar-open');
+        }
+
+        syncButtons();
+    });
+
+    syncButtons();
 })();
 </script>
