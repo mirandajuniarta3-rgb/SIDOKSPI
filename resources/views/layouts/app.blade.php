@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,32 +9,41 @@
 
     <title>@yield('title', 'SIDOKSPI')</title>
 
-   <link rel="stylesheet" href="{{ asset('asset/css/app.css') }}">
+    {{-- CSS utama aplikasi --}}
+    <link rel="stylesheet" href="{{ asset('asset/css/app.css') }}">
 
-@stack('styles')
+    {{-- CSS khusus halaman --}}
+    @stack('styles')
 
-<link rel="stylesheet" href="{{ asset('asset/css/layout.css') }}?v=11">
+    {{-- CSS layout dan navigasi --}}
+    <link rel="stylesheet" href="{{ asset('asset/css/layout.css') }}?v=13">
 
-<link rel="stylesheet" href="{{ asset('css/typography.css') }}?v=1">
+    {{-- CSS tipografi --}}
+    <link rel="stylesheet" href="{{ asset('css/typography.css') }}?v=1">
 </head>
 
 <body class="@yield('body-class')">
 
     <div class="app-layout">
 
+        {{-- Sidebar navigasi --}}
         @include('layouts.partials.sidebar', [
             'activeMenu' => trim($__env->yieldContent('active-menu')),
         ])
 
+        {{-- Area utama aplikasi --}}
         <div class="main-area">
 
+            {{-- Topbar --}}
             @include('layouts.partials.topbar', [
                 'breadcrumb' => trim($__env->yieldContent('breadcrumb')),
                 'searchAction' => trim($__env->yieldContent('search-action')),
             ])
 
+            {{-- Konten halaman --}}
             <main class="page-content">
 
+                {{-- Notifikasi sukses dan error --}}
                 @unless(request()->routeIs('kategori.*', 'pengguna.*'))
 
                     @if(session('success'))
@@ -58,6 +68,7 @@
 
     </div>
 
+    {{-- JavaScript halaman --}}
     @stack('scripts')
 
 </body>

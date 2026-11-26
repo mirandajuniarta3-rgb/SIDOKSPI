@@ -10,8 +10,17 @@
     --blue: #2168d6;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 html,
 body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
     font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -26,6 +35,7 @@ textarea {
 
 .app-layout {
     display: flex;
+    width: 100%;
     min-height: 100vh;
 }
 
@@ -40,6 +50,7 @@ textarea {
 
     display: flex;
     width: 280px;
+    height: 100vh;
     flex-direction: column;
 
     padding: 20px 12px 14px;
@@ -85,7 +96,6 @@ textarea {
     text-decoration: none;
 }
 
-/* LOGO PDAM */
 .brand-mark {
     display: flex;
     width: 50px;
@@ -102,16 +112,13 @@ textarea {
     overflow: hidden;
 }
 
-/* GAMBAR LOGO */
 .logo-pdam {
     display: block;
     width: 100%;
     height: 100%;
-
     object-fit: contain;
 }
 
-/* TEKS IDENTITAS */
 .brand-text {
     display: block;
     min-width: 0;
@@ -203,20 +210,11 @@ textarea {
     color: #0753c5;
 
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
 }
 
 .sidebar-hamburger:hover {
     border-color: #cbdcf5;
     background: #eaf2ff;
-}
-
-.sidebar-hamburger:focus-visible {
-    outline: 2px solid #0753c5;
-    outline-offset: 2px;
 }
 
 .sidebar-hamburger svg {
@@ -226,7 +224,7 @@ textarea {
 }
 
 /* =========================================
-   AREA NAVIGASI
+   NAVIGASI
 ========================================= */
 
 .sidebar-navigation {
@@ -234,10 +232,6 @@ textarea {
     min-width: 0;
     flex: 1 0 auto;
     flex-direction: column;
-}
-
-body.sidebar-open .sidebar-navigation {
-    animation: sidebarMenuAppear 0.25s ease;
 }
 
 @keyframes sidebarMenuAppear {
@@ -252,7 +246,9 @@ body.sidebar-open .sidebar-navigation {
     }
 }
 
-/* LABEL MENU */
+body.sidebar-open .sidebar-navigation {
+    animation: sidebarMenuAppear 0.25s ease;
+}
 
 .nav-label {
     margin: 12px 5px 8px;
@@ -261,8 +257,6 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 800;
     letter-spacing: 0.08em;
 }
-
-/* DAFTAR MENU */
 
 .nav-list {
     display: grid;
@@ -273,8 +267,6 @@ body.sidebar-open .sidebar-navigation {
 
     list-style: none;
 }
-
-/* LINK MENU */
 
 .nav-link {
     display: flex;
@@ -311,8 +303,6 @@ body.sidebar-open .sidebar-navigation {
     color: #064eb6;
 }
 
-/* DROPDOWN MENU */
-
 .nav-dropdown {
     position: relative;
 }
@@ -329,17 +319,13 @@ body.sidebar-open .sidebar-navigation {
 .nav-chevron {
     width: 12px !important;
     height: 12px !important;
-
     margin-left: auto;
-
     transition: transform 0.2s ease;
 }
 
 .nav-dropdown[open] .nav-chevron {
     transform: rotate(180deg);
 }
-
-/* SUBMENU */
 
 .nav-sublist {
     display: grid;
@@ -374,7 +360,7 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   BAGIAN BAWAH SIDEBAR
+   STATUS SIDEBAR
 ========================================= */
 
 .sidebar-bottom {
@@ -384,7 +370,6 @@ body.sidebar-open .sidebar-navigation {
 
 .system-status {
     display: flex;
-
     align-items: flex-start;
     gap: 8px;
 
@@ -404,7 +389,6 @@ body.sidebar-open .sidebar-navigation {
     width: 15px;
     height: 15px;
     flex: 0 0 15px;
-
     color: #15846d;
 }
 
@@ -426,8 +410,14 @@ body.sidebar-open .sidebar-navigation {
 ========================================= */
 
 .main-area {
+    display: flex;
+    min-width: 0;
     min-height: 100vh;
+
     width: calc(100% - 280px);
+    flex: 1 1 auto;
+    flex-direction: column;
+
     margin-left: 280px;
 
     transition:
@@ -435,65 +425,176 @@ body.sidebar-open .sidebar-navigation {
         margin-left 0.25s ease;
 }
 
-
 /* =========================================
    SIDEBAR DESKTOP DITUTUP
+   DASHBOARD MEMENUHI SELURUH LAYAR
 ========================================= */
 
 @media (min-width: 621px) {
 
+    body.sidebar-collapsed .app-layout {
+        display: block;
+        width: 100%;
+        min-height: 100vh;
+    }
+
     body.sidebar-collapsed .sidebar {
-        width: 0;
-        padding: 0;
-        border: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: auto;
+
+        display: flex;
+
+        width: 112px;
+        min-width: 112px;
+
+        height: 58px;
+        min-height: 58px;
+
+        padding: 4px 8px;
+
         overflow: visible;
-        pointer-events: none;
+        pointer-events: auto;
+
+        background: transparent;
+        border: 0;
+
+        z-index: 30;
     }
 
     body.sidebar-collapsed .sidebar-brand-row {
+        display: flex;
+
+        width: 100%;
+        height: 50px;
+
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
         margin: 0;
-        visibility: visible;
-        pointer-events: none;
+        padding: 0;
     }
 
     body.sidebar-collapsed .sidebar-brand-row .brand {
-        visibility: hidden;
-        opacity: 0;
+        display: flex;
+
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+
+        height: 50px;
+
+        margin: 0;
+        flex: 0 0 50px;
     }
 
-    /* Tombol hamburger */
-    body.sidebar-collapsed .sidebar-desktop-toggle {
-        position: fixed;
-        top: 11px;
-        left: 12px;
-        z-index: 1000;
+    body.sidebar-collapsed .brand-text {
+        display: none;
+    }
 
+    body.sidebar-collapsed .sidebar-desktop-toggle {
         display: inline-flex;
+        position: static;
+
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+
+        flex: 0 0 36px;
+
         visibility: visible;
         opacity: 1;
         pointer-events: auto;
 
         background: #fff;
-        border-color: #dce5f2;
+        border: 1px solid #dce5f2;
 
         box-shadow: 0 3px 12px rgba(20, 45, 85, 0.12);
     }
 
-    /* Beri ruang agar tombol tidak menutupi Portal SPI */
-    body.sidebar-collapsed .topbar {
-        padding-left: 58px;
+    body.sidebar-collapsed .sidebar-navigation,
+    body.sidebar-collapsed .sidebar-bottom {
+        display: none !important;
     }
 
-    body.sidebar-collapsed .sidebar-navigation {
-        display: none;
-    }
-
+    /* Dashboard mengambil seluruh lebar layar */
     body.sidebar-collapsed .main-area {
+        display: flex;
+
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+
+        min-height: 100vh;
+
+        margin: 0 !important;
+        flex: none;
+
+        flex-direction: column;
+    }
+
+    body.sidebar-collapsed .page-content {
+        display: block;
+
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 22px 26px 30px;
+
+        box-sizing: border-box;
+    }
+
+    /* Dashboard admin */
+    body.sidebar-collapsed .admin-dashboard {
+        display: block;
+
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+
+        margin: 0 !important;
+    }
+
+    body.sidebar-collapsed .admin-stats {
+        width: 100% !important;
+        max-width: none !important;
+
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    body.sidebar-collapsed .admin-analytics {
+        width: 100% !important;
+        max-width: none !important;
+
+        grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    }
+
+    body.sidebar-collapsed .admin-panel {
         width: 100%;
-        margin-left: 0;
+        max-width: none;
+        min-width: 0;
+    }
+
+    body.sidebar-collapsed .admin-chart-wrap,
+    body.sidebar-collapsed .admin-donut-layout {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.sidebar-collapsed .admin-upload-chart {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Topbar tidak tertutup logo dan hamburger */
+    body.sidebar-collapsed .topbar {
+        padding-left: 130px;
     }
 }
-
 
 /* =========================================
    TOPBAR
@@ -505,6 +606,7 @@ body.sidebar-open .sidebar-navigation {
     z-index: 15;
 
     display: flex;
+    width: 100%;
     min-height: 58px;
 
     align-items: center;
@@ -518,15 +620,11 @@ body.sidebar-open .sidebar-navigation {
     backdrop-filter: blur(12px);
 }
 
-/* BREADCRUMB */
-
 .breadcrumb {
     flex: 0 1 auto;
-
     color: #4e5a70;
     font-size: 12px;
     font-weight: 650;
-
     white-space: nowrap;
 }
 
@@ -567,7 +665,6 @@ body.sidebar-open .sidebar-navigation {
     width: 15px;
     height: 15px;
     flex: 0 0 15px;
-
     color: #8792a6;
 }
 
@@ -580,7 +677,6 @@ body.sidebar-open .sidebar-navigation {
 
     background: transparent;
     color: #263650;
-
     font-size: 11px;
 }
 
@@ -645,7 +741,6 @@ body.sidebar-open .sidebar-navigation {
 
 .role-badge {
     padding: 6px 9px;
-
     border-radius: 6px;
 
     background: #d7fbf2;
@@ -653,12 +748,11 @@ body.sidebar-open .sidebar-navigation {
 
     font-size: 10px;
     font-weight: 750;
-
     white-space: nowrap;
 }
 
 /* =========================================
-   ACCOUNT DROPDOWN
+   ACCOUNT
 ========================================= */
 
 .account-switcher {
@@ -695,22 +789,15 @@ body.sidebar-open .sidebar-navigation {
     background: #f8faff;
 }
 
-/* ACCOUNT */
-
 .account {
     display: flex;
-
     min-width: 0;
-
     align-items: center;
     gap: 8px;
 }
 
-/* AVATAR */
-
 .avatar {
     display: grid;
-
     width: 30px;
     height: 30px;
     flex: 0 0 30px;
@@ -718,7 +805,6 @@ body.sidebar-open .sidebar-navigation {
     place-items: center;
 
     border-radius: 50%;
-
     background: #0753c5;
     color: #fff;
 
@@ -726,23 +812,18 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 800;
 }
 
-/* ACCOUNT TEXT */
-
 .account-text {
     display: block;
     min-width: 0;
-
     text-align: left;
 }
 
 .account-name {
     display: block;
-
     max-width: 125px;
     overflow: hidden;
 
     color: #263650;
-
     font-size: 11px;
     font-weight: 750;
 
@@ -752,23 +833,16 @@ body.sidebar-open .sidebar-navigation {
 
 .account-role {
     display: block;
-
     margin-top: 2px;
-
     color: #7e899c;
-
     font-size: 10px;
 }
 
-/* ACCOUNT CHEVRON */
-
 .account-switch-chevron {
     display: block;
-
     width: 13px;
     height: 13px;
     flex: 0 0 13px;
-
     transition: transform 0.2s ease;
 }
 
@@ -777,7 +851,7 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   ISI DROPDOWN
+   ACCOUNT DROPDOWN
 ========================================= */
 
 .account-switch-dropdown {
@@ -787,25 +861,19 @@ body.sidebar-open .sidebar-navigation {
     z-index: 100;
 
     width: 260px;
-
     padding: 14px;
 
     border: 1px solid #e7ebf3;
     border-radius: 11px;
 
     background: #fff;
-
     box-shadow: 0 12px 30px rgba(30, 45, 75, 0.14);
 }
 
-/* DROPDOWN USER INFO */
-
 .dropdown-user-info {
     display: flex;
-
     align-items: center;
     gap: 10px;
-
     padding: 3px 2px 10px;
 }
 
@@ -821,12 +889,9 @@ body.sidebar-open .sidebar-navigation {
 
 .dropdown-user-info small {
     margin-top: 3px;
-
     color: #8290a5;
     font-size: 10px;
 }
-
-/* DROPDOWN AVATAR */
 
 .dropdown-avatar {
     width: 36px;
@@ -834,21 +899,14 @@ body.sidebar-open .sidebar-navigation {
     flex-basis: 36px;
 }
 
-/* DROPDOWN DIVIDER */
-
 .dropdown-divider {
     height: 1px;
-
     margin: 4px 0 8px;
-
     background: #edf0f6;
 }
 
-/* ACCOUNT MENU LINK */
-
 .account-menu-link {
     display: flex;
-
     width: 100%;
     min-height: 38px;
 
@@ -885,8 +943,6 @@ body.sidebar-open .sidebar-navigation {
     margin: 0;
 }
 
-/* LOGOUT */
-
 .logout-menu-link {
     color: #d14343;
 }
@@ -897,202 +953,29 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   KONTEN
+   KONTEN HALAMAN
 ========================================= */
 
 .page-content {
+    display: block;
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
     padding: 22px 26px 30px;
+
+    box-sizing: border-box;
 }
 
 /* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 1000px) and (min-width: 621px) {
-    .sidebar {
-        width: 240px;
-    }
-
-    .sidebar-navigation {
-        min-width: 0;
-    }
-
-    .main-area {
-        width: calc(100% - 240px);
-        margin-left: 240px;
-    }
-
-    body.sidebar-collapsed .main-area {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .topbar {
-        gap: 9px;
-        padding-right: 12px;
-    }
-
-    .breadcrumb {
-        display: none;
-    }
-
-    .search-form {
-        margin-left: 0;
-    }
-}
-
-@media (max-width: 1200px) {
-    .breadcrumb {
-        display: none;
-    }
-}
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 620px) {
-    body {
-        min-width: 320px;
-    }
-
-    .app-layout {
-        display: block;
-    }
-
-    .sidebar {
-        position: relative;
-        inset: auto;
-
-        width: 100%;
-        padding: 12px 16px;
-
-        overflow: visible;
-
-        border-right: 0;
-        border-bottom: 1px solid #eef0f7;
-    }
-
-    .sidebar-brand-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        margin-bottom: 0;
-    }
-
-    .brand {
-        margin: 0 4px 12px;
-    }
-
-    /* Tombol desktop tidak digunakan di HP */
-    .sidebar-desktop-toggle {
-        display: none !important;
-    }
-
-    /* Tombol hamburger mobile tetap mengikuti topbar */
-    .sidebar-hamburger {
-        display: inline-flex;
-        position: static;
-        flex: 0 0 36px;
-    }
-
-    .sidebar-navigation {
-        display: none;
-    }
-
-    body.sidebar-open .sidebar-navigation {
-        display: flex;
-    }
-
-    body.sidebar-collapsed .sidebar {
-        width: 100%;
-        padding: 12px 16px;
-        border-bottom: 1px solid #eef0f7;
-    }
-
-    body.sidebar-collapsed .sidebar-brand-row {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    body.sidebar-collapsed .sidebar-brand-row .brand {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    body.sidebar-collapsed .sidebar-navigation {
-        display: none;
-    }
-
-    .main-area {
-        min-height: auto;
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .topbar {
-        min-height: 52px;
-
-        gap: 6px;
-
-        padding: 7px 12px;
-    }
-
-    .topbar .top-search {
-        flex: 1 1 auto;
-
-        width: auto;
-        min-width: 50px;
-
-        margin: 0;
-    }
-
-    .topbar-spacer {
-        display: none;
-    }
-
-    .role-badge {
-        display: none;
-    }
-
-    .account-switch-trigger {
-        gap: 4px;
-        padding: 3px;
-    }
-
-    .account-name {
-        max-width: 75px;
-        font-size: 10px;
-    }
-
-    .account-role {
-        font-size: 9px;
-    }
-
-    .account-switch-dropdown {
-        right: 0;
-        width: 245px;
-    }
-
-    .page-content {
-        padding: 16px 12px 24px;
-    }
-}
-
-/* =========================================
-   MENGHILANGKAN IKON PANAH PAGINATION
-========================================= */
-
-nav[role="navigation"] svg {
-    display: none !important;
-}
-
-/* =========================================
-   ADMIN DASHBOARD TYPOGRAPHY
+   DASHBOARD ADMIN
 ========================================= */
 
 body .admin-dashboard {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
     font-family: "Montserrat", sans-serif;
 }
 
@@ -1149,4 +1032,221 @@ body .admin-dashboard .admin-donut-center-total {
 
 body .admin-dashboard .admin-donut-name {
     font-weight: 500;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) and (min-width: 621px) {
+
+    .sidebar {
+        width: 240px;
+    }
+
+    .main-area {
+        width: calc(100% - 240px);
+        margin-left: 240px;
+    }
+
+    body.sidebar-collapsed .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.sidebar-collapsed .admin-analytics {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        gap: 9px;
+        padding-right: 12px;
+    }
+
+    .breadcrumb {
+        display: none;
+    }
+
+    .search-form {
+        margin-left: 0;
+    }
+}
+
+/* =========================================
+   UKURAN LAYAR LEBAR
+========================================= */
+
+@media (min-width: 1200px) {
+    .page-content {
+        padding-right: 26px;
+        padding-left: 26px;
+    }
+}
+
+/* =========================================
+   LAYAR KECIL
+========================================= */
+
+@media (max-width: 850px) and (min-width: 621px) {
+
+    body.sidebar-collapsed .page-content {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+    body.sidebar-collapsed .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.sidebar-collapsed .admin-analytics {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .breadcrumb {
+        display: none;
+    }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 620px) {
+
+    body {
+        min-width: 320px;
+    }
+
+    .app-layout {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        inset: auto;
+
+        width: 100%;
+        height: auto;
+        min-height: 0;
+
+        padding: 12px 16px;
+
+        overflow: visible;
+
+        border-right: 0;
+        border-bottom: 1px solid #eef0f7;
+    }
+
+    .sidebar-brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0;
+    }
+
+    .brand {
+        margin: 0 4px 12px;
+    }
+
+    .sidebar-desktop-toggle {
+        display: none !important;
+    }
+
+    .sidebar-hamburger {
+        display: inline-flex;
+        position: static;
+        flex: 0 0 36px;
+    }
+
+    .sidebar-navigation {
+        display: none;
+    }
+
+    body.sidebar-open .sidebar-navigation {
+        display: flex;
+    }
+
+    body.sidebar-collapsed .sidebar {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eef0f7;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-row .brand {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    body.sidebar-collapsed .sidebar-navigation {
+        display: none;
+    }
+
+    .main-area {
+        display: flex;
+        width: 100%;
+        min-height: auto;
+        margin-left: 0;
+    }
+
+    .topbar {
+        min-height: 52px;
+        gap: 6px;
+        padding: 7px 12px;
+    }
+
+    .topbar .top-search {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 50px;
+        margin: 0;
+    }
+
+    .topbar-spacer {
+        display: none;
+    }
+
+    .role-badge {
+        display: none;
+    }
+
+    .account-switch-trigger {
+        gap: 4px;
+        padding: 3px;
+    }
+
+    .account-name {
+        max-width: 75px;
+        font-size: 10px;
+    }
+
+    .account-role {
+        font-size: 9px;
+    }
+
+    .account-switch-dropdown {
+        right: 0;
+        width: 245px;
+    }
+
+    .page-content {
+        width: 100%;
+        padding: 16px 12px 24px;
+    }
+}
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+nav[role="navigation"] svg {
+    display: none !important;
 }
