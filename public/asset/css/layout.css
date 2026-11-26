@@ -1,14 +1,36 @@
 
 /* =========================================
-   APP LAYOUT
+   SIDOKSPI - APP LAYOUT
+   PDAM TIRTA PINANG
 ========================================= */
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
 
 :root {
     font-family: "Montserrat", sans-serif;
+
     --blue: #2168d6;
+    --blue-dark: #0849a8;
+    --blue-hover: #064eb6;
+
+    --text-primary: #263650;
+    --text-secondary: #56637a;
+    --text-muted: #929bb0;
+
+    --border: #e9edf5;
+    --surface: #ffffff;
+    --surface-soft: #f4f7fc;
+
+    --sidebar-width: 280px;
+    --sidebar-tablet-width: 240px;
+    --sidebar-collapsed-width: 112px;
+
+    --transition: 0.25s ease;
 }
+
+/* =========================================
+   1. RESET DAN DASAR
+========================================= */
 
 *,
 *::before,
@@ -21,7 +43,9 @@ body {
     width: 100%;
     min-height: 100%;
     margin: 0;
+
     font-family: "Montserrat", sans-serif;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -33,6 +57,10 @@ textarea {
     font-family: inherit;
 }
 
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .app-layout {
     display: flex;
     width: 100%;
@@ -40,7 +68,7 @@ textarea {
 }
 
 /* =========================================
-   SIDEBAR
+   2. SIDEBAR
 ========================================= */
 
 .sidebar {
@@ -49,47 +77,49 @@ textarea {
     z-index: 20;
 
     display: flex;
-    width: 280px;
-    height: 100vh;
     flex-direction: column;
 
-    padding: 20px 12px 14px;
-    border-right: 1px solid #eef0f7;
+    width: var(--sidebar-width);
+    height: 100vh;
 
-    background: #fff;
+    padding: 20px 12px 14px;
+
+    border-right: 1px solid #eef0f7;
+    background: var(--surface);
 
     overflow-x: hidden;
     overflow-y: auto;
 
     transition:
-        width 0.25s ease,
-        padding 0.25s ease,
-        border 0.25s ease;
+        width var(--transition),
+        padding var(--transition),
+        border var(--transition);
 }
 
 /* =========================================
-   IDENTITAS SIDOKSPI
+   3. IDENTITAS SIDOKSPI
 ========================================= */
 
 .sidebar-brand-row {
     display: flex;
-    width: 100%;
-    min-width: 0;
-
     align-items: center;
     gap: 8px;
+
+    width: 100%;
+    min-width: 0;
 
     margin-bottom: 24px;
 }
 
 .brand {
     display: flex;
+    align-items: center;
+    gap: 10px;
+
     min-width: 0;
     min-height: 50px;
 
     flex: 1 1 auto;
-    align-items: center;
-    gap: 10px;
 
     margin: 0 4px 0 10px;
 
@@ -98,13 +128,14 @@ textarea {
 
 .brand-mark {
     display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 50px;
     height: 50px;
     min-width: 50px;
 
     flex: 0 0 50px;
-    align-items: center;
-    justify-content: center;
 
     border-radius: 12px;
     background: transparent;
@@ -114,8 +145,10 @@ textarea {
 
 .logo-pdam {
     display: block;
+
     width: 100%;
     height: 100%;
+
     object-fit: contain;
 }
 
@@ -130,7 +163,7 @@ textarea {
 }
 
 .brand-name {
-    color: #0849a8;
+    color: var(--blue-dark);
     font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.025em;
@@ -144,18 +177,20 @@ textarea {
 }
 
 /* =========================================
-   TOMBOL HAMBURGER DESKTOP
+   4. TOMBOL HAMBURGER
 ========================================= */
 
-.sidebar-desktop-toggle {
+.sidebar-desktop-toggle,
+.sidebar-hamburger {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     width: 36px;
     height: 36px;
     min-width: 36px;
 
     flex: 0 0 36px;
-    align-items: center;
-    justify-content: center;
 
     padding: 0;
 
@@ -168,70 +203,46 @@ textarea {
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition);
 }
 
-.sidebar-desktop-toggle:hover {
-    border-color: #cbdcf5;
-    background: #eaf2ff;
-}
-
-.sidebar-desktop-toggle:focus-visible {
-    outline: 2px solid #0753c5;
-    outline-offset: 2px;
-}
-
-.sidebar-desktop-toggle svg {
-    display: block;
-    width: 20px;
-    height: 20px;
-}
-
-/* =========================================
-   TOMBOL HAMBURGER MOBILE
-========================================= */
-
-.sidebar-hamburger {
-    display: none;
-    width: 36px;
-    height: 36px;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-
-    border: 1px solid #e7edf6;
-    border-radius: 9px;
-
-    background: #f4f7fc;
-    color: #0753c5;
-
-    cursor: pointer;
-}
-
+.sidebar-desktop-toggle:hover,
 .sidebar-hamburger:hover {
     border-color: #cbdcf5;
     background: #eaf2ff;
 }
 
+.sidebar-desktop-toggle:focus-visible,
+.sidebar-hamburger:focus-visible {
+    outline: 2px solid #0753c5;
+    outline-offset: 2px;
+}
+
+.sidebar-desktop-toggle svg,
 .sidebar-hamburger svg {
     display: block;
     width: 20px;
     height: 20px;
 }
 
+/* Hamburger mobile tidak tampil di desktop */
+
+.sidebar-hamburger {
+    display: none;
+}
+
 /* =========================================
-   NAVIGASI
+   5. NAVIGASI
 ========================================= */
 
 .sidebar-navigation {
     display: flex;
-    min-width: 0;
     flex: 1 0 auto;
     flex-direction: column;
+
+    min-width: 0;
 }
 
 @keyframes sidebarMenuAppear {
@@ -252,7 +263,8 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-label {
     margin: 12px 5px 8px;
-    color: #929bb0;
+
+    color: var(--text-muted);
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -268,12 +280,18 @@ body.sidebar-open .sidebar-navigation {
     list-style: none;
 }
 
-.nav-link {
-    display: flex;
-    min-height: 44px;
+/* =========================================
+   6. MENU UTAMA DAN IKON
+========================================= */
 
+.nav-link,
+.nav-dropdown-toggle {
+    display: flex;
     align-items: center;
     gap: 10px;
+
+    width: 100%;
+    min-height: 44px;
 
     padding: 9px 10px;
 
@@ -284,24 +302,51 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 650;
 
     text-decoration: none;
+
+    transition:
+        background var(--transition),
+        color var(--transition);
 }
 
-.nav-link svg {
-    width: 20px;
-    height: 20px;
-    flex: 0 0 20px;
+.nav-link > svg,
+.nav-dropdown-toggle > svg:first-child {
+    display: block;
+
+    width: 21px;
+    height: 21px;
+    min-width: 21px;
+
+    flex: 0 0 21px;
+
+    stroke: currentColor;
+
+    transition:
+        color var(--transition),
+        transform var(--transition);
 }
 
-.nav-link.active {
+.nav-link > span,
+.nav-dropdown-toggle > span {
+    min-width: 0;
+}
+
+.nav-link.active,
+.nav-dropdown-toggle.active {
     background: #edf2ff;
-    color: #064eb6;
+    color: var(--blue-hover);
+    font-weight: 700;
 }
 
 .nav-link:hover,
+.nav-dropdown-toggle:hover,
 .nav-sublink:hover {
     background: #f4f6fb;
-    color: #064eb6;
+    color: var(--blue-hover);
 }
+
+/* =========================================
+   7. DROPDOWN
+========================================= */
 
 .nav-dropdown {
     position: relative;
@@ -317,15 +362,26 @@ body.sidebar-open .sidebar-navigation {
 }
 
 .nav-chevron {
-    width: 12px !important;
-    height: 12px !important;
+    display: block;
+
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+
+    flex: 0 0 15px !important;
+
     margin-left: auto;
+
     transition: transform 0.2s ease;
 }
 
-.nav-dropdown[open] .nav-chevron {
+.nav-dropdown[open] > .nav-dropdown-toggle .nav-chevron {
     transform: rotate(180deg);
 }
+
+/* =========================================
+   8. SUBMENU
+========================================= */
 
 .nav-sublist {
     display: grid;
@@ -339,11 +395,13 @@ body.sidebar-open .sidebar-navigation {
 
 .nav-sublink {
     display: flex;
-    min-height: 34px;
-
     align-items: center;
+    gap: 10px;
 
-    padding: 6px 9px;
+    width: 100%;
+    min-height: 36px;
+
+    padding: 7px 9px;
 
     border-radius: 6px;
 
@@ -352,15 +410,42 @@ body.sidebar-open .sidebar-navigation {
     font-weight: 600;
 
     text-decoration: none;
+
+    transition:
+        background var(--transition),
+        color var(--transition);
+}
+
+.nav-sublink > svg {
+    display: block;
+
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+
+    flex: 0 0 17px;
+
+    stroke: currentColor;
+
+    transition: transform var(--transition);
+}
+
+.nav-sublink > span {
+    min-width: 0;
 }
 
 .nav-sublink.active {
     background: #edf2ff;
-    color: #064eb6;
+    color: var(--blue-hover);
+    font-weight: 700;
+}
+
+.nav-sublink:hover > svg {
+    transform: translateX(2px);
 }
 
 /* =========================================
-   STATUS SIDEBAR
+   9. STATUS SISTEM
 ========================================= */
 
 .sidebar-bottom {
@@ -370,7 +455,7 @@ body.sidebar-open .sidebar-navigation {
 
 .system-status {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
 
     padding: 10px 8px;
@@ -385,15 +470,20 @@ body.sidebar-open .sidebar-navigation {
     line-height: 1.45;
 }
 
-.system-status svg {
-    width: 15px;
-    height: 15px;
-    flex: 0 0 15px;
+.system-status > svg {
+    display: block;
+
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+
+    flex: 0 0 19px;
+
     color: #15846d;
 }
 
 .system-status strong,
-.version {
+.system-status .version {
     display: block;
 }
 
@@ -406,151 +496,327 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   AREA UTAMA
+   10. AREA UTAMA
 ========================================= */
 
 .main-area {
     display: flex;
-    min-width: 0;
-    min-height: 100vh;
-
-    width: calc(100% - 280px);
     flex: 1 1 auto;
     flex-direction: column;
 
-    margin-left: 280px;
+    width: calc(100% - var(--sidebar-width));
+    min-width: 0;
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
 
     transition:
-        width 0.25s ease,
-        margin-left 0.25s ease;
+        width var(--transition),
+        margin-left var(--transition);
 }
 
 /* =========================================
-   SIDEBAR DESKTOP DITUTUP
-   DASHBOARD MEMENUHI SELURUH LAYAR
+   11. SIDEBAR COLLAPSED DESKTOP
+   IKON MENU TETAP TERLIHAT
 ========================================= */
 
 @media (min-width: 621px) {
 
-    body.sidebar-collapsed .app-layout {
-        display: block;
-        width: 100%;
-        min-height: 100vh;
-    }
-
+    /* Sidebar mode ikon */
     body.sidebar-collapsed .sidebar {
         position: fixed;
         top: 0;
         left: 0;
         right: auto;
 
-        display: flex;
+        display: flex !important;
+        flex-direction: column;
 
-        width: 112px;
-        min-width: 112px;
+        width: var(--sidebar-collapsed-width) !important;
+        min-width: var(--sidebar-collapsed-width) !important;
+        max-width: var(--sidebar-collapsed-width) !important;
 
-        height: 58px;
-        min-height: 58px;
+        height: 100vh !important;
+        min-height: 100vh !important;
 
-        padding: 4px 8px;
+        padding: 8px 8px 14px !important;
 
-        overflow: visible;
-        pointer-events: auto;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
 
-        background: transparent;
-        border: 0;
+        background: #ffffff !important;
+        border-right: 1px solid #eef0f7 !important;
 
         z-index: 30;
     }
 
+    /* Baris logo dan hamburger */
     body.sidebar-collapsed .sidebar-brand-row {
-        display: flex;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
 
-        width: 100%;
-        height: 50px;
+        width: 100% !important;
+        height: 50px !important;
+        min-height: 50px !important;
 
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        gap: 8px !important;
 
-        margin: 0;
-        padding: 0;
+        margin: 0 0 18px !important;
+        padding: 0 !important;
     }
 
+    /* Logo PDAM */
     body.sidebar-collapsed .sidebar-brand-row .brand {
-        display: flex;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
 
-        width: 50px;
-        min-width: 50px;
-        max-width: 50px;
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
 
-        height: 50px;
+        height: 50px !important;
+        min-height: 50px !important;
 
-        margin: 0;
-        flex: 0 0 50px;
+        flex: 0 0 50px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
+    body.sidebar-collapsed .brand-mark {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+
+        flex: 0 0 50px !important;
+    }
+
+    body.sidebar-collapsed .logo-pdam {
+        display: block !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        object-fit: contain !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Tulisan merek disembunyikan */
     body.sidebar-collapsed .brand-text {
-        display: none;
+        display: none !important;
     }
 
+    /* Tombol hamburger */
     body.sidebar-collapsed .sidebar-desktop-toggle {
-        display: inline-flex;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
         position: static;
 
-        width: 36px;
-        min-width: 36px;
-        height: 36px;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
 
-        flex: 0 0 36px;
+        flex: 0 0 36px !important;
 
-        visibility: visible;
-        opacity: 1;
-        pointer-events: auto;
+        margin: 0 !important;
+        padding: 0 !important;
 
-        background: #fff;
-        border: 1px solid #dce5f2;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
 
-        box-shadow: 0 3px 12px rgba(20, 45, 85, 0.12);
+        background: #f4f7fc !important;
+        border: 1px solid #e7edf6 !important;
+
+        box-shadow: 0 2px 8px rgba(20, 45, 85, 0.08);
     }
 
-    body.sidebar-collapsed .sidebar-navigation,
+    body.sidebar-collapsed .sidebar-desktop-toggle svg {
+        display: block !important;
+        width: 21px !important;
+        height: 21px !important;
+    }
+
+    /* Navigasi tetap ditampilkan */
+    body.sidebar-collapsed .sidebar-navigation {
+        display: flex !important;
+        flex: 1 0 auto !important;
+        flex-direction: column !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+
+        padding: 0 !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        overflow: visible !important;
+    }
+
+    /* Sembunyikan judul kelompok */
+    body.sidebar-collapsed .nav-label {
+        display: none !important;
+    }
+
+    /* Daftar menu */
+    body.sidebar-collapsed .nav-list {
+        display: grid !important;
+        gap: 5px !important;
+
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Menu utama hanya ikon */
+    body.sidebar-collapsed .nav-link,
+    body.sidebar-collapsed .nav-dropdown-toggle {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 100% !important;
+        min-height: 44px !important;
+
+        padding: 9px 5px !important;
+        gap: 0 !important;
+
+        border-radius: 8px !important;
+    }
+
+    /* Sembunyikan tulisan menu */
+    body.sidebar-collapsed .nav-link > span,
+    body.sidebar-collapsed .nav-dropdown-toggle > span {
+        display: none !important;
+    }
+
+    /* Ikon menu utama */
+    body.sidebar-collapsed .nav-link > svg:first-child,
+    body.sidebar-collapsed .nav-dropdown-toggle > svg:first-child {
+        display: block !important;
+
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+
+        flex: 0 0 22px !important;
+    }
+
+    /* Sembunyikan panah dropdown */
+    body.sidebar-collapsed .nav-chevron {
+        display: none !important;
+    }
+
+    /* Submenu ikon tetap ditampilkan */
+    body.sidebar-collapsed .nav-dropdown > .nav-sublist {
+        display: flex !important;
+        flex-direction: column !important;
+
+        width: 100% !important;
+
+        gap: 4px !important;
+
+        margin: 3px 0 7px !important;
+        padding: 0 !important;
+    }
+
+    /* Submenu ikon saja */
+    body.sidebar-collapsed .nav-sublink {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 100% !important;
+        min-height: 42px !important;
+
+        padding: 8px 5px !important;
+        gap: 0 !important;
+
+        border-radius: 8px !important;
+    }
+
+    /* Sembunyikan tulisan submenu */
+    body.sidebar-collapsed .nav-sublink > span {
+        display: none !important;
+    }
+
+    /* Ikon submenu */
+    body.sidebar-collapsed .nav-sublink > svg {
+        display: block !important;
+
+        width: 21px !important;
+        height: 21px !important;
+        min-width: 21px !important;
+
+        flex: 0 0 21px !important;
+    }
+
+    /* Hover dan menu aktif */
+    body.sidebar-collapsed .nav-link:hover,
+    body.sidebar-collapsed .nav-sublink:hover,
+    body.sidebar-collapsed .nav-dropdown-toggle:hover {
+        background: #edf2ff !important;
+        color: var(--blue-hover) !important;
+    }
+
+    body.sidebar-collapsed .nav-link.active,
+    body.sidebar-collapsed .nav-dropdown-toggle.active,
+    body.sidebar-collapsed .nav-sublink.active {
+        background: #edf2ff !important;
+        color: var(--blue-hover) !important;
+    }
+
+    /* Status sistem disembunyikan */
     body.sidebar-collapsed .sidebar-bottom {
         display: none !important;
     }
 
-    /* Dashboard mengambil seluruh lebar layar */
+    /* Dashboard menggunakan sisa lebar layar */
     body.sidebar-collapsed .main-area {
-        display: flex;
+        display: flex !important;
+        flex: 1 1 auto !important;
+        flex-direction: column !important;
 
-        width: 100% !important;
+        width: calc(100% - var(--sidebar-collapsed-width)) !important;
         max-width: none !important;
         min-width: 0 !important;
 
         min-height: 100vh;
 
-        margin: 0 !important;
-        flex: none;
-
-        flex-direction: column;
+        margin-left: var(--sidebar-collapsed-width) !important;
     }
 
+    /* Konten halaman */
     body.sidebar-collapsed .page-content {
-        display: block;
+        display: block !important;
 
         width: 100% !important;
         max-width: none !important;
         min-width: 0 !important;
 
         margin: 0 !important;
-        padding: 22px 26px 30px;
+        padding: 22px 26px 30px !important;
 
         box-sizing: border-box;
     }
 
     /* Dashboard admin */
     body.sidebar-collapsed .admin-dashboard {
-        display: block;
+        display: block !important;
 
         width: 100% !important;
         max-width: none !important;
@@ -570,34 +836,31 @@ body.sidebar-open .sidebar-navigation {
         width: 100% !important;
         max-width: none !important;
 
-        grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+        grid-template-columns:
+            minmax(0, 1.18fr)
+            minmax(0, 0.82fr);
     }
 
     body.sidebar-collapsed .admin-panel {
-        width: 100%;
-        max-width: none;
-        min-width: 0;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
     }
 
     body.sidebar-collapsed .admin-chart-wrap,
     body.sidebar-collapsed .admin-donut-layout {
-        width: 100%;
-        min-width: 0;
+        width: 100% !important;
+        min-width: 0 !important;
     }
 
     body.sidebar-collapsed .admin-upload-chart {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    /* Topbar tidak tertutup logo dan hamburger */
-    body.sidebar-collapsed .topbar {
-        padding-left: 130px;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 
 /* =========================================
-   TOPBAR
+   12. TOPBAR
 ========================================= */
 
 .topbar {
@@ -606,11 +869,11 @@ body.sidebar-open .sidebar-navigation {
     z-index: 15;
 
     display: flex;
-    width: 100%;
-    min-height: 58px;
-
     align-items: center;
     gap: 14px;
+
+    width: 100%;
+    min-height: 58px;
 
     padding: 8px 22px;
 
@@ -622,9 +885,11 @@ body.sidebar-open .sidebar-navigation {
 
 .breadcrumb {
     flex: 0 1 auto;
+
     color: #4e5a70;
     font-size: 12px;
     font-weight: 650;
+
     white-space: nowrap;
 }
 
@@ -639,18 +904,17 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   SEARCH
+   13. SEARCH
 ========================================= */
 
 .search-form {
     display: flex;
+    align-items: center;
+    gap: 8px;
 
     width: min(280px, 27vw);
     min-width: 150px;
     height: 34px;
-
-    align-items: center;
-    gap: 8px;
 
     margin-left: 4px;
     padding: 0 10px;
@@ -665,6 +929,7 @@ body.sidebar-open .sidebar-navigation {
     width: 15px;
     height: 15px;
     flex: 0 0 15px;
+
     color: #8792a6;
 }
 
@@ -677,6 +942,7 @@ body.sidebar-open .sidebar-navigation {
 
     background: transparent;
     color: #263650;
+
     font-size: 11px;
 }
 
@@ -689,18 +955,19 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   ICON BUTTON
+   14. ICON BUTTON
 ========================================= */
 
 .icon-button {
     position: relative;
 
     display: grid;
+    place-items: center;
+
     width: 32px;
     height: 32px;
-    flex: 0 0 32px;
 
-    place-items: center;
+    flex: 0 0 32px;
 
     border: 0;
     border-radius: 7px;
@@ -736,11 +1003,12 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   ROLE BADGE
+   15. ROLE BADGE
 ========================================= */
 
 .role-badge {
     padding: 6px 9px;
+
     border-radius: 6px;
 
     background: #d7fbf2;
@@ -748,11 +1016,12 @@ body.sidebar-open .sidebar-navigation {
 
     font-size: 10px;
     font-weight: 750;
+
     white-space: nowrap;
 }
 
 /* =========================================
-   ACCOUNT
+   16. ACCOUNT
 ========================================= */
 
 .account-switcher {
@@ -762,10 +1031,10 @@ body.sidebar-open .sidebar-navigation {
 
 .account-switch-trigger {
     display: flex;
-    min-height: 40px;
-
     align-items: center;
     gap: 9px;
+
+    min-height: 40px;
 
     padding: 4px 8px;
 
@@ -791,20 +1060,23 @@ body.sidebar-open .sidebar-navigation {
 
 .account {
     display: flex;
-    min-width: 0;
     align-items: center;
     gap: 8px;
+
+    min-width: 0;
 }
 
 .avatar {
     display: grid;
-    width: 30px;
-    height: 30px;
-    flex: 0 0 30px;
-
     place-items: center;
 
+    width: 30px;
+    height: 30px;
+
+    flex: 0 0 30px;
+
     border-radius: 50%;
+
     background: #0753c5;
     color: #fff;
 
@@ -820,7 +1092,9 @@ body.sidebar-open .sidebar-navigation {
 
 .account-name {
     display: block;
+
     max-width: 125px;
+
     overflow: hidden;
 
     color: #263650;
@@ -833,16 +1107,21 @@ body.sidebar-open .sidebar-navigation {
 
 .account-role {
     display: block;
+
     margin-top: 2px;
+
     color: #7e899c;
     font-size: 10px;
 }
 
 .account-switch-chevron {
     display: block;
+
     width: 13px;
     height: 13px;
+
     flex: 0 0 13px;
+
     transition: transform 0.2s ease;
 }
 
@@ -851,7 +1130,7 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   ACCOUNT DROPDOWN
+   17. ACCOUNT DROPDOWN
 ========================================= */
 
 .account-switch-dropdown {
@@ -867,6 +1146,7 @@ body.sidebar-open .sidebar-navigation {
     border-radius: 11px;
 
     background: #fff;
+
     box-shadow: 0 12px 30px rgba(30, 45, 75, 0.14);
 }
 
@@ -874,6 +1154,7 @@ body.sidebar-open .sidebar-navigation {
     display: flex;
     align-items: center;
     gap: 10px;
+
     padding: 3px 2px 10px;
 }
 
@@ -907,11 +1188,11 @@ body.sidebar-open .sidebar-navigation {
 
 .account-menu-link {
     display: flex;
-    width: 100%;
-    min-height: 38px;
-
     align-items: center;
     gap: 10px;
+
+    width: 100%;
+    min-height: 38px;
 
     padding: 8px 9px;
 
@@ -953,11 +1234,12 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   KONTEN HALAMAN
+   18. KONTEN HALAMAN
 ========================================= */
 
 .page-content {
     display: block;
+
     width: 100%;
     min-width: 0;
 
@@ -968,30 +1250,33 @@ body.sidebar-open .sidebar-navigation {
 }
 
 /* =========================================
-   DASHBOARD ADMIN
+   19. DASHBOARD ADMIN
 ========================================= */
 
 body .admin-dashboard {
     width: 100%;
     max-width: none;
     min-width: 0;
+
     margin: 0;
+
     font-family: "Montserrat", sans-serif;
 }
 
 body .admin-dashboard .admin-eyebrow {
-    color: #2168d6;
+    color: var(--blue);
+
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.075em;
 }
 
 body .admin-dashboard .admin-eyebrow::before {
-    background: #2168d6;
+    background: var(--blue);
 }
 
 body .admin-dashboard .admin-stat-foot strong {
-    color: #2168d6;
+    color: var(--blue);
     font-weight: 600;
 }
 
@@ -1035,26 +1320,18 @@ body .admin-dashboard .admin-donut-name {
 }
 
 /* =========================================
-   TABLET
+   20. TABLET
 ========================================= */
 
 @media (max-width: 1000px) and (min-width: 621px) {
 
     .sidebar {
-        width: 240px;
+        width: var(--sidebar-tablet-width);
     }
 
     .main-area {
-        width: calc(100% - 240px);
-        margin-left: 240px;
-    }
-
-    body.sidebar-collapsed .admin-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    body.sidebar-collapsed .admin-analytics {
-        grid-template-columns: 1fr;
+        width: calc(100% - var(--sidebar-tablet-width));
+        margin-left: var(--sidebar-tablet-width);
     }
 
     .topbar {
@@ -1069,28 +1346,16 @@ body .admin-dashboard .admin-donut-name {
     .search-form {
         margin-left: 0;
     }
-}
 
-/* =========================================
-   UKURAN LAYAR LEBAR
-========================================= */
-
-@media (min-width: 1200px) {
-    .page-content {
-        padding-right: 26px;
-        padding-left: 26px;
+    body.sidebar-collapsed .sidebar {
+        width: var(--sidebar-collapsed-width) !important;
+        min-width: var(--sidebar-collapsed-width) !important;
+        max-width: var(--sidebar-collapsed-width) !important;
     }
-}
 
-/* =========================================
-   LAYAR KECIL
-========================================= */
-
-@media (max-width: 850px) and (min-width: 621px) {
-
-    body.sidebar-collapsed .page-content {
-        padding-right: 18px;
-        padding-left: 18px;
+    body.sidebar-collapsed .main-area {
+        width: calc(100% - var(--sidebar-collapsed-width)) !important;
+        margin-left: var(--sidebar-collapsed-width) !important;
     }
 
     body.sidebar-collapsed .admin-stats {
@@ -1102,14 +1367,39 @@ body .admin-dashboard .admin-donut-name {
     }
 }
 
+/* =========================================
+   21. LAYAR KECIL DESKTOP
+========================================= */
+
+@media (max-width: 850px) and (min-width: 621px) {
+
+    body.sidebar-collapsed .page-content {
+        padding-right: 18px !important;
+        padding-left: 18px !important;
+    }
+
+    body.sidebar-collapsed .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.sidebar-collapsed .admin-analytics {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   22. RESPONSIVE BREADCRUMB
+========================================= */
+
 @media (max-width: 1200px) {
+
     .breadcrumb {
         display: none;
     }
 }
 
 /* =========================================
-   MOBILE
+   23. MOBILE
 ========================================= */
 
 @media (max-width: 620px) {
@@ -1142,6 +1432,7 @@ body .admin-dashboard .admin-donut-name {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         margin-bottom: 0;
     }
 
@@ -1149,15 +1440,21 @@ body .admin-dashboard .admin-donut-name {
         margin: 0 4px 12px;
     }
 
+    /* Tombol desktop disembunyikan */
+
     .sidebar-desktop-toggle {
         display: none !important;
     }
+
+    /* Tombol mobile ditampilkan */
 
     .sidebar-hamburger {
         display: inline-flex;
         position: static;
         flex: 0 0 36px;
     }
+
+    /* Navigasi tertutup secara default */
 
     .sidebar-navigation {
         display: none;
@@ -1167,46 +1464,76 @@ body .admin-dashboard .admin-donut-name {
         display: flex;
     }
 
+    /* Reset collapsed untuk mobile */
+
     body.sidebar-collapsed .sidebar {
+        position: relative;
+
         width: 100%;
         height: auto;
         min-height: 0;
+
         padding: 12px 16px;
+
+        border-right: 0;
         border-bottom: 1px solid #eef0f7;
     }
 
     body.sidebar-collapsed .sidebar-brand-row {
+        display: flex;
         visibility: visible;
         opacity: 1;
     }
 
     body.sidebar-collapsed .sidebar-brand-row .brand {
+        display: flex;
         visibility: visible;
         opacity: 1;
         pointer-events: auto;
     }
 
-    body.sidebar-collapsed .sidebar-navigation {
-        display: none;
+    body.sidebar-collapsed .brand-text {
+        display: block !important;
     }
+
+    body.sidebar-collapsed .sidebar-desktop-toggle {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .sidebar-navigation {
+        display: none !important;
+    }
+
+    body.sidebar-open.sidebar-collapsed .sidebar-navigation {
+        display: flex !important;
+    }
+
+    /* Area utama mobile */
 
     .main-area {
         display: flex;
+
         width: 100%;
         min-height: auto;
+
         margin-left: 0;
     }
 
+    /* Topbar mobile */
+
     .topbar {
         min-height: 52px;
+
         gap: 6px;
         padding: 7px 12px;
     }
 
     .topbar .top-search {
         flex: 1 1 auto;
+
         width: auto;
         min-width: 50px;
+
         margin: 0;
     }
 
@@ -1217,6 +1544,8 @@ body .admin-dashboard .admin-donut-name {
     .role-badge {
         display: none;
     }
+
+    /* Account mobile */
 
     .account-switch-trigger {
         gap: 4px;
@@ -1237,6 +1566,8 @@ body .admin-dashboard .admin-donut-name {
         width: 245px;
     }
 
+    /* Konten mobile */
+
     .page-content {
         width: 100%;
         padding: 16px 12px 24px;
@@ -1244,7 +1575,7 @@ body .admin-dashboard .admin-donut-name {
 }
 
 /* =========================================
-   PAGINATION
+   24. PAGINATION
 ========================================= */
 
 nav[role="navigation"] svg {
