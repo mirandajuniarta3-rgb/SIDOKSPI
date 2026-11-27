@@ -30,6 +30,18 @@ class SuratKeputusanController extends Controller
     }
 
     /**
+     * Khusus Admin untuk perubahan status SK.
+     */
+    private function authorizeAdmin(Request $request): void
+    {
+        abort_unless(
+            $request->user()?->role === 'admin',
+            403,
+            'Hanya Administrator yang dapat mengubah status Surat Keputusan.'
+        );
+    }
+
+    /**
      * Query khusus arsip SK dengan filter pencarian dan tahun.
      */
     private function queryArsipSK(array $filters): Builder
@@ -311,33 +323,116 @@ class SuratKeputusanController extends Controller
     }
 
     // ==========================================
+    // UBAH STATUS SURAT KEPUTUSAN
+    // KHUSUS ADMIN
+    // ==========================================
+    public function updateStatus(
+        Request $request,
+        SuratKeputusan $suratKeputusan
+    ): RedirectResponse {
+        $this->authorizeAdmin($request);
+
+        $validated = $request->validate([
+            'status' => [
+                'required',
+                'in:draft,final,arsip',
+            ],
+        ]);
+
+        $statusBerubah = DB::transaction(function () use (
+            $request,
+            $suratKeputusan,
+            $validated
+        ): bool {
+            $sk = SuratKeputusan::query()
+                ->lockForUpdate()
+                ->findOrFail($suratKeputusan->id);
+
+            $statusLama = $sk->status;
+            $statusBaru = $validated['status'];
+
+            if ($statusLama === $statusBaru) {
+                return false;
+            }
+
+            $sk->update([
+                'status' => $statusBaru,
+            ]);
+
+            LogAktivitas::create([
+                'user_id' => $request->user()->id,
+                'sk_id' => $sk->id,
+                'aksi' => 'ubah_status_sk_'.$statusLama.'_ke_'.$statusBaru,
+                'ip_address' => $request->ip(),
+            ]);
+
+            return true;
+        });
+
+        if (! $statusBerubah) {
+            return redirect()
+                ->route('sk.index')
+                ->with('info', 'Status Surat Keputusan tidak mengalami perubahan.');
+        }
+
+        $pesanStatus = [
+            'draft' => 'Draf',
+            'final' => 'Aktif',
+            'arsip' => 'Arsip',
+        ];
+
+        return redirect()
+            ->route('sk.index')
+            ->with(
+                'success',
+                'Status Surat Keputusan berhasil diubah menjadi '.$pesanStatus[$validated['status']].'.'
+            );
+    }
+
+    // ==========================================
     // ARSIPKAN SURAT KEPUTUSAN
+    // KHUSUS ADMIN
     // ==========================================
     public function simpanArsip(
         Request $request,
         SuratKeputusan $suratKeputusan
     ): RedirectResponse {
-        $this->authorizeSK($request);
+        $this->authorizeAdmin($request);
 
-        if ($suratKeputusan->status === 'arsip') {
-            return back()->with(
-                'warning',
-                'Surat Keputusan tersebut sudah berstatus arsip.'
-            );
-        }
+        $statusBerubah = DB::transaction(function () use (
+            $request,
+            $suratKeputusan
+        ): bool {
+            $sk = SuratKeputusan::query()
+                ->lockForUpdate()
+                ->findOrFail($suratKeputusan->id);
 
-        DB::transaction(function () use ($request, $suratKeputusan): void {
-            $suratKeputusan->update([
+            if ($sk->status === 'arsip') {
+                return false;
+            }
+
+            $statusLama = $sk->status;
+
+            $sk->update([
                 'status' => 'arsip',
             ]);
 
             LogAktivitas::create([
                 'user_id' => $request->user()->id,
-                'sk_id' => $suratKeputusan->id,
-                'aksi' => 'arsip_surat_keputusan',
+                'sk_id' => $sk->id,
+                'aksi' => 'ubah_status_sk_'.$statusLama.'_ke_arsip',
                 'ip_address' => $request->ip(),
             ]);
+
+            return true;
         });
+
+        if (! $statusBerubah) {
+            return back()->with(
+                'warning',
+                'Surat Keputusan tersebut sudah berstatus arsip.'
+            );
+        }
 
         return redirect()
             ->route('sk.index')

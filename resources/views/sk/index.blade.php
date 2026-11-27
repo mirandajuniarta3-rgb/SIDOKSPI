@@ -11,6 +11,93 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('asset/css/sk-index.css') }}">
+
+    <style>
+        .status-menu {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .status-menu > summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .status-menu > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .status-menu > summary::marker {
+            content: "";
+        }
+
+        .status-menu > summary:focus-visible {
+            outline: 3px solid rgba(33, 104, 214, .25);
+            outline-offset: 3px;
+            border-radius: 20px;
+        }
+
+        .status-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            z-index: 100;
+            min-width: 175px;
+            padding: 7px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #ffffff;
+            border: 1px solid #dce4f0;
+            border-radius: 10px;
+            box-shadow: 0 10px 28px rgba(20, 35, 60, .15);
+        }
+
+        .status-option {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 9px 11px;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: #24334d;
+            font: inherit;
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            transition: background .2s ease;
+        }
+
+        .status-option:hover:not(:disabled) {
+            background: #f1f5fb;
+        }
+
+        .status-option:focus-visible {
+            outline: 2px solid #2168d6;
+            outline-offset: 2px;
+        }
+
+        .status-option:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            background: #f5f7fa;
+        }
+
+        .status-option small {
+            color: #718096;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .status-menu[open] > summary {
+            filter: brightness(.96);
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -63,7 +150,6 @@
     {{-- STATISTIK SK --}}
     <section class="stats-grid" aria-label="Statistik Surat Keputusan">
 
-        {{-- TOTAL SK --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">Total Surat Keputusan</div>
@@ -86,7 +172,6 @@
             </span>
         </article>
 
-        {{-- SK BERLAKU --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">SK Berlaku (Aktif)</div>
@@ -109,7 +194,6 @@
             </span>
         </article>
 
-        {{-- SK ARSIP --}}
         <article class="stat-card">
             <div>
                 <div class="stat-label">SK Berakhir / Arsip</div>
@@ -193,7 +277,7 @@
 
                     <option value="final"
                         @selected($selectedStatus === 'final')>
-                        Berlaku
+                        Aktif
                     </option>
 
                     <option value="arsip"
@@ -203,7 +287,7 @@
 
                     <option value="draft"
                         @selected($selectedStatus === 'draft')>
-                        Draft
+                        Draf
                     </option>
                 </select>
             </label>
@@ -255,14 +339,16 @@
                                 ->implode('');
 
                             $statusLabel = [
-                                'final' => 'Berlaku',
+                                'final' => 'Aktif',
                                 'arsip' => 'Arsip',
-                                'draft' => 'Draft',
+                                'draft' => 'Draf',
                             ][$item->status] ?? ucfirst($item->status);
 
                             $statusClass = $item->status === 'arsip'
                                 ? 'archived'
                                 : ($item->status === 'draft' ? 'draft' : '');
+
+                            $isAdmin = auth()->user()->role === 'admin';
                         @endphp
 
                         <tr>
@@ -297,10 +383,104 @@
                                 {{ $item->tanggal_penetapan?->locale('id')->translatedFormat('d M Y') ?? '—' }}
                             </td>
 
+                            {{-- STATUS SK --}}
                             <td>
-                                <span class="status {{ $statusClass }}">
-                                    {{ $statusLabel }}
-                                </span>
+                                @if ($isAdmin)
+
+                                    <details class="status-menu">
+                                        <summary
+                                            class="status status-clickable {{ $statusClass }}"
+                                            title="Klik untuk mengubah status SK"
+                                            aria-label="Status {{ $statusLabel }}. Klik untuk mengubah status">
+
+                                            {{ $statusLabel }}
+
+                                        </summary>
+
+                                        <div class="status-options">
+
+                                            {{-- DRAF --}}
+                                            <form
+                                                method="POST"
+                                                action="{{ route('sk.updateStatus', $item->id) }}"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin mengubah status SK ini menjadi Draf?')">
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input type="hidden" name="status" value="draft">
+
+                                                <button
+                                                    type="submit"
+                                                    class="status-option"
+                                                    @disabled($item->status === 'draft')>
+
+                                                    <span>Draf</span>
+
+                                                    @if ($item->status === 'draft')
+                                                        <small>Status saat ini</small>
+                                                    @endif
+                                                </button>
+                                            </form>
+
+                                            {{-- AKTIF --}}
+                                            <form
+                                                method="POST"
+                                                action="{{ route('sk.updateStatus', $item->id) }}"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin mengubah status SK ini menjadi Aktif?')">
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input type="hidden" name="status" value="final">
+
+                                                <button
+                                                    type="submit"
+                                                    class="status-option"
+                                                    @disabled($item->status === 'final')>
+
+                                                    <span>Aktif</span>
+
+                                                    @if ($item->status === 'final')
+                                                        <small>Status saat ini</small>
+                                                    @endif
+                                                </button>
+                                            </form>
+
+                                            {{-- ARSIP --}}
+                                            <form
+                                                method="POST"
+                                                action="{{ route('sk.updateStatus', $item->id) }}"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin mengubah status SK ini menjadi Arsip?')">
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input type="hidden" name="status" value="arsip">
+
+                                                <button
+                                                    type="submit"
+                                                    class="status-option"
+                                                    @disabled($item->status === 'arsip')>
+
+                                                    <span>Arsip</span>
+
+                                                    @if ($item->status === 'arsip')
+                                                        <small>Status saat ini</small>
+                                                    @endif
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </details>
+
+                                @else
+
+                                    <span class="status {{ $statusClass }}">
+                                        {{ $statusLabel }}
+                                    </span>
+
+                                @endif
                             </td>
 
                             {{-- TIGA TOMBOL AKSI --}}
@@ -334,8 +514,8 @@
                                         </svg>
                                     </a>
 
-                                    {{-- ARSIPKAN --}}
-                                    @if ($item->status !== 'arsip')
+                                    {{-- ARSIPKAN KHUSUS ADMIN --}}
+                                    @if ($isAdmin && $item->status !== 'arsip')
 
                                         <form
                                             action="{{ route('sk.simpanArsip', $item->id) }}"

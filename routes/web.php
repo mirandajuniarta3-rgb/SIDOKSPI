@@ -188,7 +188,7 @@ Route::middleware('auth')->group(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | AKSI SURAT KEPUTUSAN
+        | AKSI SURAT KEPUTUSAN ADMIN DAN STAF
         |--------------------------------------------------------------------------
         */
 
@@ -196,11 +196,6 @@ Route::middleware('auth')->group(function () {
             SuratKeputusanController::class,
             'download'
         ])->name('sk.download');
-
-        Route::post('/sk/{suratKeputusan}/archive', [
-            SuratKeputusanController::class,
-            'simpanArsip'
-        ])->name('sk.simpanArsip');
 
         Route::get('/sk/{suratKeputusan}', [
             SuratKeputusanController::class,
@@ -242,6 +237,25 @@ Route::middleware('auth')->group(function () {
             DokumenController::class,
             'restore'
         ])->name('dokumen.restore');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | AKSI PERUBAHAN STATUS SK KHUSUS ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:admin')->group(function () {
+
+        Route::patch('/sk/{suratKeputusan}/status', [
+            SuratKeputusanController::class,
+            'updateStatus'
+        ])->name('sk.updateStatus');
+
+        Route::post('/sk/{suratKeputusan}/archive', [
+            SuratKeputusanController::class,
+            'simpanArsip'
+        ])->name('sk.simpanArsip');
     });
 
     /*
