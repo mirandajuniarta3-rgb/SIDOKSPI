@@ -10,6 +10,7 @@ use App\Http\Controllers\KategoriDokumenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LogAktivitasController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\NotifikasiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,21 @@ Route::middleware('auth')->group(function () {
 
         abort(403, 'Role pengguna tidak memiliki akses dashboard.');
     })->name('dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFIKASI UNTUK SEMUA PENGGUNA YANG SUDAH LOGIN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])
+        ->name('notifikasi.index');
+
+    Route::patch('/notifikasi/{id}/baca', [NotifikasiController::class, 'markAsRead'])
+        ->name('notifikasi.read');
+
+    Route::patch('/notifikasi/baca-semua', [NotifikasiController::class, 'markAllAsRead'])
+        ->name('notifikasi.read-all');
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +162,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/dokumen/{dokumen}/restore', [DokumenController::class, 'restore'])
             ->name('dokumen.restore');
 
-        // ROUTE HAPUS DOKUMEN
         Route::delete('/dokumen/{dokumen}', [DokumenController::class, 'destroy'])
             ->name('dokumen.destroy');
 
