@@ -2,30 +2,154 @@
 @extends('layouts.app')
 
 @section('title', 'Daftar Dokumen - SIDOKSPI')
-
 @section('active-menu', 'documents')
-
 @section('breadcrumb', 'Dokumen / Daftar Dokumen')
-
 @section('search-action', route('dokumen.index'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('asset/css/daftar-dokumen.css') }}">
+<link rel="stylesheet" href="{{ asset('asset/css/daftar-dokumen.css') }}">
+
+<style>
+    /* KARTU STATISTIK */
+    .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* STATUS */
+    .status-clickable {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .status-clickable:hover {
+        transform: translateY(-2px);
+        filter: brightness(.94);
+        box-shadow: 0 3px 9px rgba(20, 40, 80, .12);
+    }
+
+    .status-clickable:focus-visible {
+        outline: 2px solid #2168d6;
+        outline-offset: 3px;
+    }
+
+    /* MENU UBAH STATUS ADMIN */
+    .status-menu {
+        position: relative;
+        display: inline-block;
+    }
+
+    .status-menu summary {
+        list-style: none;
+        cursor: pointer;
+    }
+
+    .status-menu summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .status-menu[open] {
+        z-index: 20;
+    }
+
+    .status-menu-list {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        min-width: 155px;
+        padding: 6px;
+        background: #fff;
+        border: 1px solid #e3e9f2;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(20, 40, 80, .14);
+        z-index: 30;
+    }
+
+    .status-menu-list form {
+        margin: 0;
+    }
+
+    .status-menu-option {
+        display: block;
+        width: 100%;
+        padding: 9px 11px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: #26354d;
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+        transition: background .2s ease;
+    }
+
+    .status-menu-option:hover:not(:disabled) {
+        background: #f0f5ff;
+        color: #2168d6;
+    }
+
+    .status-menu-option.current,
+    .status-menu-option:disabled {
+        color: #8a94a6;
+        background: #f5f6f8;
+        cursor: default;
+    }
+
+    .status-menu-option:focus-visible {
+        outline: 2px solid #2168d6;
+        outline-offset: -2px;
+    }
+
+    .status-menu-hint {
+        display: block;
+        padding: 5px 10px 8px;
+        color: #8a94a6;
+        font-size: 10px;
+        border-bottom: 1px solid #edf0f5;
+        margin-bottom: 4px;
+    }
+
+    @media (max-width: 1000px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .status-menu-list {
+            left: auto;
+            right: 0;
+        }
+    }
+</style>
 @endpush
 
 @section('content')
 
-<section class="page-heading" aria-labelledby="page-title">
+@php
+    $isAdmin = auth()->user()->role === 'admin';
+@endphp
+
+{{-- HEADER HALAMAN --}}
+
+<section class="page-heading">
 
     <div>
         <div class="eyebrow">
             Portal SPI <span aria-hidden="true">›</span> Beranda Administrasi
         </div>
 
-        <h1 id="page-title">Daftar Dokumen Pengawasan</h1>
+        <h1>Daftar Dokumen Pengawasan</h1>
 
         <p class="page-description">
-            Kelola dan telusuri seluruh berkas audit operasional, laporan hasil audit (LHA), KKP, dan arsip dokumen SPI PDAM Tirta Pinang dalam repositori terenkripsi berbasis kepatuhan ISO 27001.
+            Kelola dan telusuri seluruh berkas audit operasional, laporan hasil audit (LHA), KKP, dan arsip dokumen SPI PDAM Tirta Pinang dalam repositori berbasis kepatuhan.
         </p>
     </div>
 
@@ -54,7 +178,8 @@
 </section>
 
 {{-- STATISTIK DOKUMEN --}}
-<section class="stats-grid" aria-label="Statistik dokumen">
+
+<section class="stats-grid">
 
     <article class="stat-card">
         <div>
@@ -64,7 +189,7 @@
                 {{ number_format($totalDokumen, 0, ',', '.') }}
             </div>
 
-            <span class="stat-note">Dokumen SPI</span>
+            <span class="stat-note">Seluruh dokumen tersimpan</span>
         </div>
 
         <span class="stat-icon">
@@ -77,13 +202,13 @@
 
     <article class="stat-card">
         <div>
-            <div class="stat-label">Dokumen Aktif & Terbuka</div>
+            <div class="stat-label">Dokumen Aktif</div>
 
             <div class="stat-value" style="color:#087c68">
                 {{ number_format($dokumenAktif, 0, ',', '.') }}
             </div>
 
-            <span class="stat-note">Dokumen tidak diarsipkan</span>
+            <span class="stat-note">Dokumen berstatus aktif</span>
         </div>
 
         <span class="stat-icon teal">
@@ -102,7 +227,7 @@
                 {{ number_format($dokumenDiarsipkan, 0, ',', '.') }}
             </div>
 
-            <span class="stat-note">Status arsip</span>
+            <span class="stat-note">Dokumen masuk arsip</span>
         </div>
 
         <span class="stat-icon gray">
@@ -116,7 +241,8 @@
 </section>
 
 {{-- TABEL DOKUMEN --}}
-<section class="table-panel" aria-label="Daftar dokumen">
+
+<section class="table-panel">
 
     <div class="audit-strip">
 
@@ -137,6 +263,7 @@
     </div>
 
     {{-- FILTER DOKUMEN --}}
+
     <form class="filter-bar" method="GET" action="{{ route('dokumen.index') }}">
 
         <label class="filter-control">
@@ -150,7 +277,7 @@
                 name="search"
                 value="{{ $search }}"
                 placeholder="Cari nomor dokumen, judul berkas, atau pengunggah..."
-                aria-label="Cari nomor dokumen, judul, atau pengunggah"
+                aria-label="Cari dokumen"
             >
         </label>
 
@@ -158,12 +285,12 @@
             <select name="kategori" aria-label="Filter kategori">
                 <option value="">Semua Kategori</option>
 
-                @foreach ($kategori as $item)
+                @foreach ($kategori as $itemKategori)
                     <option
-                        value="{{ $item->id }}"
-                        @selected((string) $selectedKategori === (string) $item->id)
+                        value="{{ $itemKategori->id }}"
+                        @selected((string) $selectedKategori === (string) $itemKategori->id)
                     >
-                        {{ $item->nama_kategori }}
+                        {{ $itemKategori->nama_kategori }}
                     </option>
                 @endforeach
             </select>
@@ -187,18 +314,9 @@
         <label class="filter-control">
             <select name="status" aria-label="Filter status">
                 <option value="">Semua Status</option>
-
-                <option value="final" @selected($selectedStatus === 'final')>
-                    Aktif
-                </option>
-
-                <option value="draft" @selected($selectedStatus === 'draft')>
-                    Draft
-                </option>
-
-                <option value="arsip" @selected($selectedStatus === 'arsip')>
-                    Arsip
-                </option>
+                <option value="final" @selected($selectedStatus === 'final')>Aktif</option>
+                <option value="draft" @selected($selectedStatus === 'draft')>Draf</option>
+                <option value="arsip" @selected($selectedStatus === 'arsip')>Arsip</option>
             </select>
         </label>
 
@@ -206,7 +324,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 5h16M7 12h10m-7 7h4"/>
             </svg>
-
             Terapkan
         </button>
 
@@ -217,6 +334,7 @@
     </form>
 
     {{-- TABEL --}}
+
     <div class="table-scroll">
 
         <table>
@@ -247,15 +365,18 @@
                             ->map(fn ($part) => mb_substr($part, 0, 1))
                             ->implode('');
 
-                        $statusClass = $item->status === 'arsip'
-                            ? 'archived'
-                            : ($item->status === 'draft' ? 'draft' : '');
+                        $statusClass = match ($item->status) {
+                            'arsip' => 'archived',
+                            'draft' => 'draft',
+                            default => '',
+                        };
 
-                        $statusLabel = [
+                        $statusLabel = match ($item->status) {
                             'final' => 'Aktif',
-                            'draft' => 'Draft',
-                            'arsip' => 'Arsip'
-                        ][$item->status] ?? ucfirst($item->status);
+                            'draft' => 'Draf',
+                            'arsip' => 'Arsip',
+                            default => ucfirst($item->status),
+                        };
                     @endphp
 
                     <tr>
@@ -296,27 +417,123 @@
 
                         <td>
                             <span class="uploader">
-
                                 <span class="uploader-avatar">
                                     {{ mb_strtoupper($uploaderInitials ?: 'U') }}
                                 </span>
 
                                 {{ $uploaderName }}
-
                             </span>
                         </td>
 
+                        {{-- STATUS DOKUMEN --}}
+
                         <td>
-                            <span class="status {{ $statusClass }}">
-                                {{ $statusLabel }}
-                            </span>
+
+                            @if ($isAdmin)
+
+                                <details class="status-menu">
+
+                                    <summary
+                                        class="status status-clickable {{ $statusClass }}"
+                                        title="Klik untuk mengubah status dokumen"
+                                        aria-label="Status {{ $statusLabel }}. Klik untuk mengubah status."
+                                    >
+                                        {{ $statusLabel }}
+                                    </summary>
+
+                                    <div class="status-menu-list">
+
+                                        <span class="status-menu-hint">
+                                            Ubah status dokumen
+                                        </span>
+
+                                        <form
+                                            action="{{ route('dokumen.updateStatus', $item->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin mengubah status dokumen ini menjadi Draf?');"
+                                        >
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                name="status"
+                                                value="draft"
+                                                class="status-menu-option {{ $item->status === 'draft' ? 'current' : '' }}"
+                                                {{ $item->status === 'draft' ? 'disabled' : '' }}
+                                            >
+                                                Draf
+                                                @if ($item->status === 'draft')
+                                                    ✓
+                                                @endif
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            action="{{ route('dokumen.updateStatus', $item->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin mengubah status dokumen ini menjadi Aktif?');"
+                                        >
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                name="status"
+                                                value="final"
+                                                class="status-menu-option {{ $item->status === 'final' ? 'current' : '' }}"
+                                                {{ $item->status === 'final' ? 'disabled' : '' }}
+                                            >
+                                                Aktif
+                                                @if ($item->status === 'final')
+                                                    ✓
+                                                @endif
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            action="{{ route('dokumen.updateStatus', $item->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin mengubah status dokumen ini menjadi Arsip?');"
+                                        >
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                name="status"
+                                                value="arsip"
+                                                class="status-menu-option {{ $item->status === 'arsip' ? 'current' : '' }}"
+                                                {{ $item->status === 'arsip' ? 'disabled' : '' }}
+                                            >
+                                                Arsip
+                                                @if ($item->status === 'arsip')
+                                                    ✓
+                                                @endif
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </details>
+
+                            @else
+
+                                <span class="status {{ $statusClass }}">
+                                    {{ $statusLabel }}
+                                </span>
+
+                            @endif
+
                         </td>
 
                         {{-- AKSI MANAJEMEN --}}
+
                         <td>
                             <span class="actions">
 
                                 {{-- DETAIL --}}
+
                                 <a
                                     href="{{ route('dokumen.show', $item->id) }}"
                                     class="action-button"
@@ -330,6 +547,7 @@
                                 </a>
 
                                 {{-- UNDUH --}}
+
                                 <a
                                     href="{{ route('dokumen.download', $item->id) }}"
                                     class="action-button"
@@ -341,8 +559,9 @@
                                     </svg>
                                 </a>
 
-                                {{-- ARSIP --}}
-                                @if ($item->status !== 'arsip')
+                                {{-- ARSIP KHUSUS ADMIN --}}
+
+                                @if ($isAdmin && $item->status !== 'arsip')
 
                                     <form
                                         action="{{ route('dokumen.archive', $item->id) }}"
@@ -357,14 +576,7 @@
                                             aria-label="Arsipkan dokumen"
                                             title="Arsipkan dokumen"
                                         >
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                                 <path d="M3 5h18v4H3z"/>
                                                 <path d="M5 9v11h14V9"/>
                                                 <path d="M9 13h6"/>
@@ -376,6 +588,7 @@
                                 @endif
 
                                 {{-- HAPUS --}}
+
                                 <form
                                     action="{{ route('dokumen.destroy', $item->id) }}"
                                     method="POST"
@@ -390,14 +603,7 @@
                                         aria-label="Hapus dokumen"
                                         title="Hapus dokumen"
                                     >
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                             <path d="M3 6h18"/>
                                             <path d="M8 6V4h8v2"/>
                                             <path d="m19 6-1 14H6L5 6"/>
@@ -430,6 +636,7 @@
     </div>
 
     {{-- PAGINATION --}}
+
     <div class="table-footer">
 
         <span class="pagination-summary">
@@ -459,7 +666,8 @@
 </section>
 
 {{-- INTEGRITAS DOKUMEN --}}
-<aside class="integrity" aria-label="Integritas dokumen">
+
+<aside class="integrity">
 
     <div class="integrity-copy">
 

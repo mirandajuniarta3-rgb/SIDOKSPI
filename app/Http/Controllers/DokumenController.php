@@ -33,6 +33,14 @@ class DokumenController extends Controller
     }
 
     /**
+     * Hanya Admin yang boleh mengubah status dokumen.
+     */
+    private function authorizeAdmin(Request $request): void
+    {
+        abort_unless($request->user()->role === 'admin', 403);
+    }
+
+    /**
      * Query dokumen untuk daftar dan ekspor.
      */
     private function queryDokumen(array $filters): Builder
@@ -253,7 +261,7 @@ class DokumenController extends Controller
 
         return redirect()
             ->route('dokumen.index')
-            ->with('success', 'Dokumen berhasil diunggah dan disimpan sebagai draft.');
+            ->with('success', 'Dokumen berhasil diunggah dan disimpan sebagai draf.');
     }
 
     /**
@@ -296,7 +304,7 @@ class DokumenController extends Controller
                 ->orderByDesc('tahun')
                 ->pluck('tahun'),
             'totalDokumen' => Dokumen::count(),
-            'dokumenAktif' => Dokumen::where('status', '!=', 'arsip')->count(),
+            'dokumenAktif' => Dokumen::where('status', 'final')->count(),
             'dokumenDiarsipkan' => Dokumen::where('status', 'arsip')->count(),
             'search' => $search,
             'selectedKategori' => $filters['kategori'] ?? '',
@@ -315,25 +323,28 @@ class DokumenController extends Controller
         $dokumen->load(['kategori', 'uploader']);
 
         $disk = Storage::disk('local');
+
         $fileAvailable = filled($dokumen->path_file)
             && $disk->exists($dokumen->path_file);
+
         $fileChecksum = null;
 
         if ($fileAvailable) {
-            $fileChecksum = hash_file('sha256', $disk->path($dokumen->path_file));
+            $fileChecksum = hash_file(
+                'sha256',
+                $disk->path($dokumen->path_file)
+            );
 
             if ($fileChecksum === false) {
                 report(new \RuntimeException(
                     'Gagal menghitung checksum dokumen '.$dokumen->getKey()
                 ));
+
                 $fileChecksum = null;
             }
         }
 
-        $dokumen->setAttribute(
-            'file_available',
-            $fileAvailable
-        );
+        $dokumen->setAttribute('file_available', $fileAvailable);
 
         $lastDownload = $dokumen->logAktivitas()
             ->with('user')
@@ -551,12 +562,13 @@ class DokumenController extends Controller
 
     /**
      * Arsipkan dokumen.
+     * Hanya Admin yang boleh melakukannya.
      */
     public function archive(
         Request $request,
         Dokumen $dokumen
     ): RedirectResponse {
-        $this->authorizeDokumen($request);
+        $this->authorizeAdmin($request);
 
         DB::transaction(function () use ($dokumen, $request): void {
             $lockedDocument = Dokumen::query()
@@ -564,6 +576,8 @@ class DokumenController extends Controller
                 ->findOrFail($dokumen->id);
 
             abort_unless($lockedDocument->status !== 'arsip', 404);
+
+            $statusLama = $lockedDocument->status;
 
             $lockedDocument->update([
                 'status' => 'arsip',
@@ -573,7 +587,7 @@ class DokumenController extends Controller
             LogAktivitas::create([
                 'user_id' => $request->user()->id,
                 'dokumen_id' => $lockedDocument->id,
-                'aksi' => 'arsip_dokumen',
+                'aksi' => 'status_dokumen_'.$statusLama.'_ke_arsip',
                 'ip_address' => $request->ip(),
             ]);
         });
@@ -584,13 +598,71 @@ class DokumenController extends Controller
     }
 
     /**
+     * Mengubah status dokumen.
+     * Hanya Admin yang boleh mengubah status.
+     */
+    public function updateStatus(
+        Request $request,
+        Dokumen $dokumen
+    ): RedirectResponse {
+        $this->authorizeAdmin($request);
+
+        $validated = $request->validate([
+            'status' => ['required', 'in:draft,final,arsip'],
+        ], [
+            'status.required' => 'Pilih status dokumen.',
+            'status.in' => 'Status dokumen tidak valid.',
+        ]);
+
+        $statusBaru = $validated['status'];
+
+        DB::transaction(function () use (
+            $dokumen,
+            $request,
+            $statusBaru
+        ): void {
+            $lockedDocument = Dokumen::query()
+                ->lockForUpdate()
+                ->findOrFail($dokumen->id);
+
+            $statusLama = $lockedDocument->status;
+
+            if ($statusLama === $statusBaru) {
+                return;
+            }
+
+            $dataUpdate = [
+                'status' => $statusBaru,
+                'archived_at' => $statusBaru === 'arsip' ? now() : null,
+            ];
+
+            if ($statusLama === 'arsip' && $statusBaru !== 'arsip') {
+                $dataUpdate['retensi_tahun'] = null;
+            }
+
+            $lockedDocument->update($dataUpdate);
+
+            LogAktivitas::create([
+                'user_id' => $request->user()->id,
+                'dokumen_id' => $lockedDocument->id,
+                'aksi' => 'status_dokumen_'.$statusLama.'_ke_'.$statusBaru,
+                'ip_address' => $request->ip(),
+            ]);
+        });
+
+        return redirect()
+            ->route('dokumen.index')
+            ->with('success', 'Status dokumen berhasil diperbarui.');
+    }
+
+    /**
      * Pemulihan arsip hanya untuk Admin.
      */
     public function restore(
         Request $request,
         Dokumen $dokumen
     ): RedirectResponse {
-        abort_unless($request->user()->role === 'admin', 403);
+        $this->authorizeAdmin($request);
 
         DB::transaction(function () use ($dokumen, $request): void {
             $lockedDocument = Dokumen::query()
@@ -635,13 +707,11 @@ class DokumenController extends Controller
                 ->lockForUpdate()
                 ->findOrFail($dokumen->id);
 
-            // Lepaskan hubungan log lama dengan dokumen.
             LogAktivitas::where('dokumen_id', $lockedDocument->id)
                 ->update([
                     'dokumen_id' => null,
                 ]);
 
-            // Simpan catatan penghapusan.
             LogAktivitas::create([
                 'user_id' => $request->user()->id,
                 'dokumen_id' => null,
@@ -649,11 +719,9 @@ class DokumenController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            // Hapus data dokumen.
             $lockedDocument->delete();
         });
 
-        // Hapus file fisik setelah transaksi database berhasil.
         if (filled($pathFile)) {
             $disk = Storage::disk('local');
 
